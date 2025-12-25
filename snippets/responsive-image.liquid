@@ -1,0 +1,45 @@
+{% comment %}
+  Snippet: responsive-image.liquid
+  Usage: {% render 'responsive-image', image: product.featured_image, sizes: '(min-width: 1024px) 50vw, 100vw', loading: 'lazy' %}
+  
+  Paramètres:
+  - image: Objet image Shopify (required)
+  - sizes: Attribut sizes pour responsive (default: '100vw')
+  - loading: 'lazy' ou 'eager' (default: 'lazy')
+  - class: Classes CSS additionnelles
+  - alt: Texte alternatif (default: image.alt)
+  - widths: Array de largeurs pour srcset (default: [400, 600, 800, 1200, 1600])
+{% endcomment %}
+
+{% liquid
+  assign image_sizes = sizes | default: '100vw'
+  assign image_loading = loading | default: 'lazy'
+  assign image_class = class | default: ''
+  assign image_alt = alt | default: image.alt | default: ''
+  assign image_widths = widths | default: '400,600,800,1200,1600' | split: ','
+%}
+
+{% if image != blank %}
+  {% comment %} Construction du srcset avec plusieurs largeurs {% endcomment %}
+  {% capture srcset_string %}
+    {% for width in image_widths %}
+      {% assign width_int = width | times: 1 %}
+      {{ image | image_url: width: width_int }} {{ width_int }}w{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  {% endcapture %}
+
+  <img
+    src="{{ image | image_url: width: 800 }}"
+    srcset="{{ srcset_string }}"
+    sizes="{{ image_sizes }}"
+    alt="{{ image_alt | escape }}"
+    loading="{{ image_loading }}"
+    width="{{ image.width }}"
+    height="{{ image.height }}"
+    class="{{ image_class }}"
+    {% if image_loading == 'lazy' %}decoding="async"{% endif %}
+  >
+{% else %}
+  {% comment %} Placeholder si pas d'image {% endcomment %}
+  {{ 'product-1' | placeholder_svg_tag: image_class }}
+{% endif %}
