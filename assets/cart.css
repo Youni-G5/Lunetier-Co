@@ -1,0 +1,422 @@
+/* ========================================
+   CART.CSS - Styles page panier
+   Lunetier & Co Theme
+   ======================================== */
+
+/* === CART SECTION === */
+.lunetier-cart-section {
+  background-color: var(--color-white);
+  color: var(--color-black);
+  padding-top: 10rem;
+  padding-bottom: 8rem;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .lunetier-cart-section {
+    padding-top: 8rem;
+    padding-bottom: 6rem;
+  }
+}
+
+.lunetier-cart-container {
+  max-width: 90rem;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* === HEADER === */
+.lunetier-cart-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 4rem;
+  text-align: center;
+}
+
+.lunetier-cart-title {
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  font-weight: 400;
+  margin: 0 0 1rem 0;
+  line-height: 1.1;
+}
+
+.lunetier-cart-link {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+  color: var(--color-gray-500);
+  transition: color var(--transition-base);
+}
+
+.lunetier-cart-link:hover {
+  color: var(--color-black);
+}
+
+/* === SHIPPING PROGRESS === */
+.lunetier-shipping-wrapper {
+  max-width: 32rem;
+  margin: 0 auto 4rem auto;
+  text-align: center;
+}
+
+.lunetier-shipping-text {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  color: var(--color-gray-600);
+}
+
+.lunetier-shipping-text strong {
+  color: var(--color-black);
+}
+
+.lunetier-progress-track {
+  height: 2px;
+  background-color: var(--color-gray-100);
+  width: 100%;
+  position: relative;
+}
+
+.lunetier-progress-bar {
+  height: 100%;
+  background-color: var(--color-black);
+  transition: width var(--transition-slow);
+}
+
+/* === LAYOUT === */
+.lunetier-cart-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4rem;
+}
+
+@media (min-width: 1024px) {
+  .lunetier-cart-layout {
+    grid-template-columns: 1fr 24rem;
+    gap: 6rem;
+    align-items: start;
+  }
+}
+
+/* === CART ITEMS === */
+.lunetier-cart-items-wrapper {
+  position: relative;
+}
+
+.lunetier-cart-row {
+  display: grid;
+  grid-template-columns: 7rem 1fr auto;
+  gap: 1.5rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--color-gray-200);
+  position: relative;
+  transition: opacity var(--transition-base);
+}
+
+@media (min-width: 768px) {
+  .lunetier-cart-row {
+    grid-template-columns: 9rem 2fr 1fr auto;
+    gap: 2.5rem;
+    align-items: center;
+  }
+}
+
+.lunetier-item-img-link {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4/5;
+  background-color: var(--color-gray-50);
+  overflow: hidden;
+}
+
+.lunetier-item-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.lunetier-item-img-link:hover .lunetier-item-img {
+  transform: scale(1.05);
+}
+
+.lunetier-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lunetier-item-title {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  text-decoration: none;
+  color: var(--color-black);
+  line-height: 1.2;
+  transition: opacity var(--transition-fast);
+}
+
+.lunetier-item-title:hover {
+  opacity: 0.7;
+}
+
+.lunetier-item-variant {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--color-gray-500);
+}
+
+.lunetier-item-remove {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-gray-400);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  transition: color var(--transition-fast);
+  width: fit-content;
+}
+
+.lunetier-item-remove:hover {
+  color: var(--color-error);
+}
+
+/* === QUANTITY === */
+.lunetier-qty-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-gray-200);
+  width: fit-content;
+  height: 3rem;
+}
+
+.lunetier-qty-btn {
+  width: 3rem;
+  height: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-black);
+  transition: background-color var(--transition-fast);
+}
+
+.lunetier-qty-btn:hover {
+  background-color: var(--color-gray-50);
+}
+
+.lunetier-qty-input {
+  width: 2.5rem;
+  height: 100%;
+  text-align: center;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--color-black);
+  appearance: none;
+  -moz-appearance: textfield;
+}
+
+.lunetier-qty-input:focus {
+  outline: none;
+}
+
+.lunetier-qty-input::-webkit-outer-spin-button,
+.lunetier-qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.lunetier-item-price {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: right;
+}
+
+/* === LOADING === */
+.lunetier-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+  z-index: 10;
+}
+
+.is-loading .lunetier-loading-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.lunetier-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-gray-200);
+  border-top-color: var(--color-black);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* === SUMMARY === */
+.lunetier-summary-card {
+  background-color: var(--color-gray-50);
+  padding: 2.5rem;
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .lunetier-summary-card {
+    position: sticky;
+    top: 10rem;
+  }
+}
+
+.lunetier-summary-title {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding-bottom: 1rem;
+}
+
+.lunetier-cart-note {
+  margin-bottom: 2rem;
+}
+
+.lunetier-note-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.lunetier-note-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--color-gray-200);
+  background: var(--color-white);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color var(--transition-fast);
+}
+
+.lunetier-note-input:focus {
+  outline: none;
+  border-color: var(--color-black);
+}
+
+.lunetier-summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: var(--color-gray-600);
+}
+
+.lunetier-total-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-black);
+  margin-bottom: 2rem;
+}
+
+.lunetier-checkout-btn {
+  display: block;
+  width: 100%;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  padding: 1.25rem;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.lunetier-checkout-btn:hover {
+  background-color: var(--color-gray-800);
+  transform: translateY(-2px);
+}
+
+.lunetier-secure-icons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  opacity: 0.5;
+}
+
+.lunetier-secure-icons svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* === EMPTY STATE === */
+.lunetier-empty-state {
+  text-align: center;
+  padding: 6rem 0;
+  max-width: 30rem;
+  margin: 0 auto;
+}
+
+.lunetier-empty-btn {
+  display: inline-block;
+  margin-top: 2rem;
+  background: var(--color-black);
+  color: var(--color-white);
+  padding: 1rem 2rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.lunetier-empty-btn:hover {
+  background-color: var(--color-gray-800);
+  transform: translateY(-1px);
+}
+
+/* === UTILITY CLASSES === */
+.hidden {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .lg\:hidden {
+    display: none;
+  }
+  .lg\:block {
+    display: block;
+  }
+}
