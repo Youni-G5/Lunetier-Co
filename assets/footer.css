@@ -3,8 +3,8 @@
    Lunetier & Co Theme
    ======================================== */
 
-/* === FOOTER SECTION === */
-#shopify-section-footer {
+/* === BASE === */
+.lunetier-footer {
   background-color: var(--color-white);
   border-top: 1px solid var(--color-gray-100);
   padding-top: 5rem;
@@ -18,7 +18,7 @@
   padding: 0 1.5rem;
 }
 
-/* === GRID === */
+/* === GRID LAYOUT === */
 .lunetier-footer-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -49,6 +49,7 @@
   font-weight: 700;
   margin-bottom: 1rem;
   line-height: 1.2;
+  color: var(--color-black);
 }
 
 .lunetier-footer-desc {
@@ -57,14 +58,21 @@
   margin-bottom: 1.5rem;
   line-height: 1.6;
   font-size: 1rem;
+  font-family: var(--font-sans);
 }
 
 /* === MENU COLUMNS === */
+.lunetier-footer-menu-col {
+  display: flex;
+  flex-direction: column;
+}
+
 .lunetier-menu-title {
   font-family: var(--font-sans);
   font-weight: 700;
   margin-bottom: 1rem;
   font-size: 1rem;
+  color: var(--color-black);
 }
 
 .lunetier-footer-list {
@@ -98,8 +106,19 @@
   font-family: var(--font-sans);
 }
 
+.lunetier-copyright p {
+  margin: 0;
+}
+
 @media (min-width: 768px) {
   .lunetier-copyright {
     text-align: left;
+  }
+}
+
+/* === ACCESSIBILITY === */
+@media (prefers-reduced-motion: reduce) {
+  .lunetier-footer-link {
+    transition: none;
   }
 }
