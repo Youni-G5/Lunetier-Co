@@ -1,93 +1,59 @@
 <!doctype html>
-<html lang="{{ request.locale.iso_code }}" prefix="og: https://ogp.me/ns#">
+<html lang="{{ request.locale.iso_code }}">
   <head>
-    {% comment %}
-      SEO & Meta Tags - Snippet complet avec Open Graph, Twitter Cards, Schema.org
-    {% endcomment %}
-    {% render 'seo-meta-tags' %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     
     <title>{{ page_title }}</title>
-    
-    {% comment %}
-      Performance Optimizations:
-      - Preconnect to critical domains
-      - DNS prefetch for external resources
-      - Font preloading for critical fonts only
-    {% endcomment %}
     
     {% comment %} Font preloading {% endcomment %}
     {% unless settings.type_primary_font.system? %}
       <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
-      {{ settings.type_primary_font | font_url | preload_tag: as: 'font', crossorigin: 'anonymous' }}}
+      {{ settings.type_primary_font | font_url | preload_tag: as: 'font', crossorigin: 'anonymous' }}
     {% endunless %}
 
-    {% comment %}
-      CSS Loading Strategy:
-      1. Inline critical CSS (variables)
-      2. Preload base CSS (variables et utilitaires)
-      3. Section-specific CSS chargés selon le template
-      4. Non-critical CSS avec media="print" onload trick
-    {% endcomment %}
-    
+    {% comment %} CSS Loading {% endcomment %}
     {% render 'css-variables' %}
     
-    {{ 'base.css' | asset_url | stylesheet_tag: preload: true }}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
     
-    {% comment %} Product card CSS - chargé sur les pages avec grilles produits {% endcomment %}
     {% if template contains 'product' or template contains 'collection' or template contains 'search' or template == 'index' %}
       {{ 'product-card.css' | asset_url | stylesheet_tag }}
     {% endif %}
     
-    {% comment %} Load section-specific CSS based on template {% endcomment %}
     {% if template contains 'product' and template != 'collection' %}
       {{ 'product.css' | asset_url | stylesheet_tag }}
     {% elsif template contains 'cart' %}
       {{ 'cart.css' | asset_url | stylesheet_tag }}
     {% endif %}
     
-    {% comment %} Header et Footer CSS toujours chargés car présents partout {% endcomment %}
     {{ 'header.css' | asset_url | stylesheet_tag }}
     {{ 'footer.css' | asset_url | stylesheet_tag }}
 
-    {% comment %} Shopify required content_for_header {% endcomment %}
+    {% comment %} SEO Meta Tags {% endcomment %}
+    {% render 'seo-meta-tags' %}
+    
+    {% comment %} Shopify required {% endcomment %}
     {{ content_for_header }}
     
-    {% comment %} Structured Data - Schema.org JSON-LD {% endcomment %}
+    {% comment %} Structured Data {% endcomment %}
     {% render 'schema-org' %}
   </head>
 
   <body class="template-{{ template.name | handle }}{% if customer %} customer-logged-in{% endif %}{% if cart.item_count > 0 %} cart-has-items{% endif %}">
     
-    {% comment %} Skip to content pour accessibilité (WCAG 2.1) {% endcomment %}
-    <a href="#main-content" class="sr-only sr-only-focusable" tabindex="0">Passer au contenu</a>
+    {% comment %} Skip to content (invisible jusqu'à focus) {% endcomment %}
+    <a href="#main-content" class="skip-to-content">Passer au contenu</a>
     
-    {% comment %} Header section {% endcomment %}
     {% section 'header' %}
 
-    {% comment %} Main content area {% endcomment %}
-    <main id="main-content" role="main" tabindex="-1">
+    <main id="main-content" role="main">
       {{ content_for_layout }}
     </main>
 
-    {% comment %} Footer section {% endcomment %}
     {% section 'footer' %}
     
-    {% comment %}
-      Scripts chargés en fin de body avec defer pour performance
-      - theme.js contient toute la logique JavaScript
-      - Defer permet de ne pas bloquer le parsing HTML
-    {% endcomment %}
     <script src="{{ 'theme.js' | asset_url }}" defer></script>
-    
-    {% comment %} Service Worker pour PWA (optionnel, à activer plus tard) {% endcomment %}
-    {% comment %}
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js');
-        });
-      }
-    </script>
-    {% endcomment %}
   </body>
 </html>
