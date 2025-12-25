@@ -1,0 +1,315 @@
+{% comment %}
+  Section Contact "Lunetier"
+  Design : Approche Conciergerie, champs soulignés, layout asymétrique.
+{% endcomment %}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    background-color: #ffffff;
+    color: #111827;
+    /* Espace généreux pour le header sticky */
+    padding-top: 10rem; 
+    padding-bottom: 8rem;
+  }
+
+  .lunetier-contact-container {
+    max-width: 80rem; /* max-w-7xl */
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* --- HEADER --- */
+  .lunetier-contact-header {
+    margin-bottom: 5rem;
+    text-align: center;
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .lunetier-contact-title {
+    font-family: serif;
+    font-size: 3rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+
+  .lunetier-contact-desc {
+    font-family: sans-serif;
+    color: #6b7280;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* --- GRID LAYOUT --- */
+  .lunetier-contact-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+
+  @media (min-width: 1024px) {
+    .lunetier-contact-grid {
+      grid-template-columns: 1fr 1.5fr; /* Info (petit) | Form (grand) */
+      gap: 6rem;
+      align-items: start;
+    }
+  }
+
+  /* --- LEFT COLUMN: INFO & IMAGE --- */
+  .lunetier-info-col {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .lunetier-info-block h3 {
+    font-family: serif;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .lunetier-info-block p, 
+  .lunetier-info-block a {
+    font-family: sans-serif;
+    font-size: 0.9rem;
+    color: #4b5563;
+    line-height: 1.6;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .lunetier-info-block a:hover {
+    color: #000;
+  }
+
+  .lunetier-contact-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    background-color: #f3f4f6;
+    margin-top: 1rem;
+  }
+
+  /* --- RIGHT COLUMN: FORM --- */
+  .lunetier-form-wrapper {
+    background: #fff;
+  }
+
+  .lunetier-field-group {
+    margin-bottom: 2.5rem;
+  }
+
+  .lunetier-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    color: #111;
+  }
+
+  .lunetier-input,
+  .lunetier-textarea,
+  .lunetier-select {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem 0;
+    font-family: sans-serif;
+    font-size: 1rem;
+    color: #111;
+    background: transparent;
+    transition: border-color 0.3s;
+    border-radius: 0;
+    -webkit-appearance: none;
+  }
+
+  .lunetier-input:focus,
+  .lunetier-textarea:focus,
+  .lunetier-select:focus {
+    outline: none;
+    border-bottom-color: #000;
+  }
+
+  .lunetier-textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .lunetier-submit {
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    padding: 1.25rem 3rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 1rem;
+  }
+
+  .lunetier-submit:hover {
+    background-color: #333;
+  }
+
+  /* Messages */
+  .lunetier-success {
+    padding: 1rem;
+    background-color: #f0fdf4;
+    color: #166534;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+  }
+  
+  .lunetier-error {
+    padding: 1rem;
+    background-color: #fef2f2;
+    color: #991b1b;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+  }
+
+</style>
+
+<div class="lunetier-contact-container">
+  
+  <!-- HEADER -->
+  <div class="lunetier-contact-header">
+    <h1 class="lunetier-contact-title">{{ section.settings.title | default: "Contactez-nous" }}</h1>
+    <div class="lunetier-contact-desc">
+      {{ section.settings.description | default: "Notre service de conciergerie est à votre disposition du lundi au vendredi, de 9h à 18h." }}
+    </div>
+  </div>
+
+  <div class="lunetier-contact-grid">
+    
+    <!-- LEFT: INFO -->
+    <div class="lunetier-info-col">
+      <div class="lunetier-info-block">
+        <h3>Service Client</h3>
+        <p>Une question sur votre commande ou nos montures ?</p>
+        <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
+        <a href="tel:{{ section.settings.phone }}">{{ section.settings.phone }}</a>
+      </div>
+
+      <div class="lunetier-info-block">
+        <h3>Presse & Partenariats</h3>
+        <p>Pour toute demande de collaboration.</p>
+        <a href="mailto:press@lunetier.com">press@lunetier.com</a>
+      </div>
+
+      <div class="lunetier-info-block">
+        <h3>Showroom</h3>
+        <p>24 Rue de la Vision<br>75003 Paris, France</p>
+      </div>
+
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 600 | image_tag: 
+          class: 'lunetier-contact-img', 
+          loading: 'lazy',
+          alt: 'Notre Atelier'
+        }}
+      {%- endif -%}
+    </div>
+
+    <!-- RIGHT: FORM -->
+    <div class="lunetier-form-wrapper">
+      {%- form 'contact' -%}
+        
+        {%- if form.posted_successfully? -%}
+          <div class="lunetier-success">
+            Merci. Votre message a bien été envoyé. Notre équipe vous répondra sous 24h.
+          </div>
+        {%- elsif form.errors -%}
+          <div class="lunetier-error">
+            Veuillez corriger les erreurs ci-dessous : {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="lunetier-field-group">
+          <label for="ContactFormName" class="lunetier-label">Nom Complet</label>
+          <input type="text" id="ContactFormName" name="contact[name]" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}" class="lunetier-input" placeholder="Votre nom" required>
+        </div>
+
+        <div class="lunetier-field-group">
+          <label for="ContactFormEmail" class="lunetier-label">Email</label>
+          <input type="email" id="ContactFormEmail" name="contact[email]" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" class="lunetier-input" placeholder="votre@email.com" required>
+        </div>
+
+        <div class="lunetier-field-group">
+          <label for="ContactFormPhone" class="lunetier-label">Téléphone (Optionnel)</label>
+          <input type="tel" id="ContactFormPhone" name="contact[phone]" value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}" class="lunetier-input" placeholder="+33 6...">
+        </div>
+
+        <div class="lunetier-field-group">
+          <label for="ContactFormSubject" class="lunetier-label">Sujet</label>
+          <select id="ContactFormSubject" name="contact[sujet]" class="lunetier-select">
+            <option value="Information produit">Information produit</option>
+            <option value="Suivi de commande">Suivi de commande</option>
+            <option value="Retour / Échange">Retour / Échange</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+
+        <div class="lunetier-field-group">
+          <label for="ContactFormMessage" class="lunetier-label">Message</label>
+          <textarea rows="10" id="ContactFormMessage" name="contact[body]" class="lunetier-textarea" placeholder="Comment pouvons-nous vous aider ?" required>{% if form.body %}{{ form.body }}{% endif %}</textarea>
+        </div>
+
+        <button type="submit" class="lunetier-submit">
+          Envoyer le message
+        </button>
+
+      {%- endform -%}
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Contact",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Contactez-nous"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Notre service de conciergerie est à votre disposition du lundi au vendredi, de 9h à 18h."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image d'ambiance"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email de contact",
+      "default": "bonjour@lunetier.com"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Téléphone",
+      "default": "01 23 45 67 89"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact"
+    }
+  ]
+}
+{% endschema %}

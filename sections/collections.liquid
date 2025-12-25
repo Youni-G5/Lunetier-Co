@@ -1,0 +1,287 @@
+{% comment %}
+  Section Liste des Collections "Lunetier"
+  Design : Type Lookbook / Magazine.
+  Fonctionnalité : Grille responsive, Image fallback automatique, Pagination.
+{% endcomment %}
+
+<style>
+  /* --- VARIABLES & LAYOUT --- */
+  #shopify-section-{{ section.id }} {
+    background-color: #ffffff;
+    color: #111827;
+    /* Espace pour le header sticky */
+    padding-top: 8rem; 
+    padding-bottom: 6rem;
+  }
+
+  .lunetier-list-col-container {
+    max-width: 80rem; /* max-w-7xl */
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* --- HEADER --- */
+  .lunetier-list-col-header {
+    text-align: center;
+    margin-bottom: 5rem;
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .lunetier-list-col-title {
+    font-family: serif;
+    font-size: 3rem; /* text-5xl */
+    font-weight: 400;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+
+  .lunetier-list-col-desc {
+    font-family: sans-serif;
+    color: #6b7280;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* --- GRID --- */
+  .lunetier-collections-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  @media (min-width: 768px) {
+    .lunetier-collections-grid {
+      grid-template-columns: repeat(2, 1fr); /* 2 par ligne tablette */
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .lunetier-collections-grid {
+      grid-template-columns: repeat(3, 1fr); /* 3 par ligne desktop */
+      gap: 4rem; /* Plus d'espace pour le luxe */
+    }
+  }
+
+  /* --- CARD --- */
+  .lunetier-col-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    group: hover; /* Concept */
+  }
+
+  /* Image Wrapper */
+  .lunetier-col-img-wrapper {
+    position: relative;
+    aspect-ratio: 3 / 4; /* Format Portrait élégant */
+    overflow: hidden;
+    background-color: #f3f4f6;
+    margin-bottom: 1.5rem;
+  }
+
+  .lunetier-col-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* Zoom Effect on Hover */
+  .lunetier-col-card:hover .lunetier-col-img {
+    transform: scale(1.05);
+  }
+
+  /* Content */
+  .lunetier-col-info {
+    text-align: center;
+  }
+
+  .lunetier-col-name {
+    font-family: serif;
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #111827;
+  }
+
+  .lunetier-col-count {
+    font-family: sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #6b7280;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .lunetier-col-link {
+    font-family: sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s;
+    padding-bottom: 2px;
+  }
+
+  .lunetier-col-card:hover .lunetier-col-link {
+    border-bottom-color: #000;
+  }
+  
+  .lunetier-arrow-icon {
+    transition: transform 0.2s;
+  }
+  
+  .lunetier-col-card:hover .lunetier-arrow-icon {
+    transform: translateX(4px);
+  }
+
+  /* --- PAGINATION --- */
+  .lunetier-pagination {
+    margin-top: 5rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .lunetier-page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid #e5e7eb;
+    color: #111827;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+
+  .lunetier-page-link:hover,
+  .lunetier-page-link.current {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+  }
+
+</style>
+
+<div class="lunetier-list-col-container">
+  
+  <!-- HEADER -->
+  <div class="lunetier-list-col-header">
+    <h1 class="lunetier-list-col-title">{{ section.settings.title | default: "Nos Univers" }}</h1>
+    <div class="lunetier-list-col-desc">
+      {{ section.settings.description | default: "Explorez nos différentes collections. Chaque monture raconte une histoire, dessinée à Paris et façonnée pour durer." }}
+    </div>
+  </div>
+
+  {% paginate collections by section.settings.collections_per_page %}
+
+    <div class="lunetier-collections-grid">
+      
+      {%- for collection in collections -%}
+        
+        {% comment %} Exclure la collection Frontpage si nécessaire {% endcomment %}
+        {% unless collection.handle == 'frontpage' %}
+          
+          <a href="{{ collection.url }}" class="lunetier-col-card">
+            
+            <div class="lunetier-col-img-wrapper">
+              {%- if collection.image != blank -%}
+                {%- comment -%} Image de la collection {%- endcomment -%}
+                {{ collection.image | image_url: width: 800 | image_tag: 
+                  class: 'lunetier-col-img', 
+                  loading: 'lazy',
+                  alt: collection.title
+                }}
+              {%- elsif collection.products.first != blank -%}
+                {%- comment -%} Fallback : Image du premier produit {%- endcomment -%}
+                {{ collection.products.first.featured_image | image_url: width: 800 | image_tag: 
+                  class: 'lunetier-col-img', 
+                  loading: 'lazy',
+                  alt: collection.title
+                }}
+              {%- else -%}
+                {%- comment -%} Fallback : SVG {%- endcomment -%}
+                {{ 'collection-1' | placeholder_svg_tag: 'lunetier-col-img' }}
+              {%- endif -%}
+            </div>
+
+            <div class="lunetier-col-info">
+              <h2 class="lunetier-col-name">{{ collection.title }}</h2>
+              <span class="lunetier-col-count">{{ collection.all_products_count }} Modèles</span>
+              
+              <div class="lunetier-col-link">
+                Explorer
+                <svg class="lunetier-arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </div>
+            </div>
+
+          </a>
+
+        {% endunless %}
+      
+      {%- endfor -%}
+
+    </div>
+
+    <!-- PAGINATION -->
+    {%- if paginate.pages > 1 -%}
+      <div class="lunetier-pagination">
+        {%- if paginate.previous -%}
+          <a href="{{ paginate.previous.url }}" class="lunetier-page-link">&larr;</a>
+        {%- endif -%}
+
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}" class="lunetier-page-link">{{ part.title }}</a>
+          {%- else -%}
+            <span class="lunetier-page-link {% if part.title == paginate.current_page %}current{% endif %}">{{ part.title }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- if paginate.next -%}
+          <a href="{{ paginate.next.url }}" class="lunetier-page-link">&rarr;</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+  {% endpaginate %}
+</div>
+
+{% schema %}
+{
+  "name": "Liste des Collections",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre Principal",
+      "default": "Nos Univers"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Explorez nos différentes collections. Chaque monture raconte une histoire, dessinée à Paris et façonnée pour durer."
+    },
+    {
+      "type": "range",
+      "id": "collections_per_page",
+      "min": 3,
+      "max": 18,
+      "step": 3,
+      "default": 9,
+      "label": "Collections par page"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,125 @@
+{% comment %}
+  Section 404 "Lunetier"
+  Design : Minimaliste, centrée, fonctionnelle.
+  Objectif : Rassurer l'utilisateur et le rediriger vers l'accueil.
+{% endcomment %}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    background-color: #ffffff;
+    color: #111827;
+    /* Espace large pour compenser le header sticky et centrer visuellement */
+    padding-top: 10rem; 
+    padding-bottom: 10rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lunetier-404-container {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Le gros chiffre 404 en arrière-plan */
+  .lunetier-404-bg-text {
+    font-family: serif;
+    font-size: 15rem;
+    line-height: 1;
+    font-weight: 700;
+    color: #f3f4f6; /* Très clair */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  @media (max-width: 768px) {
+    .lunetier-404-bg-text {
+      font-size: 8rem;
+    }
+  }
+
+  .lunetier-404-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .lunetier-404-title {
+    font-family: serif;
+    font-size: 2.5rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    color: #111827;
+  }
+
+  .lunetier-404-text {
+    font-family: sans-serif;
+    color: #6b7280;
+    margin-bottom: 3rem;
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+
+  .lunetier-404-btn {
+    display: inline-block;
+    background-color: #000000;
+    color: #ffffff;
+    padding: 1rem 2.5rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+    border: 1px solid #000000;
+  }
+
+  .lunetier-404-btn:hover {
+    background-color: #ffffff;
+    color: #000000;
+  }
+</style>
+
+<!-- Élément décoratif en fond -->
+<div class="lunetier-404-bg-text">404</div>
+
+<div class="lunetier-404-container">
+  <div class="lunetier-404-content">
+    <h1 class="lunetier-404-title">{{ section.settings.heading | default: "Oups, page introuvable." }}</h1>
+    
+    <p class="lunetier-404-text">
+      {{ section.settings.subtext | default: "Il semblerait que vous vous soyez égaré. La page que vous recherchez n'existe pas ou a été déplacée." }}
+    </p>
+    
+    <a href="{{ routes.root_url }}" class="lunetier-404-btn">
+      Retour à l'accueil
+    </a>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page 404",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Oups, page introuvable."
+    },
+    {
+      "type": "textarea",
+      "id": "subtext",
+      "label": "Sous-texte",
+      "default": "Il semblerait que vous vous soyez égaré. La page que vous recherchez n'existe pas ou a été déplacée."
+    }
+  ]
+}
+{% endschema %}

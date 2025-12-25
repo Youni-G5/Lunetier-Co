@@ -1,0 +1,325 @@
+{% comment %}
+  Section "Deep Dive" Lunetier - Focus sur les détails techniques et le storytelling
+  Design : Image carrée avec label + Texte explicatif + Liste de features
+{% endcomment %}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    padding-top: 6rem; /* py-24 */
+    padding-bottom: 6rem;
+    overflow: hidden;
+  }
+
+  .lunetier-highlight-container {
+    max-width: 80rem; /* max-w-7xl */
+    margin: 0 auto;
+    padding: 0 1.5rem; /* px-6 */
+  }
+
+  .lunetier-highlight-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem; /* gap-16 */
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .lunetier-highlight-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* --- IMAGE COLUMN --- */
+  .lunetier-highlight-image-wrapper {
+    position: relative;
+    aspect-ratio: 1 / 1; /* Carré */
+    background-color: #e5e7eb; /* gray-200 */
+    overflow: hidden;
+  }
+  
+  /* Ordre inversé sur mobile si demandé, sinon image à gauche par défaut (order-1) */
+  .order-image-left .lunetier-highlight-image-wrapper { order: 1; }
+  .order-image-left .lunetier-highlight-content { order: 2; }
+  
+  .order-image-right .lunetier-highlight-image-wrapper { order: 1; } 
+  .order-image-right .lunetier-highlight-content { order: 2; }
+
+  @media (min-width: 768px) {
+    .order-image-right .lunetier-highlight-image-wrapper { order: 2; }
+    .order-image-right .lunetier-highlight-content { order: 1; }
+  }
+
+  .lunetier-highlight-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+    display: block;
+  }
+
+  .lunetier-highlight-image-wrapper:hover .lunetier-highlight-img {
+    transform: scale(1.05);
+  }
+
+  .lunetier-image-label {
+    position: absolute;
+    bottom: 1.5rem; /* bottom-6 */
+    left: 1.5rem; /* left-6 */
+    background-color: #ffffff;
+    padding: 0.5rem 1rem; /* px-4 py-2 */
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em; /* tracking-widest */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    color: #000000;
+    font-family: sans-serif;
+  }
+
+  /* --- CONTENT COLUMN --- */
+  .lunetier-highlight-title {
+    font-family: serif;
+    font-size: 2rem; /* text-3xl */
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    color: #111827;
+  }
+
+  @media (min-width: 768px) {
+    .lunetier-highlight-title {
+      font-size: 2.5rem; /* text-4xl */
+    }
+  }
+
+  .lunetier-highlight-desc {
+    color: #4b5563; /* text-gray-600 */
+    margin-bottom: 2rem;
+    line-height: 1.7; /* relaxed */
+    font-size: 1rem;
+    font-family: sans-serif;
+  }
+
+  /* --- FEATURES LIST --- */
+  .lunetier-feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* space-y-4 */
+  }
+
+  .lunetier-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #1f2937; /* gray-800 */
+    font-family: sans-serif;
+    font-size: 1rem;
+  }
+
+  .lunetier-check-icon {
+    width: 1.5rem; /* w-6 */
+    height: 1.5rem; /* h-6 */
+    background-color: #000000;
+    color: #ffffff;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .lunetier-check-icon svg {
+    width: 0.75rem; /* w-3 */
+    height: 0.75rem; /* h-3 */
+    stroke-width: 3;
+  }
+
+  /* --- ACTION LINK --- */
+  .lunetier-text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #000000;
+    font-weight: 600;
+    border-bottom: 1px solid #000000;
+    padding-bottom: 0.25rem;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    font-family: sans-serif;
+    cursor: pointer;
+  }
+
+  .lunetier-text-link:hover {
+    opacity: 0.7;
+  }
+
+  .lunetier-text-link svg {
+    width: 1rem;
+    height: 1rem;
+    transition: transform 0.2s;
+  }
+
+  .lunetier-text-link:hover svg {
+    transform: translateX(4px);
+  }
+</style>
+
+<div class="lunetier-highlight-container">
+  <div class="lunetier-highlight-grid {% if section.settings.image_position == 'right' %}order-image-right{% else %}order-image-left{% endif %}">
+    
+    <!-- IMAGE SIDE -->
+    <div class="lunetier-highlight-image-wrapper">
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 1200 | image_tag: 
+          loading: 'lazy', 
+          class: 'lunetier-highlight-img',
+          alt: section.settings.heading
+        }}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'lunetier-highlight-img' }}
+      {%- endif -%}
+
+      {%- if section.settings.image_label != blank -%}
+        <div class="lunetier-image-label">
+          {{ section.settings.image_label }}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- CONTENT SIDE -->
+    <div class="lunetier-highlight-content">
+      <h2 class="lunetier-highlight-title">
+        {{ section.settings.heading | default: "Pourquoi tout le monde parle de ce modèle." }}
+      </h2>
+      
+      <div class="lunetier-highlight-desc">
+        {{ section.settings.description | default: "Nous avons passé 12 mois à perfectionner la courbe de la monture pour qu'elle s'adapte à 95% des formes de visage." }}
+      </div>
+
+      <ul class="lunetier-feature-list">
+        {%- for block in section.blocks -%}
+          <li class="lunetier-feature-item" {{ block.shopify_attributes }}>
+            <div class="lunetier-check-icon">
+              <!-- Check Icon SVG -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <span>{{ block.settings.text }}</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if section.settings.button_text != blank -%}
+        <a href="{{ section.settings.product.url | default: section.settings.button_link }}" class="lunetier-text-link">
+          {{ section.settings.button_text }}
+          <!-- Arrow Right SVG -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+      {%- endif -%}
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Détails Produit",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Couleur de fond",
+      "default": "#fafaf9"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image de mise en avant"
+    },
+    {
+      "type": "text",
+      "id": "image_label",
+      "label": "Label sur l'image",
+      "default": "VUE DE FACE"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Position de l'image (Desktop)",
+      "options": [
+        { "value": "left", "label": "Gauche" },
+        { "value": "right", "label": "Droite" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Pourquoi tout le monde parle de ce modèle."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Nous avons passé 12 mois à perfectionner la courbe de la monture pour qu'elle s'adapte à 95% des formes de visage."
+    },
+    {
+      "type": "header",
+      "content": "Bouton d'action"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Texte du lien",
+      "default": "Commander votre paire maintenant"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Produit lié",
+      "info": "Le lien redirigera vers ce produit"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Lien manuel (si pas de produit)"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Point Fort",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texte du point fort",
+          "default": "Acétate Premium"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Détails Produit Lunetier",
+      "blocks": [
+        { "type": "feature", "settings": { "text": "Acétate Premium" } },
+        { "type": "feature", "settings": { "text": "Verres Anti-Rayures" } },
+        { "type": "feature", "settings": { "text": "Charnières Flex" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

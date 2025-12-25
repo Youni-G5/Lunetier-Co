@@ -1,0 +1,385 @@
+{% comment %}
+  Section Header "Lunetier" - Style Minimaliste & Sticky
+  Mise à jour : Force Full Width (left:0/right:0) & Tiroir Mobile
+{% endcomment %}
+
+<style>
+  /* --- VARIABLES & BASE STYLES --- */
+  
+  /* Reset global pour cette section pour éviter les conflits de box-sizing */
+  #shopify-section-{{ section.id }} * {
+    box-sizing: border-box;
+  }
+
+  #shopify-section-{{ section.id }} {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0; /* Force l'étirement des deux côtés */
+    width: auto; /* Laisse le left/right gérer la largeur */
+    z-index: 1000;
+    pointer-events: none;
+    margin: 0 !important; /* Écrase les marges du thème */
+    padding: 0 !important; /* Écrase les paddings du thème */
+    background: transparent; /* S'assure qu'aucun fond ne gêne */
+  }
+
+  .lunetier-header-wrapper {
+    pointer-events: auto;
+    transition: all 0.3s ease-in-out;
+    padding: 1.5rem 0; 
+    background-color: transparent;
+    border-bottom: 1px solid transparent;
+    width: 100%;
+  }
+
+  /* --- SCROLLED STATE --- */
+  .lunetier-header-wrapper.is-scrolled {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid #f3f4f6;
+    padding: 1rem 0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  }
+
+  .lunetier-container {
+    width: 100%;
+    max-width: 100%; /* Surcharge toute limite de largeur */
+    margin: 0;
+    /* Padding pour que le logo ne colle pas littéralement au bord de l'écran */
+    padding: 0 3rem; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  @media (max-width: 768px) {
+    .lunetier-container {
+      padding: 0 1.5rem;
+    }
+  }
+
+  /* --- LOGO --- */
+  .lunetier-logo {
+    font-family: serif; 
+    font-size: 1.5rem; 
+    font-weight: 700;
+    letter-spacing: -0.025em; 
+    color: #111827;
+    text-decoration: none;
+    line-height: 1;
+    z-index: 1002;
+    white-space: nowrap; /* Empêche le logo de se casser */
+  }
+  
+  .lunetier-logo img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* --- NAVIGATION DESKTOP --- */
+  .lunetier-nav {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .lunetier-nav {
+      display: flex;
+      align-items: center;
+      gap: 2rem; 
+    }
+  }
+
+  .lunetier-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #111827;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    font-family: sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .lunetier-link:hover {
+    opacity: 0.6;
+  }
+
+  /* --- ICONS & ACTIONS --- */
+  .lunetier-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .lunetier-icon-btn {
+    position: relative;
+    color: #111827;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .lunetier-cart-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background-color: #000;
+    color: #fff;
+    font-size: 10px;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    font-weight: bold;
+  }
+  
+  .icon-svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+  }
+
+  /* --- MOBILE TOGGLE --- */
+  .lunetier-mobile-toggle {
+    display: block;
+    margin-left: 0.5rem;
+  }
+  @media (min-width: 768px) {
+    .lunetier-mobile-toggle {
+      display: none;
+    }
+  }
+
+  /* --- MOBILE DRAWER (TIROIR) --- */
+  .lunetier-drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .lunetier-drawer-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .lunetier-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 85%;
+    max-width: 400px;
+    background-color: #ffffff;
+    z-index: 2001;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  }
+
+  .lunetier-drawer.is-open {
+    transform: translateX(0);
+  }
+
+  .lunetier-drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+  }
+
+  .lunetier-drawer-title {
+    font-family: serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .lunetier-drawer-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .lunetier-drawer-link {
+    font-size: 1.25rem;
+    text-decoration: none;
+    color: #111827;
+    font-family: serif;
+    font-weight: 500;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 1rem;
+  }
+  
+  .lunetier-drawer-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+</style>
+
+<div class="lunetier-header-wrapper" id="HeaderWrapper-{{ section.id }}">
+  <div class="lunetier-container">
+    
+    <!-- LOGO -->
+    <a href="{{ routes.root_url }}" class="lunetier-logo">
+      {%- if section.settings.logo != blank -%}
+        {%- assign logo_height = section.settings.logo_width | divided_by: section.settings.logo.aspect_ratio -%}
+        {{ section.settings.logo | image_url: width: section.settings.logo_width | image_tag:
+          width: section.settings.logo_width,
+          height: logo_height,
+          alt: section.settings.logo.alt | default: shop.name
+        }}
+      {%- else -%}
+        {{ shop.name }}
+      {%- endif -%}
+    </a>
+
+    <div class="lunetier-actions">
+      <!-- DESKTOP MENU -->
+      <nav class="lunetier-nav">
+        {%- for link in section.settings.menu.links -%}
+          <a href="{{ link.url }}" class="lunetier-link">{{ link.title }}</a>
+        {%- endfor -%}
+      </nav>
+
+      <!-- CART ICON -->
+      <a href="{{ routes.cart_url }}" class="lunetier-icon-btn" id="cart-icon-bubble">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon-svg" viewBox="0 0 24 24">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        {%- if cart.item_count > 0 -%}
+          <span class="lunetier-cart-count">{{ cart.item_count }}</span>
+        {%- endif -%}
+      </a>
+
+      <!-- MOBILE BURGER TRIGGER -->
+      <button class="lunetier-icon-btn lunetier-mobile-toggle" aria-label="Menu" id="MobileMenuTrigger-{{ section.id }}">
+         <svg xmlns="http://www.w3.org/2000/svg" class="icon-svg" viewBox="0 0 24 24">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+         </svg>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- MOBILE DRAWER HTML -->
+<div class="lunetier-drawer-overlay" id="MobileDrawerOverlay-{{ section.id }}"></div>
+<div class="lunetier-drawer" id="MobileDrawer-{{ section.id }}">
+  <div class="lunetier-drawer-header">
+    <span class="lunetier-drawer-title">Menu</span>
+    <button class="lunetier-drawer-close" id="MobileDrawerClose-{{ section.id }}" aria-label="Fermer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+  </div>
+  
+  <nav class="lunetier-drawer-nav">
+    {%- for link in section.settings.menu.links -%}
+      <a href="{{ link.url }}" class="lunetier-drawer-link">{{ link.title }}</a>
+    {%- endfor -%}
+    <!-- Liens additionnels mobile -->
+    <a href="{{ routes.account_url }}" class="lunetier-drawer-link" style="font-size: 1rem; color: #666; margin-top: 2rem; border:none;">Mon Compte</a>
+  </nav>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // --- GESTION SCROLL HEADER ---
+    const headerWrapper = document.getElementById('HeaderWrapper-{{ section.id }}');
+    
+    function handleScroll() {
+      if (window.scrollY > 50) {
+        headerWrapper.classList.add('is-scrolled');
+      } else {
+        headerWrapper.classList.remove('is-scrolled');
+      }
+    }
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+
+    // --- GESTION MOBILE DRAWER ---
+    const trigger = document.getElementById('MobileMenuTrigger-{{ section.id }}');
+    const drawer = document.getElementById('MobileDrawer-{{ section.id }}');
+    const overlay = document.getElementById('MobileDrawerOverlay-{{ section.id }}');
+    const closeBtn = document.getElementById('MobileDrawerClose-{{ section.id }}');
+
+    function openDrawer() {
+      drawer.classList.add('is-open');
+      overlay.classList.add('is-open');
+      document.body.style.overflow = 'hidden'; // Empêche le scroll du site
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove('is-open');
+      overlay.classList.remove('is-open');
+      document.body.style.overflow = ''; // Réactive le scroll
+    }
+
+    if(trigger) trigger.addEventListener('click', openDrawer);
+    if(closeBtn) closeBtn.addEventListener('click', closeDrawer);
+    if(overlay) overlay.addEventListener('click', closeDrawer);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Header Lunetier",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo Image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 50,
+      "max": 250,
+      "step": 10,
+      "default": 100,
+      "unit": "px",
+      "label": "Largeur du logo"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "label": "Menu principal"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header Lunetier"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,639 @@
+{% comment %}
+  Section Panier "Lunetier" - Version Premium
+  Design : Haut de gamme, AJAX fluide, Note de commande, Header offset géré.
+{% endcomment %}
+
+<style>
+  /* --- CONFIGURATION & LAYOUT --- */
+  :root {
+    --lunetier-black: #111827;
+    --lunetier-gray-light: #f9fafb;
+    --lunetier-gray-border: #e5e7eb;
+    --lunetier-font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --lunetier-font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  #shopify-section-{{ section.id }} {
+    background-color: #ffffff;
+    color: var(--lunetier-black);
+    /* GESTION HEADER STICKY : Espace généreux pour éviter le chevauchement */
+    padding-top: 10rem; 
+    padding-bottom: 8rem;
+    position: relative;
+  }
+
+  @media (max-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      padding-top: 8rem; /* Un peu moins sur mobile */
+      padding-bottom: 6rem;
+    }
+  }
+
+  .lunetier-cart-container {
+    max-width: 90rem; /* Très large pour le style moderne */
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* --- HEADER DE PAGE --- */
+  .lunetier-cart-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 4rem;
+    text-align: center;
+  }
+
+  .lunetier-cart-title {
+    font-family: var(--lunetier-font-serif);
+    font-size: 3.5rem;
+    font-weight: 400; /* Plus fin = plus luxe */
+    margin: 0 0 1rem 0;
+    line-height: 1.1;
+  }
+
+  .lunetier-cart-link {
+    font-family: var(--lunetier-font-sans);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 2px;
+    color: #6b7280;
+    transition: color 0.3s;
+  }
+  
+  .lunetier-cart-link:hover { color: var(--lunetier-black); }
+
+  /* --- FREE SHIPPING PROGRESS --- */
+  .lunetier-shipping-wrapper {
+    max-width: 32rem;
+    margin: 0 auto 4rem auto;
+    text-align: center;
+  }
+
+  .lunetier-shipping-text {
+    font-family: var(--lunetier-font-sans);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    color: #4b5563;
+  }
+  
+  .lunetier-shipping-text strong { color: var(--lunetier-black); }
+
+  .lunetier-progress-track {
+    height: 2px; /* Très fin */
+    background-color: #f3f4f6;
+    width: 100%;
+    position: relative;
+  }
+
+  .lunetier-progress-bar {
+    height: 100%;
+    background-color: var(--lunetier-black);
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* --- GRID PRINCIPALE --- */
+  .lunetier-cart-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+
+  @media (min-width: 1024px) {
+    .lunetier-cart-layout {
+      grid-template-columns: 1fr 24rem; /* Colonne résumé plus large */
+      gap: 6rem;
+      align-items: start;
+    }
+  }
+
+  /* --- TABLEAU PRODUITS --- */
+  .lunetier-cart-items-wrapper {
+    position: relative;
+  }
+
+  .lunetier-cart-row {
+    display: grid;
+    grid-template-columns: 7rem 1fr auto; /* Mobile : Img | Info | Price */
+    gap: 1.5rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--lunetier-gray-border);
+    position: relative;
+    transition: opacity 0.3s;
+  }
+
+  @media (min-width: 768px) {
+    .lunetier-cart-row {
+      grid-template-columns: 9rem 2fr 1fr auto; /* Desktop : Img | Info | Qty | Price */
+      gap: 2.5rem;
+      align-items: center;
+    }
+  }
+
+  /* Image Produit */
+  .lunetier-item-img-link {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4/5;
+    background-color: var(--lunetier-gray-light);
+    overflow: hidden;
+  }
+
+  .lunetier-item-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  
+  .lunetier-item-img-link:hover .lunetier-item-img { transform: scale(1.05); }
+
+  /* Info Produit */
+  .lunetier-item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .lunetier-item-title {
+    font-family: var(--lunetier-font-serif);
+    font-size: 1.25rem;
+    text-decoration: none;
+    color: var(--lunetier-black);
+    line-height: 1.2;
+  }
+
+  .lunetier-item-variant {
+    font-family: var(--lunetier-font-sans);
+    font-size: 0.85rem;
+    color: #6b7280;
+  }
+
+  .lunetier-item-remove {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9ca3af;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.2s;
+    width: fit-content;
+  }
+  
+  .lunetier-item-remove:hover { color: #ef4444; }
+
+  /* Quantité */
+  .lunetier-qty-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--lunetier-gray-border);
+    width: fit-content;
+    height: 3rem; /* 48px standard touch target */
+  }
+
+  .lunetier-qty-btn {
+    width: 3rem;
+    height: 100%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--lunetier-black);
+    transition: background-color 0.2s;
+  }
+  
+  .lunetier-qty-btn:hover { background-color: var(--lunetier-gray-light); }
+
+  .lunetier-qty-input {
+    width: 2.5rem;
+    height: 100%;
+    text-align: center;
+    border: none;
+    font-family: var(--lunetier-font-sans);
+    font-size: 1rem;
+    color: var(--lunetier-black);
+    appearance: none;
+    -moz-appearance: textfield;
+  }
+  
+  .lunetier-qty-input:focus { outline: none; }
+  .lunetier-qty-input::-webkit-outer-spin-button,
+  .lunetier-qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  /* Prix */
+  .lunetier-item-price {
+    font-family: var(--lunetier-font-sans);
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: right;
+  }
+
+  /* --- LOADING OVERLAY (Sur l'item) --- */
+  .lunetier-loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 10;
+  }
+  
+  .is-loading .lunetier-loading-overlay { opacity: 1; pointer-events: auto; }
+
+  .lunetier-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #e5e7eb;
+    border-top-color: #000;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* --- RESUME (SUMMARY) --- */
+  .lunetier-summary-card {
+    background-color: var(--lunetier-gray-light);
+    padding: 2.5rem;
+    position: relative;
+  }
+
+  @media (min-width: 1024px) {
+    .lunetier-summary-card {
+      position: sticky;
+      top: 10rem; /* Header offset pris en compte */
+    }
+  }
+
+  .lunetier-summary-title {
+    font-family: var(--lunetier-font-serif);
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding-bottom: 1rem;
+  }
+
+  /* Note de commande */
+  .lunetier-cart-note {
+    margin-bottom: 2rem;
+  }
+  
+  .lunetier-note-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .lunetier-note-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--lunetier-gray-border);
+    background: #fff;
+    font-family: var(--lunetier-font-sans);
+    font-size: 0.9rem;
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  /* Totaux */
+  .lunetier-summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    color: #4b5563;
+  }
+
+  .lunetier-total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--lunetier-black);
+    margin-bottom: 2rem;
+  }
+
+  .lunetier-checkout-btn {
+    display: block;
+    width: 100%;
+    background-color: var(--lunetier-black);
+    color: #ffffff;
+    padding: 1.25rem;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .lunetier-checkout-btn:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+  }
+
+  .lunetier-secure-icons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    opacity: 0.5;
+  }
+  
+  .lunetier-secure-icons svg { width: 24px; height: 24px; }
+
+  /* --- EMPTY STATE --- */
+  .lunetier-empty-state {
+    text-align: center;
+    padding: 6rem 0;
+    max-width: 30rem;
+    margin: 0 auto;
+  }
+  
+  .lunetier-empty-btn {
+    display: inline-block;
+    margin-top: 2rem;
+    background: var(--lunetier-black);
+    color: #fff;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+</style>
+
+<div class="lunetier-cart-container" id="main-cart-container" data-id="{{ section.id }}">
+  
+  {%- if cart.item_count > 0 -%}
+    
+    <!-- HEADER -->
+    <div class="lunetier-cart-header">
+      <h1 class="lunetier-cart-title">Votre Panier</h1>
+      <a href="{{ routes.all_products_collection_url }}" class="lunetier-cart-link">
+        Continuer vos achats
+      </a>
+    </div>
+
+    <!-- FREE SHIPPING BAR -->
+    <div class="lunetier-shipping-wrapper">
+      {% assign threshold = section.settings.free_shipping_threshold | times: 100 %}
+      {% assign current_val = cart.total_price %}
+      {% assign remaining = threshold | minus: current_val %}
+      
+      <div class="lunetier-shipping-text">
+        {% if remaining > 0 %}
+          Plus que <strong>{{ remaining | money }}</strong> pour la livraison offerte
+        {% else %}
+          La livraison est <strong>OFFERTE</strong> pour cette commande
+        {% endif %}
+      </div>
+      
+      <div class="lunetier-progress-track">
+        <div class="lunetier-progress-bar" style="width: {% if remaining > 0 %}{{ current_val | times: 100 | divided_by: threshold }}{% else %}100{% endif %}%;"></div>
+      </div>
+    </div>
+
+    <form action="{{ routes.cart_url }}" method="post" id="cart-form" class="lunetier-cart-layout">
+      
+      <!-- GAUCHE : LISTE PRODUITS -->
+      <div class="lunetier-cart-items-wrapper">
+        {%- for item in cart.items -%}
+          <div class="lunetier-cart-row" id="CartItem-{{ item.index | plus: 1 }}">
+            
+            <!-- Loading Spinner Specific to Item -->
+            <div class="lunetier-loading-overlay">
+              <div class="lunetier-spinner"></div>
+            </div>
+
+            <!-- Image -->
+            <a href="{{ item.url }}" class="lunetier-item-img-link">
+              {% if item.image %}
+                {{ item.image | image_url: width: 400 | image_tag: class: 'lunetier-item-img', loading: 'lazy' }}
+              {% else %}
+                {{ 'product-1' | placeholder_svg_tag: 'lunetier-item-img' }}
+              {% endif %}
+            </a>
+
+            <!-- Info -->
+            <div class="lunetier-item-details">
+              <a href="{{ item.url }}" class="lunetier-item-title">{{ item.product.title }}</a>
+              
+              {% unless item.product.has_only_default_variant %}
+                <span class="lunetier-item-variant">{{ item.variant.title }}</span>
+              {% endunless %}
+
+              {% if item.selling_plan_allocation %}
+                <span class="lunetier-item-variant">{{ item.selling_plan_allocation.selling_plan.name }}</span>
+              {% endif %}
+
+              <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity=0" 
+                 class="lunetier-item-remove"
+                 aria-label="Supprimer {{ item.title }}">
+                 Supprimer
+              </a>
+              
+              <!-- Prix Mobile -->
+              <div class="lunetier-item-price lg:hidden mt-2">
+                {{ item.final_line_price | money }}
+              </div>
+            </div>
+
+            <!-- Quantité -->
+            <div class="lunetier-qty-container">
+              <button type="button" class="lunetier-qty-btn" onclick="updateQty(this, -1)">
+                <svg width="10" height="2" viewBox="0 0 10 2" fill="none"><path d="M0 1H10" stroke="currentColor" stroke-width="1.5"/></svg>
+              </button>
+              <input type="number" 
+                     name="updates[]" 
+                     value="{{ item.quantity }}" 
+                     min="0" 
+                     class="lunetier-qty-input"
+                     data-index="{{ item.index | plus: 1 }}"
+                     onchange="debouncedSubmit()">
+              <button type="button" class="lunetier-qty-btn" onclick="updateQty(this, 1)">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 0V10M0 5H10" stroke="currentColor" stroke-width="1.5"/></svg>
+              </button>
+            </div>
+
+            <!-- Prix Desktop -->
+            <div class="lunetier-item-price hidden lg:block">
+              {{ item.final_line_price | money }}
+            </div>
+
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <!-- DROITE : RESUME -->
+      <aside>
+        <div class="lunetier-summary-card">
+          <h2 class="lunetier-summary-title">Résumé</h2>
+
+          <!-- Note de commande -->
+          {% if section.settings.show_note %}
+            <div class="lunetier-cart-note">
+              <label for="CartNote" class="lunetier-note-label">Message pour la commande (Optionnel)</label>
+              <textarea name="note" id="CartNote" class="lunetier-note-input" placeholder="Instructions spéciales, mot pour un cadeau...">{{ cart.note }}</textarea>
+            </div>
+          {% endif %}
+
+          <div class="lunetier-summary-row">
+            <span>Sous-total</span>
+            <span>{{ cart.total_price | money }}</span>
+          </div>
+          
+          <div class="lunetier-summary-row">
+            <span>Livraison</span>
+            <span style="font-size:0.85rem; opacity:0.7;">Calculée à l'étape suivante</span>
+          </div>
+
+          {% if cart.total_discounts > 0 %}
+            <div class="lunetier-summary-row" style="color:#059669;">
+              <span>Réductions</span>
+              <span>-{{ cart.total_discounts | money }}</span>
+            </div>
+          {% endif %}
+
+          <div class="lunetier-total-row">
+            <span>Total</span>
+            <span>{{ cart.total_price | money }}</span>
+          </div>
+
+          <button type="submit" name="checkout" class="lunetier-checkout-btn">
+            Passer au paiement
+          </button>
+          
+          <div class="lunetier-secure-icons">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          
+          <p style="text-align:center; font-size:0.75rem; color:#9ca3af; margin-top:1rem;">
+            Retours gratuits sous 30 jours.
+          </p>
+        </div>
+      </aside>
+
+    </form>
+
+  {%- else -%}
+    
+    <!-- EMPTY STATE PREMIUM -->
+    <div class="lunetier-empty-state">
+      <h1 class="lunetier-cart-title" style="font-size:2.5rem; margin-bottom:1.5rem;">Votre panier est vide</h1>
+      <p style="color:#6b7280; margin-bottom:2rem;">Il semblerait que vous n'ayez pas encore trouvé votre bonheur.</p>
+      <a href="{{ routes.all_products_collection_url }}" class="lunetier-empty-btn">
+        Découvrir nos collections
+      </a>
+    </div>
+
+  {%- endif -%}
+
+</div>
+
+<script>
+  let debounceTimer;
+
+  function updateQty(btn, change) {
+    const wrapper = btn.closest('.lunetier-qty-container');
+    const input = wrapper.querySelector('input');
+    const newVal = parseInt(input.value) + change;
+    
+    if (newVal >= 0) {
+      input.value = newVal;
+      // On déclenche le submit directement pour les clics boutons
+      submitCart(input.closest('.lunetier-cart-row'));
+    }
+  }
+
+  function debouncedSubmit() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      // On trouve l'élément qui a changé (pas parfait mais fonctionnel pour l'exemple global)
+      // Idéalement on passerait l'event
+      submitCart();
+    }, 600);
+  }
+
+  function submitCart(rowElement = null) {
+    const container = document.getElementById('main-cart-container');
+    const sectionId = container.dataset.id;
+    
+    // Feedback visuel ciblé ou global
+    if(rowElement) {
+      rowElement.classList.add('is-loading');
+    } else {
+      container.style.opacity = '0.7';
+      container.style.pointerEvents = 'none';
+    }
+
+    const formData = new FormData(document.getElementById('cart-form'));
+
+    fetch(window.location.pathname + '?section_id=' + sectionId, {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.text())
+    .then(html => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const newContent = doc.getElementById('main-cart-container');
+      
+      if (newContent) {
+        container.innerHTML = newContent.innerHTML;
+        // Reset styles
+        container.style.opacity = '1';
+        container.style.pointerEvents = 'auto';
+      } else {
+        // Fallback si la section est vide (panier vidé)
+        window.location.reload(); 
+      }
+    })
+    .catch(err => {
+      console.error('Error updating cart:', err);
+      window.location.reload();
+    });
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Panier Lunetier",
+  "settings": [
+    {
+      "type": "number",
+      "id": "free_shipping_threshold",
+      "label": "Seuil Livraison Gratuite (€)",
+      "default": 150
+    },
+    {
+      "type": "checkbox",
+      "id": "show_note",
+      "label": "Activer la note de commande",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

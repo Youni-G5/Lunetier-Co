@@ -1,0 +1,237 @@
+{% comment %}
+  Section FAQ "Lunetier" - Accordéons minimalistes
+  Design : Centré, propre, typographie élégante.
+  Fix : Box-sizing et largeurs forcées pour stabilité visuelle.
+{% endcomment %}
+
+<style>
+  /* Fix global pour éviter les sauts de largeur */
+  #shopify-section-{{ section.id }} * {
+    box-sizing: border-box;
+  }
+
+  #shopify-section-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    color: #111827;
+  }
+
+  .lunetier-faq-container {
+    max-width: 48rem; /* max-w-3xl */
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    width: 100%; /* Assure que le conteneur prend la place dispo */
+  }
+
+  /* --- HEADER --- */
+  .lunetier-faq-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+
+  .lunetier-faq-title {
+    font-family: serif;
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+  
+  @media (min-width: 768px) {
+    .lunetier-faq-title {
+      font-size: 2.5rem;
+    }
+  }
+
+  .lunetier-faq-desc {
+    color: #6b7280;
+    font-family: sans-serif;
+    font-size: 1rem;
+  }
+
+  /* --- ACCORDIONS --- */
+  .lunetier-faq-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid #e5e7eb;
+    width: 100%; /* Force la largeur stable */
+  }
+
+  .lunetier-faq-item {
+    border-bottom: 1px solid #e5e7eb;
+    width: 100%; /* Force la largeur stable */
+    display: block; /* Assure le comportement bloc */
+  }
+
+  .lunetier-faq-summary {
+    list-style: none;
+    padding: 1.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    width: 100%;
+    transition: color 0.2s;
+  }
+
+  .lunetier-faq-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .lunetier-faq-summary:hover .lunetier-faq-question {
+    color: #4b5563;
+  }
+
+  .lunetier-faq-question {
+    font-family: sans-serif;
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #111827;
+    text-align: left;
+    padding-right: 1rem;
+    flex: 1; /* Prend tout l'espace dispo */
+  }
+
+  /* Icone +/- */
+  .lunetier-faq-icon {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  .lunetier-faq-icon::before,
+  .lunetier-faq-icon::after {
+    content: '';
+    position: absolute;
+    background-color: #000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.3s ease;
+  }
+
+  .lunetier-faq-icon::before { width: 100%; height: 2px; }
+  .lunetier-faq-icon::after { width: 2px; height: 100%; }
+
+  details[open] .lunetier-faq-icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+    height: 0;
+  }
+
+  .lunetier-faq-answer {
+    padding-bottom: 1.5rem;
+    color: #4b5563;
+    line-height: 1.7;
+    font-family: sans-serif;
+    font-size: 1rem;
+    padding-right: 2rem;
+    width: 100%; /* Stabilité du contenu */
+  }
+</style>
+
+<div class="lunetier-faq-container">
+  
+  <div class="lunetier-faq-header">
+    <h2 class="lunetier-faq-title">{{ section.settings.title }}</h2>
+    {% if section.settings.description != blank %}
+      <p class="lunetier-faq-desc">{{ section.settings.description }}</p>
+    {% endif %}
+  </div>
+
+  <div class="lunetier-faq-list">
+    {%- for block in section.blocks -%}
+      <details class="lunetier-faq-item" {% if block.settings.open_default %}open{% endif %}>
+        <summary class="lunetier-faq-summary">
+          <span class="lunetier-faq-question">{{ block.settings.question }}</span>
+          <span class="lunetier-faq-icon"></span>
+        </summary>
+        <div class="lunetier-faq-answer">
+          {{ block.settings.answer }}
+        </div>
+      </details>
+    {%- endfor -%}
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "FAQ Lunetier",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Questions Fréquentes"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Tout ce que vous devez savoir sur nos lunettes et services."
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Couleur de fond",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Quels sont les délais de livraison ?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Réponse",
+          "default": "<p>Nous expédions toutes les commandes sous 24h. La livraison prend ensuite 2 à 3 jours ouvrés en France métropolitaine.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_default",
+          "label": "Ouvrir par défaut ?",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Lunetier",
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Puis-je adapter des verres correcteurs ?",
+            "answer": "<p>Absolument. Une fois votre monture reçue, rendez-vous chez votre opticien habituel. Nos montures en acétate sont conçues pour être équipées de tous types de verres correcteurs.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Comment fonctionne l'essai à domicile ?",
+            "answer": "<p>Vous disposez de 30 jours après réception pour essayer vos lunettes. Si elles ne vous conviennent pas, utilisez l'étiquette de retour prépayée incluse dans le colis pour un remboursement intégral.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Quelle est la garantie ?",
+            "answer": "<p>Toutes nos montures sont garanties 2 ans contre tout défaut de fabrication (charnières, matériaux, assemblage).</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

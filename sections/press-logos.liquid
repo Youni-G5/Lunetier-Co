@@ -1,0 +1,160 @@
+{% comment %}
+  Section Logos Presse "Lunetier"
+  Objectif : Apporter de la crédibilité institutionnelle (Social Proof d'autorité).
+  Design : Monochrome, discret, défilement fluide sur mobile.
+{% endcomment %}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    color: {{ section.settings.text_color }};
+    border-top: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .lunetier-press-container {
+    max-width: 80rem; /* max-w-7xl */
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    text-align: center;
+  }
+
+  .lunetier-press-title {
+    font-family: sans-serif;
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em; /* tracking-widest */
+    margin-bottom: 2rem;
+    opacity: 0.6;
+  }
+
+  /* Grille de logos */
+  .lunetier-press-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 3rem; /* Espace entre les logos */
+    opacity: 0.8;
+  }
+
+  @media (max-width: 768px) {
+    .lunetier-press-grid {
+      gap: 2rem;
+      justify-content: space-around;
+    }
+  }
+
+  .lunetier-press-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 120px;
+  }
+
+  .lunetier-press-item img {
+    width: 100%;
+    height: auto;
+    max-height: 30px; /* Hauteur harmonisée */
+    object-fit: contain;
+    filter: grayscale(100%); /* Force le noir et blanc pour l'élégance */
+    transition: opacity 0.3s, transform 0.3s;
+    opacity: 0.7;
+  }
+
+  .lunetier-press-item:hover img {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+
+  /* Fallback text si pas d'image */
+  .lunetier-press-text {
+    font-family: serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: currentColor;
+    text-decoration: none;
+  }
+</style>
+
+<div class="lunetier-press-container">
+  {% if section.settings.title != blank %}
+    <h3 class="lunetier-press-title">{{ section.settings.title }}</h3>
+  {% endif %}
+
+  <div class="lunetier-press-grid">
+    {%- for block in section.blocks -%}
+      <div class="lunetier-press-item" {{ block.shopify_attributes }}>
+        {%- if block.settings.logo != blank -%}
+          {{ block.settings.logo | image_url: width: 300 | image_tag: 
+            loading: 'lazy', 
+            alt: block.settings.logo.alt | default: 'Logo Presse' 
+          }}
+        {%- else -%}
+          <!-- Placeholder Textuel élégant si pas d'image -->
+          <span class="lunetier-press-text">{{ block.settings.title }}</span>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Logos Presse",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre de la section",
+      "default": "Ils parlent de nous"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Couleur de fond",
+      "default": "#fafaf9"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Couleur du texte",
+      "default": "#111827"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Image du logo"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Nom (si pas d'image)",
+          "default": "VOGUE"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Logos Presse",
+      "blocks": [
+        { "type": "logo", "settings": { "title": "VOGUE" } },
+        { "type": "logo", "settings": { "title": "GQ" } },
+        { "type": "logo", "settings": { "title": "ELLE" } },
+        { "type": "logo", "settings": { "title": "LE FIGARO" } },
+        { "type": "logo", "settings": { "title": "VANITY FAIR" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

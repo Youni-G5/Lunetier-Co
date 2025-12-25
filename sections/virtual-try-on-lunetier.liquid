@@ -1,0 +1,418 @@
+{% comment %}
+  Section "Essai Virtuel" (VTO) - Lunetier
+  Technologie : Webcam Stream + Overlay Produit 2D
+  Fonctionnalité : Modal immersive, accès caméra, ajustement manuel de la monture.
+{% endcomment %}
+
+<style>
+  /* --- VARIABLES --- */
+  :root {
+    --vto-bg: #000000;
+    --vto-accent: #ffffff;
+    --vto-ui-bg: rgba(255, 255, 255, 0.1);
+    --vto-font: ui-sans-serif, system-ui, sans-serif;
+  }
+
+  /* --- MODAL CONTAINER --- */
+  .vto-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--vto-bg);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    font-family: var(--vto-font);
+    overflow: hidden;
+  }
+
+  .vto-modal.is-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* --- HEADER --- */
+  .vto-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 20;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+  }
+
+  .vto-title {
+    color: var(--vto-accent);
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .vto-live-indicator {
+    width: 8px;
+    height: 8px;
+    background-color: #ef4444;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+  .vto-close-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    transition: background 0.2s;
+  }
+  
+  .vto-close-btn:hover { background: rgba(255,255,255,0.4); }
+
+  /* --- CAMERA AREA --- */
+  .vto-viewport {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #111;
+    overflow: hidden;
+  }
+
+  /* Le flux vidéo */
+  #vto-video {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1); /* Effet miroir */
+  }
+
+  /* L'image des lunettes superposée */
+  #vto-glasses-overlay {
+    position: absolute;
+    width: 200px; /* Taille initiale */
+    cursor: grab;
+    z-index: 10;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+    user-select: none;
+    touch-action: none;
+  }
+
+  #vto-glasses-overlay:active { cursor: grabbing; }
+
+  /* Guide visage (Optionnel, décoratif) */
+  .vto-face-guide {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 280px;
+    height: 350px;
+    border: 2px dashed rgba(255,255,255,0.3);
+    border-radius: 140px;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* --- CONTROLS FOOTER --- */
+  .vto-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 2rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .vto-instruction {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.875rem;
+    text-align: center;
+    max-width: 20rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  }
+
+  /* Sliders de réglage */
+  .vto-sliders-group {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    background: rgba(0,0,0,0.5);
+    padding: 1rem 2rem;
+    border-radius: 99px;
+    backdrop-filter: blur(10px);
+  }
+
+  .vto-slider-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .vto-icon {
+    color: white;
+    width: 20px;
+    height: 20px;
+  }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    background: transparent;
+    width: 100px;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    margin-top: -6px;
+  }
+
+  input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 2px;
+  }
+
+  /* --- ERROR STATE --- */
+  .vto-error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    display: none;
+    z-index: 30;
+  }
+
+  .vto-btn {
+    background: white;
+    color: black;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 1rem;
+    cursor: pointer;
+  }
+
+</style>
+
+<div id="vto-modal" class="vto-modal" aria-hidden="true">
+  
+  <!-- Header -->
+  <div class="vto-header">
+    <div class="vto-title">
+      <div class="vto-live-indicator"></div>
+      Essai Virtuel
+    </div>
+    <button class="vto-close-btn" id="vto-close" aria-label="Fermer">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+  </div>
+
+  <!-- Viewport Caméra -->
+  <div class="vto-viewport">
+    <video id="vto-video" autoplay playsinline muted></video>
+    
+    <!-- Image Lunettes (Overlay) -->
+    <!-- On utilise l'image du produit (si PNG détouré c'est mieux, sinon l'image featured) -->
+    {%- if product.featured_media -%}
+      <img src="{{ product.featured_media | image_url: width: 800 }}" 
+           alt="Lunettes Virtuelles" 
+           id="vto-glasses-overlay"
+           draggable="false">
+    {%- endif -%}
+
+    <!-- Guide Visage -->
+    <div class="vto-face-guide"></div>
+
+    <!-- Message Erreur -->
+    <div id="vto-error-msg" class="vto-error">
+      <h3>Caméra inaccessible</h3>
+      <p>Veuillez autoriser l'accès à la caméra pour utiliser l'essai virtuel.</p>
+      <button class="vto-btn" onclick="startCamera()">Réessayer</button>
+    </div>
+  </div>
+
+  <!-- Contrôles -->
+  <div class="vto-controls">
+    <p class="vto-instruction">Placez votre visage dans l'ovale et ajustez la monture.</p>
+    
+    <div class="vto-sliders-group">
+      <!-- Contrôle Taille -->
+      <div class="vto-slider-wrapper" title="Ajuster la taille">
+        <svg class="vto-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+        <input type="range" id="vto-scale" min="100" max="500" value="200">
+      </div>
+      
+      <!-- Contrôle Rotation (Optionnel) -->
+      <div class="vto-slider-wrapper" title="Ajuster l'inclinaison">
+        <svg class="vto-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+        <input type="range" id="vto-rotate" min="-20" max="20" value="0">
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('vto-modal');
+    const closeBtn = document.getElementById('vto-close');
+    const video = document.getElementById('vto-video');
+    const glasses = document.getElementById('vto-glasses-overlay');
+    const scaleInput = document.getElementById('vto-scale');
+    const rotateInput = document.getElementById('vto-rotate');
+    const errorMsg = document.getElementById('vto-error-msg');
+    
+    let stream = null;
+    let isDragging = false;
+    let startX, startY, initialLeft, initialTop;
+
+    // --- 1. OUVERTURE / FERMETURE ---
+    
+    // Fonction globale accessible depuis les autres sections
+    window.openVirtualTryOn = () => {
+      modal.classList.add('is-active');
+      startCamera();
+      centerGlasses();
+    };
+
+    closeBtn.addEventListener('click', () => {
+      modal.classList.remove('is-active');
+      stopCamera();
+    });
+
+    // Lier au bouton "Essai Virtuel" existant s'il y en a un
+    const triggerButtons = document.querySelectorAll('button:contains("Essai Virtuel"), button[data-vto-trigger]');
+    triggerButtons.forEach(btn => btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.openVirtualTryOn();
+    }));
+    
+    // --- 2. GESTION CAMERA ---
+    
+    async function startCamera() {
+      errorMsg.style.display = 'none';
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+        video.srcObject = stream;
+      } catch (err) {
+        console.error("Erreur caméra:", err);
+        errorMsg.style.display = 'block';
+      }
+    }
+
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+      }
+    }
+
+    // --- 3. MANIPULATION LUNETTES (Drag & Drop & Scale) ---
+
+    function centerGlasses() {
+      // Centrer au démarrage
+      const rect = modal.getBoundingClientRect();
+      glasses.style.left = (rect.width / 2 - glasses.offsetWidth / 2) + 'px';
+      glasses.style.top = (rect.height / 2 - glasses.offsetHeight / 2) + 'px';
+    }
+
+    // Slider Taille
+    scaleInput.addEventListener('input', (e) => {
+      glasses.style.width = e.target.value + 'px';
+    });
+
+    // Slider Rotation
+    rotateInput.addEventListener('input', (e) => {
+      glasses.style.transform = `rotate(${e.target.value}deg)`;
+    });
+
+    // Drag & Drop Mouse/Touch
+    const startDrag = (e) => {
+      if (e.target !== glasses && e.target !== scaleInput && e.target !== rotateInput) return;
+      if (e.target === scaleInput || e.target === rotateInput) return; // Ne pas drag si on touche les sliders
+      
+      isDragging = true;
+      const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+      const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+      
+      startX = clientX;
+      startY = clientY;
+      initialLeft = glasses.offsetLeft;
+      initialTop = glasses.offsetTop;
+      
+      e.preventDefault();
+    };
+
+    const doDrag = (e) => {
+      if (!isDragging) return;
+      
+      const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+      const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+      
+      const dx = clientX - startX;
+      const dy = clientY - startY;
+      
+      glasses.style.left = (initialLeft + dx) + 'px';
+      glasses.style.top = (initialTop + dy) + 'px';
+    };
+
+    const stopDrag = () => { isDragging = false; };
+
+    // Events
+    glasses.addEventListener('mousedown', startDrag);
+    glasses.addEventListener('touchstart', startDrag);
+    
+    window.addEventListener('mousemove', doDrag);
+    window.addEventListener('touchmove', doDrag);
+    
+    window.addEventListener('mouseup', stopDrag);
+    window.addEventListener('touchend', stopDrag);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Essai Virtuel (Modal)",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Essai Virtuel"
+    }
+  ]
+}
+{% endschema %}

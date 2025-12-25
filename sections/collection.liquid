@@ -1,0 +1,435 @@
+{% comment %}
+  Section Collection "Lunetier" - Grille produits avec filtres
+  Design : Sidebar filtre propre, grille responsive, cartes produits interactives.
+{% endcomment %}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    padding-top: 4rem;
+    padding-bottom: 6rem;
+    background-color: #ffffff;
+    color: #111827;
+  }
+
+  .lunetier-col-container {
+    max-width: 80rem; /* max-w-7xl */
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* --- HEADER COLLECTION --- */
+  .lunetier-col-header {
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+
+  .lunetier-col-title {
+    font-family: serif;
+    font-size: 2.5rem; /* text-4xl */
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  .lunetier-col-desc {
+    max-width: 40rem;
+    margin: 0 auto;
+    color: #6b7280;
+    font-family: sans-serif;
+  }
+
+  /* --- TOOLBAR (Tri + Filtres Mobile) --- */
+  .lunetier-col-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f3f4f6;
+    border-bottom: 1px solid #f3f4f6;
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+  }
+
+  .lunetier-sort-select {
+    border: none;
+    background: transparent;
+    font-size: 0.875rem;
+    font-family: sans-serif;
+    cursor: pointer;
+    color: #111827;
+    outline: none;
+  }
+
+  .lunetier-filter-count {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  /* --- LAYOUT GRID (Sidebar + Products) --- */
+  .lunetier-col-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  @media (min-width: 1024px) {
+    .lunetier-col-layout {
+      grid-template-columns: 16rem 1fr; /* Sidebar 256px */
+    }
+  }
+
+  /* --- SIDEBAR FILTERS --- */
+  .lunetier-filters {
+    display: none; /* Mobile hidden par défaut (à améliorer avec JS pour drawer mobile) */
+  }
+
+  @media (min-width: 1024px) {
+    .lunetier-filters {
+      display: block;
+    }
+  }
+
+  .lunetier-filter-group {
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .lunetier-filter-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .lunetier-filter-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .lunetier-filter-item {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #4b5563;
+    cursor: pointer;
+  }
+
+  .lunetier-filter-item:hover {
+    color: #000;
+  }
+
+  .lunetier-filter-checkbox {
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 2px;
+    accent-color: #000;
+  }
+
+  /* --- PRODUCT GRID --- */
+  .lunetier-products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 colonnes mobile */
+    gap: 1.5rem; /* gap-6 */
+  }
+
+  @media (min-width: 768px) {
+    .lunetier-products-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem; /* gap-8 */
+    }
+  }
+
+  /* --- PRODUCT CARD (Copie du style Featured Collection) --- */
+  .lunetier-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .lunetier-card-img-wrapper {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    background-color: #f3f4f6;
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+
+  .lunetier-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease, transform 0.5s ease;
+  }
+
+  /* Second image on hover logic */
+  .lunetier-card-img-hover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.5s ease;
+  }
+
+  .lunetier-card:hover .lunetier-card-img {
+    opacity: 0; /* Hide main */
+  }
+  
+  .lunetier-card:hover .lunetier-card-img-hover {
+    opacity: 1; /* Show second */
+    transform: scale(1.05);
+  }
+  
+  /* Fallback si pas de 2eme image : zoom simple */
+  .lunetier-card:hover .lunetier-card-img:only-child {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+
+  /* Slide-up button */
+  .lunetier-card-btn {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #000000;
+    color: #ffffff;
+    padding: 0.75rem 0;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-out;
+  }
+
+  .lunetier-card:hover .lunetier-card-btn {
+    transform: translateY(0);
+  }
+
+  .lunetier-card-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .lunetier-card-title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .lunetier-card-price {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .lunetier-card-meta {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+  }
+
+  /* --- PAGINATION --- */
+  .lunetier-pagination {
+    margin-top: 4rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .lunetier-page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid #e5e7eb;
+    color: #111827;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+
+  .lunetier-page-link:hover,
+  .lunetier-page-link.current {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+  }
+</style>
+
+<div class="lunetier-col-container">
+  
+  <!-- HEADER -->
+  <div class="lunetier-col-header">
+    <h1 class="lunetier-col-title">{{ collection.title }}</h1>
+    {% if collection.description != blank %}
+      <div class="lunetier-col-desc">{{ collection.description }}</div>
+    {% endif %}
+  </div>
+
+  {% paginate collection.products by section.settings.products_per_page %}
+
+    <!-- TOOLBAR -->
+    <div class="lunetier-col-toolbar">
+      <div class="lunetier-filter-count">
+        {{ collection.products_count }} produits
+      </div>
+      <div class="lunetier-sort">
+        <label for="sort-by" class="visually-hidden">Trier par</label>
+        <select id="sort-by" class="lunetier-sort-select" onchange="location.search = '?sort_by=' + this.value">
+          {% for option in collection.sort_options %}
+            <option value="{{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>
+              {{ option.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="lunetier-col-layout">
+      
+      <!-- SIDEBAR FILTERS (Native Shopify) -->
+      <aside class="lunetier-filters">
+        <form class="filter-form">
+          {%- for filter in collection.filters -%}
+            <div class="lunetier-filter-group">
+              <span class="lunetier-filter-title">{{ filter.label }}</span>
+              
+              {%- case filter.type -%}
+                {%- when 'list' -%}
+                  <ul class="lunetier-filter-list">
+                    {%- for value in filter.values -%}
+                      <li>
+                        <label class="lunetier-filter-item">
+                          <input type="checkbox"
+                            name="{{ value.param_name }}"
+                            value="{{ value.value }}"
+                            class="lunetier-filter-checkbox"
+                            {% if value.active %}checked{% endif %}
+                            onchange="this.closest('form').submit()"
+                          >
+                          <span>{{ value.label }}</span>
+                          <span style="color:#9ca3af; font-size:0.75rem;">({{ value.count }})</span>
+                        </label>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                
+                {%- when 'price_range' -%}
+                   <!-- Simplifié pour l'exemple, idéalement un slider JS -->
+                   <div style="font-size: 0.875rem;">
+                     {{ filter.min_value.value | money }} - {{ filter.max_value.value | money }}
+                   </div>
+              {%- endcase -%}
+            </div>
+          {%- endfor -%}
+          
+          <!-- Lien "Effacer tout" si filtres actifs -->
+          {%- if current_tags or collection.filters.size > 0 -%}
+             <a href="{{ collection.url }}" style="font-size: 0.75rem; text-decoration: underline; color: #6b7280;">Effacer les filtres</a>
+          {%- endif -%}
+        </form>
+      </aside>
+
+      <!-- PRODUCTS GRID -->
+      <div class="lunetier-products-grid">
+        {%- for product in collection.products -%}
+          <div class="lunetier-card-wrapper">
+            <a href="{{ product.url }}" class="lunetier-card group">
+              
+              <div class="lunetier-card-img-wrapper">
+                <!-- Image principale -->
+                {%- if product.featured_media != blank -%}
+                  {{ product.featured_media | image_url: width: 800 | image_tag: 
+                    loading: 'lazy', 
+                    class: 'lunetier-card-img',
+                    alt: product.title
+                  }}
+                  <!-- Image au survol (la 2ème image du produit) -->
+                  {%- if product.media[1] != blank -%}
+                    {{ product.media[1] | image_url: width: 800 | image_tag: 
+                      loading: 'lazy', 
+                      class: 'lunetier-card-img-hover',
+                      alt: product.title
+                    }}
+                  {%- endif -%}
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag: 'lunetier-card-img' }}
+                {%- endif -%}
+
+                <!-- Slide-up Button -->
+                <div class="lunetier-card-btn">
+                  {% if product.available %}
+                    Voir - {{ product.price | money_without_trailing_zeros }}
+                  {% else %}
+                    Épuisé
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="lunetier-card-info">
+                <div>
+                  <h3 class="lunetier-card-title">{{ product.title }}</h3>
+                  <p class="lunetier-card-meta">{{ product.vendor }}</p>
+                </div>
+                <span class="lunetier-card-price">{{ product.price | money_without_trailing_zeros }}</span>
+              </div>
+            </a>
+          </div>
+        {%- else -%}
+          <p style="grid-column: 1 / -1; text-align: center; padding: 4rem 0;">Aucun produit ne correspond à votre recherche.</p>
+        {%- endfor -%}
+      </div>
+
+    </div>
+
+    <!-- PAGINATION -->
+    {%- if paginate.pages > 1 -%}
+      <div class="lunetier-pagination">
+        {%- if paginate.previous -%}
+          <a href="{{ paginate.previous.url }}" class="lunetier-page-link">&larr;</a>
+        {%- endif -%}
+
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}" class="lunetier-page-link">{{ part.title }}</a>
+          {%- else -%}
+            <span class="lunetier-page-link {% if part.title == paginate.current_page %}current{% endif %}">{{ part.title }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- if paginate.next -%}
+          <a href="{{ paginate.next.url }}" class="lunetier-page-link">&rarr;</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+  {% endpaginate %}
+</div>
+
+{% schema %}
+{
+  "name": "Collection Principale",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 6,
+      "max": 24,
+      "step": 3,
+      "default": 12,
+      "label": "Produits par page"
+    }
+  ]
+}
+{% endschema %}
