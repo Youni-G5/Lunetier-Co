@@ -1,162 +1,62 @@
 {% comment %}
   Section Footer "Lunetier" - Style Minimaliste & Clean
-  Mise en page : 2 colonnes pour la marque, 1 colonne menu, 1 colonne social/menu
+  Optimisé : CSS externe dans assets/footer.css
 {% endcomment %}
 
-<style>
-  #shopify-section-{{ section.id }} {
-    background-color: #ffffff;
-    border-top: 1px solid #f3f4f6; /* border-gray-100 */
-    padding-top: 5rem; /* pt-20 */
-    padding-bottom: 2.5rem; /* pb-10 */
-    color: #111827;
-  }
+<footer class="lunetier-footer" role="contentinfo">
+  <div class="lunetier-footer-container">
+    <div class="lunetier-footer-grid">
+      
+      <!-- COL 1 & 2 : MARQUE & DESCRIPTION -->
+      <div class="lunetier-brand-col">
+        <h3 class="lunetier-footer-title">
+          {% if section.settings.brand_title != blank %}
+            {{ section.settings.brand_title }}
+          {% else %}
+            {{ shop.name }}
+          {% endif %}
+        </h3>
+        <p class="lunetier-footer-desc">
+          {{ section.settings.brand_description | default: "Nous changeons la façon dont vous voyez le monde, une paire à la fois. Design français, qualité sans compromis." }}
+        </p>
+      </div>
 
-  .lunetier-footer-container {
-    max-width: 80rem; /* max-w-7xl */
-    margin: 0 auto;
-    padding: 0 1.5rem; /* px-6 */
-  }
+      <!-- COL 3 : MENU AIDE -->
+      <div class="lunetier-footer-menu-col">
+        <h4 class="lunetier-menu-title">{{ section.settings.menu_1_title | default: "Aide" }}</h4>
+        <ul class="lunetier-footer-list">
+          {%- for link in section.settings.menu_1.links -%}
+            <li><a href="{{ link.url }}" class="lunetier-footer-link">{{ link.title }}</a></li>
+          {%- else -%}
+            <li><a href="{{ routes.root_url }}pages/livraison" class="lunetier-footer-link">Livraison & Retours</a></li>
+            <li><a href="{{ routes.root_url }}pages/faq" class="lunetier-footer-link">FAQ</a></li>
+            <li><a href="{{ routes.root_url }}pages/guide-tailles" class="lunetier-footer-link">Guide des tailles</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
 
-  /* --- GRID LAYOUT --- */
-  .lunetier-footer-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 3rem; /* gap-12 */
-    margin-bottom: 4rem; /* mb-16 */
-  }
+      <!-- COL 4 : MENU SOCIAL / AUTRE -->
+      <div class="lunetier-footer-menu-col">
+        <h4 class="lunetier-menu-title">{{ section.settings.menu_2_title | default: "Social" }}</h4>
+        <ul class="lunetier-footer-list">
+          {%- for link in section.settings.menu_2.links -%}
+            <li><a href="{{ link.url }}" class="lunetier-footer-link" {% if link.url contains 'http' %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ link.title }}</a></li>
+          {%- else -%}
+            <li><a href="https://instagram.com" class="lunetier-footer-link" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+            <li><a href="https://facebook.com" class="lunetier-footer-link" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+            <li><a href="https://pinterest.com" class="lunetier-footer-link" target="_blank" rel="noopener noreferrer">Pinterest</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
 
-  @media (min-width: 768px) {
-    .lunetier-footer-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
-  /* --- BRAND COLUMN (Takes 2 cols on desktop) --- */
-  .lunetier-brand-col {
-    grid-column: span 1;
-  }
-
-  @media (min-width: 768px) {
-    .lunetier-brand-col {
-      grid-column: span 2;
-    }
-  }
-
-  .lunetier-footer-title {
-    font-family: serif;
-    font-size: 1.25rem; /* text-xl */
-    font-weight: 700;
-    margin-bottom: 1rem;
-    line-height: 1.2;
-  }
-
-  .lunetier-footer-desc {
-    color: #6b7280; /* text-gray-500 */
-    max-width: 24rem; /* max-w-sm */
-    margin-bottom: 1.5rem;
-    line-height: 1.6;
-    font-size: 1rem;
-  }
-
-  /* --- MENU COLUMNS --- */
-  .lunetier-menu-title {
-    font-family: sans-serif;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    font-size: 1rem;
-  }
-
-  .lunetier-footer-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem; /* space-y-2 */
-  }
-
-  .lunetier-footer-link {
-    text-decoration: none;
-    color: #6b7280; /* text-gray-500 */
-    font-size: 0.875rem; /* text-sm */
-    transition: color 0.2s;
-    font-family: sans-serif;
-  }
-
-  .lunetier-footer-link:hover {
-    color: #000000;
-  }
-
-  /* --- COPYRIGHT --- */
-  .lunetier-copyright {
-    border-top: 1px solid #f3f4f6;
-    padding-top: 2rem;
-    color: #9ca3af; /* text-gray-400 */
-    font-size: 0.75rem; /* text-xs */
-    text-align: center;
-    font-family: sans-serif;
-  }
-
-  @media (min-width: 768px) {
-    .lunetier-copyright {
-      text-align: left;
-    }
-  }
-</style>
-
-<div class="lunetier-footer-container">
-  <div class="lunetier-footer-grid">
-    
-    <!-- COL 1 & 2 : MARQUE & DESCRIPTION -->
-    <div class="lunetier-brand-col">
-      <h3 class="lunetier-footer-title">
-        {% if section.settings.brand_title != blank %}
-          {{ section.settings.brand_title }}
-        {% else %}
-          {{ shop.name }}
-        {% endif %}
-      </h3>
-      <p class="lunetier-footer-desc">
-        {{ section.settings.brand_description | default: "Nous changeons la façon dont vous voyez le monde, une paire à la fois. Design français, qualité sans compromis." }}
-      </p>
     </div>
 
-    <!-- COL 3 : MENU AIDE -->
-    <div>
-      <h4 class="lunetier-menu-title">{{ section.settings.menu_1_title | default: "Aide" }}</h4>
-      <ul class="lunetier-footer-list">
-        {%- for link in section.settings.menu_1.links -%}
-          <li><a href="{{ link.url }}" class="lunetier-footer-link">{{ link.title }}</a></li>
-        {%- else -%}
-          <li><a href="#" class="lunetier-footer-link">Livraison & Retours</a></li>
-          <li><a href="#" class="lunetier-footer-link">FAQ</a></li>
-          <li><a href="#" class="lunetier-footer-link">Guide des tailles</a></li>
-        {%- endfor -%}
-      </ul>
+    <!-- COPYRIGHT BAR -->
+    <div class="lunetier-copyright">
+      <p>&copy; {{ 'now' | date: "%Y" }} {{ shop.name }}. Tous droits réservés.</p>
     </div>
-
-    <!-- COL 4 : MENU SOCIAL / AUTRE -->
-    <div>
-      <h4 class="lunetier-menu-title">{{ section.settings.menu_2_title | default: "Social" }}</h4>
-      <ul class="lunetier-footer-list">
-        {%- for link in section.settings.menu_2.links -%}
-          <li><a href="{{ link.url }}" class="lunetier-footer-link">{{ link.title }}</a></li>
-        {%- else -%}
-          <li><a href="#" class="lunetier-footer-link">Instagram</a></li>
-          <li><a href="#" class="lunetier-footer-link">Facebook</a></li>
-          <li><a href="#" class="lunetier-footer-link">Pinterest</a></li>
-        {%- endfor -%}
-      </ul>
-    </div>
-
   </div>
-
-  <!-- COPYRIGHT BAR -->
-  <div class="lunetier-copyright">
-    <p>&copy; {{ 'now' | date: "%Y" }} {{ shop.name }}. Tous droits réservés.</p>
-  </div>
-</div>
+</footer>
 
 {% schema %}
 {
@@ -209,11 +109,6 @@
       "id": "menu_2",
       "label": "Menu",
       "info": "Créez un menu avec vos liens sociaux ou utilisez ce bloc pour d'autres liens."
-    }
-  ],
-  "presets": [
-    {
-      "name": "Footer Lunetier"
     }
   ]
 }
