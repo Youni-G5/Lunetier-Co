@@ -1,0 +1,253 @@
+/* ========================================
+   HEADER.CSS - Styles du header sticky
+   Lunetier & Co Theme
+   ======================================== */
+
+/* === HEADER WRAPPER === */
+#shopify-section-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: auto;
+  z-index: 1000;
+  pointer-events: none;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent;
+}
+
+.lunetier-header-wrapper {
+  pointer-events: auto;
+  transition: all var(--transition-base);
+  padding: 1.5rem 0;
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+  width: 100%;
+}
+
+/* === SCROLLED STATE === */
+.lunetier-header-wrapper.is-scrolled {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-gray-100);
+  padding: 1rem 0;
+  box-shadow: var(--shadow-sm);
+}
+
+/* === HEADER CONTAINER === */
+.lunetier-header-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .lunetier-header-container {
+    padding: 0 1.5rem;
+  }
+}
+
+/* === LOGO === */
+.lunetier-logo {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--color-black);
+  text-decoration: none;
+  line-height: 1;
+  z-index: 1002;
+  white-space: nowrap;
+}
+
+.lunetier-logo img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* === NAVIGATION DESKTOP === */
+.lunetier-nav {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .lunetier-nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+}
+
+.lunetier-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-black);
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.lunetier-link:hover {
+  opacity: 0.6;
+}
+
+/* === ACTIONS & ICONS === */
+.lunetier-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.lunetier-icon-btn {
+  position: relative;
+  color: var(--color-black);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.lunetier-icon-btn:hover {
+  opacity: 0.7;
+}
+
+.lunetier-cart-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  font-size: 10px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.icon-svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+/* === MOBILE TOGGLE === */
+.lunetier-mobile-toggle {
+  display: block;
+  margin-left: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .lunetier-mobile-toggle {
+    display: none;
+  }
+}
+
+/* === MOBILE DRAWER === */
+.lunetier-drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-base), visibility var(--transition-base);
+}
+
+.lunetier-drawer-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.lunetier-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 85%;
+  max-width: 400px;
+  background-color: var(--color-white);
+  z-index: 2001;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.lunetier-drawer.is-open {
+  transform: translateX(0);
+}
+
+.lunetier-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.lunetier-drawer-title {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.lunetier-drawer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.lunetier-drawer-link {
+  font-size: 1.25rem;
+  text-decoration: none;
+  color: var(--color-black);
+  font-family: var(--font-serif);
+  font-weight: 500;
+  border-bottom: 1px solid var(--color-gray-100);
+  padding-bottom: 1rem;
+  transition: opacity var(--transition-fast);
+}
+
+.lunetier-drawer-link:hover {
+  opacity: 0.7;
+}
+
+.lunetier-drawer-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity var(--transition-fast);
+}
+
+.lunetier-drawer-close:hover {
+  opacity: 0.7;
+}
