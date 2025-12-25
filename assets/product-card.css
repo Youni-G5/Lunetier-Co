@@ -1,0 +1,343 @@
+/* ========================================
+   PRODUCT-CARD.CSS - Styles cartes produits
+   Lunetier & Co Theme
+   ======================================== */
+
+/* === PRODUCT CARD CONTAINER === */
+.lunetier-product-card {
+  position: relative;
+  width: 100%;
+}
+
+.lunetier-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+/* === IMAGE WRAPPER === */
+.lunetier-card-image-wrapper {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background-color: var(--color-gray-50);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+/* === IMAGES === */
+.lunetier-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.lunetier-card-img-main {
+  transition: opacity var(--transition-base), transform var(--transition-slow);
+}
+
+.lunetier-card-img-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity var(--transition-base), transform var(--transition-slow);
+}
+
+/* Hover Effects */
+.lunetier-card-link:hover .lunetier-card-img-main {
+  opacity: 0;
+}
+
+.lunetier-card-link:hover .lunetier-card-img-hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* Si pas de 2ème image, zoom sur la principale */
+.lunetier-card-link:hover .lunetier-card-img-main:only-child {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* === BADGE === */
+.lunetier-card-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 10;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: var(--color-white);
+  color: var(--color-black);
+  font-family: var(--font-sans);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.lunetier-card-link:hover .lunetier-card-badge {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Badge variants */
+.lunetier-badge-sale {
+  background-color: var(--color-error);
+  color: var(--color-white);
+  opacity: 1; /* Toujours visible pour les promos */
+  transform: translateY(0);
+}
+
+.lunetier-badge-new {
+  background-color: var(--color-black);
+  color: var(--color-white);
+}
+
+.lunetier-badge-sold-out {
+  background-color: var(--color-gray-400);
+  color: var(--color-white);
+  opacity: 1; /* Toujours visible */
+  transform: translateY(0);
+}
+
+/* === SLIDE-UP BUTTON === */
+.lunetier-card-btn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  padding: 1rem 0;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transform: translateY(100%);
+  transition: transform var(--transition-base), background-color var(--transition-fast);
+}
+
+.lunetier-card-link:hover .lunetier-card-btn {
+  transform: translateY(0);
+}
+
+.lunetier-card-btn:hover {
+  background-color: var(--color-gray-800);
+}
+
+/* Mobile: Toujours afficher le bouton */
+@media (max-width: 768px) {
+  .lunetier-card-btn {
+    transform: translateY(0);
+    padding: 0.75rem 0;
+    font-size: 0.75rem;
+  }
+}
+
+/* === INFO CONTAINER === */
+.lunetier-card-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  font-family: var(--font-sans);
+}
+
+.lunetier-card-details {
+  flex: 1;
+  min-width: 0; /* Pour le text truncate */
+}
+
+.lunetier-card-title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 0.25rem 0;
+  color: var(--color-black);
+  line-height: 1.3;
+  transition: opacity var(--transition-fast);
+}
+
+@media (min-width: 768px) {
+  .lunetier-card-title {
+    font-size: 1.125rem;
+  }
+}
+
+.lunetier-card-link:hover .lunetier-card-title {
+  opacity: 0.7;
+}
+
+.lunetier-card-meta {
+  font-size: 0.75rem;
+  color: var(--color-gray-500);
+  margin: 0;
+  line-height: 1.4;
+}
+
+@media (min-width: 768px) {
+  .lunetier-card-meta {
+    font-size: 0.875rem;
+  }
+}
+
+/* === RATING === */
+.lunetier-card-rating {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* === PRICE === */
+.lunetier-card-price-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.lunetier-card-price {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-black);
+  white-space: nowrap;
+}
+
+.lunetier-card-price-sale {
+  color: var(--color-error);
+}
+
+.lunetier-card-price-compare {
+  font-size: 0.875rem;
+  color: var(--color-gray-400);
+  text-decoration: line-through;
+  white-space: nowrap;
+}
+
+/* === QUICK VIEW BUTTON === */
+.lunetier-quick-view-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 20;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: var(--color-white);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-md);
+}
+
+.lunetier-card-link:hover ~ .lunetier-quick-view-btn,
+.lunetier-quick-view-btn:hover {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.lunetier-quick-view-btn:hover {
+  background-color: var(--color-black);
+  color: var(--color-white);
+}
+
+.lunetier-quick-view-btn svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* === RESPONSIVE ADJUSTMENTS === */
+@media (max-width: 640px) {
+  .lunetier-card-image-wrapper {
+    aspect-ratio: 3 / 4;
+  }
+  
+  .lunetier-card-info {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .lunetier-card-price-wrapper {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+/* === GRID LAYOUTS === */
+.lunetier-products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .lunetier-products-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .lunetier-products-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Grid variant 3 colonnes max */
+.lunetier-products-grid--3-col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .lunetier-products-grid--3-col {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* === ANIMATIONS === */
+@media (prefers-reduced-motion: no-preference) {
+  .lunetier-product-card {
+    animation: fadeInUp 0.5s ease-out forwards;
+    opacity: 0;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Stagger animation */
+  .lunetier-product-card:nth-child(1) { animation-delay: 0.05s; }
+  .lunetier-product-card:nth-child(2) { animation-delay: 0.1s; }
+  .lunetier-product-card:nth-child(3) { animation-delay: 0.15s; }
+  .lunetier-product-card:nth-child(4) { animation-delay: 0.2s; }
+  .lunetier-product-card:nth-child(5) { animation-delay: 0.25s; }
+  .lunetier-product-card:nth-child(6) { animation-delay: 0.3s; }
+  .lunetier-product-card:nth-child(n+7) { animation-delay: 0.35s; }
+}
