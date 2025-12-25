@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
   <head>
-    {% # Inlined CSS Variables %}
-    {% render 'css-variables' %}
-
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    
     {% comment %}
       Font preloading:
       1. Preconnect to font CDN for faster connection
@@ -12,25 +13,51 @@
     {% endcomment %}
     {% unless settings.type_primary_font.system? %}
       <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
-
-      {% comment %} Preload the base font variant for initial page render {% endcomment %}
       {{ settings.type_primary_font | font_url | preload_tag: as: 'font', crossorigin: 'anonymous' }}
     {% endunless %}
 
-    {% # Load and preload the critical CSS %}
+    {% comment %}
+      CSS Loading Strategy:
+      1. Critical CSS inline (pour le first paint)
+      2. Base CSS preload (variables et utilitaires)
+      3. Section-specific CSS chargés selon le template
+    {% endcomment %}
+    
+    {% render 'css-variables' %}
+    
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
+    {{ 'base.css' | asset_url | stylesheet_tag: preload: true }}
+    
+    {% comment %} Load section-specific CSS based on template {% endcomment %}
+    {% if template contains 'product' %}
+      {{ 'product.css' | asset_url | stylesheet_tag }}
+    {% elsif template contains 'cart' %}
+      {{ 'cart.css' | asset_url | stylesheet_tag }}
+    {% endif %}
+    
+    {% comment %} Header et Footer CSS toujours chargés car présents partout {% endcomment %}
+    {{ 'header.css' | asset_url | stylesheet_tag }}
+    {{ 'footer.css' | asset_url | stylesheet_tag }}
 
-    {% # Social, title, etc. %}
+    {% comment %} Meta tags pour SEO {% endcomment %}
     {% render 'meta-tags' %}
 
     {{ content_for_header }}
   </head>
 
-  <body>
+  <body class="template-{{ template.name }}">
+    {% comment %} Skip to content pour accessibilité {% endcomment %}
+    <a href="#main-content" class="sr-only">Passer au contenu</a>
+    
     {% section 'header' %}
 
-    {{ content_for_layout }}
+    <main id="main-content" role="main">
+      {{ content_for_layout }}
+    </main>
 
     {% section 'footer' %}
+    
+    {% comment %} Scripts chargés en fin de body avec defer {% endcomment %}
+    <script src="{{ 'theme.js' | asset_url }}" defer></script>
   </body>
 </html>
