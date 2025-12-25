@@ -1,9 +1,13 @@
 /* ========================================
-   HEADER.CSS - Styles du header sticky
+   HEADER.CSS - Styles header et navigation
    Lunetier & Co Theme
    ======================================== */
 
-/* === HEADER WRAPPER === */
+/* === RESET & BASE === */
+#shopify-section-header * {
+  box-sizing: border-box;
+}
+
 #shopify-section-header {
   position: fixed;
   top: 0;
@@ -17,6 +21,7 @@
   background: transparent;
 }
 
+/* === HEADER WRAPPER === */
 .lunetier-header-wrapper {
   pointer-events: auto;
   transition: all var(--transition-base);
@@ -26,18 +31,18 @@
   width: 100%;
 }
 
-/* === SCROLLED STATE === */
+/* Scrolled State */
 .lunetier-header-wrapper.is-scrolled {
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--color-gray-100);
   padding: 1rem 0;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
 }
 
-/* === HEADER CONTAINER === */
-.lunetier-header-container {
+/* === CONTAINER === */
+.lunetier-container {
   width: 100%;
   max-width: 100%;
   margin: 0;
@@ -48,7 +53,7 @@
 }
 
 @media (max-width: 768px) {
-  .lunetier-header-container {
+  .lunetier-container {
     padding: 0 1.5rem;
   }
 }
@@ -64,12 +69,21 @@
   line-height: 1;
   z-index: 1002;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
 }
 
-.lunetier-logo img {
+.lunetier-logo-img {
   display: block;
   max-width: 100%;
   height: auto;
+  max-height: 50px;
+}
+
+@media (max-width: 768px) {
+  .lunetier-logo-img {
+    max-height: 35px;
+  }
 }
 
 /* === NAVIGATION DESKTOP === */
@@ -121,7 +135,7 @@
 }
 
 .lunetier-icon-btn:hover {
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .lunetier-cart-count {
@@ -137,7 +151,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-weight: bold;
+  font-weight: 700;
+  font-family: var(--font-sans);
 }
 
 .icon-svg {
@@ -162,7 +177,7 @@
   }
 }
 
-/* === MOBILE DRAWER === */
+/* === MOBILE DRAWER OVERLAY === */
 .lunetier-drawer-overlay {
   position: fixed;
   top: 0;
@@ -174,6 +189,7 @@
   opacity: 0;
   visibility: hidden;
   transition: opacity var(--transition-base), visibility var(--transition-base);
+  pointer-events: none;
 }
 
 .lunetier-drawer-overlay.is-open {
@@ -182,6 +198,7 @@
   pointer-events: auto;
 }
 
+/* === MOBILE DRAWER === */
 .lunetier-drawer {
   position: fixed;
   top: 0;
@@ -192,17 +209,19 @@
   background-color: var(--color-white);
   z-index: 2001;
   transform: translateX(-100%);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--transition-base);
   display: flex;
   flex-direction: column;
   padding: 2rem;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
 }
 
 .lunetier-drawer.is-open {
   transform: translateX(0);
 }
 
+/* === DRAWER HEADER === */
 .lunetier-drawer-header {
   display: flex;
   justify-content: space-between;
@@ -214,8 +233,23 @@
   font-family: var(--font-serif);
   font-size: 1.5rem;
   font-weight: 700;
+  color: var(--color-black);
 }
 
+.lunetier-drawer-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: var(--color-black);
+  transition: opacity var(--transition-fast);
+}
+
+.lunetier-drawer-close:hover {
+  opacity: 0.6;
+}
+
+/* === DRAWER NAVIGATION === */
 .lunetier-drawer-nav {
   display: flex;
   flex-direction: column;
@@ -234,20 +268,22 @@
 }
 
 .lunetier-drawer-link:hover {
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
-.lunetier-drawer-close {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity var(--transition-fast);
+.lunetier-drawer-link--secondary {
+  font-size: 1rem !important;
+  color: var(--color-gray-500) !important;
+  margin-top: 2rem !important;
+  border: none !important;
+  font-family: var(--font-sans) !important;
 }
 
-.lunetier-drawer-close:hover {
-  opacity: 0.7;
+/* === ACCESSIBILITY === */
+@media (prefers-reduced-motion: reduce) {
+  .lunetier-header-wrapper,
+  .lunetier-drawer,
+  .lunetier-drawer-overlay {
+    transition: none;
+  }
 }
