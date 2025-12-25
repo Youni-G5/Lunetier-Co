@@ -28,8 +28,13 @@
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
     {{ 'base.css' | asset_url | stylesheet_tag: preload: true }}
     
+    {% comment %} Product card CSS - chargé sur les pages avec grilles produits {% endcomment %}
+    {% if template contains 'product' or template contains 'collection' or template contains 'search' or template == 'index' %}
+      {{ 'product-card.css' | asset_url | stylesheet_tag }}
+    {% endif %}
+    
     {% comment %} Load section-specific CSS based on template {% endcomment %}
-    {% if template contains 'product' %}
+    {% if template contains 'product' and template != 'collection' %}
       {{ 'product.css' | asset_url | stylesheet_tag }}
     {% elsif template contains 'cart' %}
       {{ 'cart.css' | asset_url | stylesheet_tag }}
