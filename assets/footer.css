@@ -1,0 +1,105 @@
+/* ========================================
+   FOOTER.CSS - Styles footer
+   Lunetier & Co Theme
+   ======================================== */
+
+/* === FOOTER SECTION === */
+#shopify-section-footer {
+  background-color: var(--color-white);
+  border-top: 1px solid var(--color-gray-100);
+  padding-top: 5rem;
+  padding-bottom: 2.5rem;
+  color: var(--color-black);
+}
+
+.lunetier-footer-container {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* === GRID === */
+.lunetier-footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  margin-bottom: 4rem;
+}
+
+@media (min-width: 768px) {
+  .lunetier-footer-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* === BRAND COLUMN === */
+.lunetier-brand-col {
+  grid-column: span 1;
+}
+
+@media (min-width: 768px) {
+  .lunetier-brand-col {
+    grid-column: span 2;
+  }
+}
+
+.lunetier-footer-title {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.lunetier-footer-desc {
+  color: var(--color-gray-500);
+  max-width: 24rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+/* === MENU COLUMNS === */
+.lunetier-menu-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.lunetier-footer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lunetier-footer-link {
+  text-decoration: none;
+  color: var(--color-gray-500);
+  font-size: 0.875rem;
+  transition: color var(--transition-fast);
+  font-family: var(--font-sans);
+}
+
+.lunetier-footer-link:hover {
+  color: var(--color-black);
+}
+
+/* === COPYRIGHT === */
+.lunetier-copyright {
+  border-top: 1px solid var(--color-gray-100);
+  padding-top: 2rem;
+  color: var(--color-gray-400);
+  font-size: 0.75rem;
+  text-align: center;
+  font-family: var(--font-sans);
+}
+
+@media (min-width: 768px) {
+  .lunetier-copyright {
+    text-align: left;
+  }
+}
