@@ -1,51 +1,166 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Skeleton",
-    "theme_version": "0.1.0",
-    "theme_author": "Shopify",
-    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
-    "theme_support_url": "https://support.shopify.com/"
+    "theme_name": "Lunetier & Co",
+    "theme_version": "2.0.0",
+    "theme_author": "Custom Theme",
+    "theme_documentation_url": "https://github.com/Youni-G5/Lunetier-Co",
+    "theme_support_url": "https://github.com/Youni-G5/Lunetier-Co/issues"
   },
   {
-    "name": "t:general.typography",
+    "name": "Product Cards",
     "settings": [
       {
         "type": "header",
-        "content": "t:general.fonts"
+        "content": "Affichage des Cartes Produits"
       },
       {
-        "type": "font_picker",
-        "id": "type_primary_font",
-        "default": "work_sans_n4",
-        "label": "t:general.primary"
+        "type": "paragraph",
+        "content": "Personnalisez l'apparence des cartes produits sur les pages collections, recherche et featured collection."
+      },
+      {
+        "type": "checkbox",
+        "id": "product_card_show_vendor",
+        "label": "Afficher le vendeur/marque",
+        "default": true,
+        "info": "Affiche le nom du vendeur ou le type de produit au-dessus du titre"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_card_show_badges",
+        "label": "Afficher les badges",
+        "default": true,
+        "info": "Badges automatiques : Nouveau, Promo, Épuisé"
+      },
+      {
+        "type": "select",
+        "id": "product_card_badge_style",
+        "label": "Style des badges",
+        "options": [
+          {
+            "value": "rounded",
+            "label": "Arrondi"
+          },
+          {
+            "value": "square",
+            "label": "Carré"
+          },
+          {
+            "value": "pill",
+            "label": "Pilule"
+          }
+        ],
+        "default": "rounded"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_card_show_second_image",
+        "label": "Afficher 2ème image au survol",
+        "default": true,
+        "info": "Active automatiquement si le produit a plusieurs images"
+      },
+      {
+        "type": "select",
+        "id": "product_card_hover_effect",
+        "label": "Effet de survol",
+        "options": [
+          {
+            "value": "zoom",
+            "label": "Zoom doux"
+          },
+          {
+            "value": "lift",
+            "label": "Lévitation"
+          },
+          {
+            "value": "none",
+            "label": "Aucun"
+          }
+        ],
+        "default": "zoom",
+        "info": "Effet appliqué sur desktop uniquement"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_card_show_quick_add",
+        "label": "Afficher bouton 'Ajout Rapide'",
+        "default": false,
+        "info": "Ajoute un bouton panier sur chaque carte (AJAX)"
+      },
+      {
+        "type": "header",
+        "content": "Mobile"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_card_mobile_compact",
+        "label": "Mode compact sur mobile",
+        "default": true,
+        "info": "Réduit les espacements et optimise l'affichage mobile"
       }
     ]
   },
   {
-    "name": "t:general.colors",
+    "name": "Colors",
     "settings": [
       {
-        "type": "color",
-        "id": "background_color",
-        "default": "#FFFFFF",
-        "label": "t:labels.background"
+        "type": "header",
+        "content": "Couleurs Principales"
       },
       {
         "type": "color",
-        "id": "foreground_color",
-        "default": "#333333",
-        "label": "t:labels.foreground"
+        "id": "color_primary",
+        "label": "Couleur primaire",
+        "default": "#000000"
       },
       {
-        "type": "range",
-        "id": "input_corner_radius",
-        "min": 0,
-        "max": 10,
-        "step": 1,
-        "unit": "px",
-        "label": "t:labels.input_corner_radius",
-        "default": 4
+        "type": "color",
+        "id": "color_secondary",
+        "label": "Couleur secondaire",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Couleur accent",
+        "default": "#6b7280"
+      },
+      {
+        "type": "header",
+        "content": "Badges"
+      },
+      {
+        "type": "color",
+        "id": "badge_sale_bg",
+        "label": "Badge promo - Fond",
+        "default": "#ef4444"
+      },
+      {
+        "type": "color",
+        "id": "badge_new_bg",
+        "label": "Badge nouveau - Fond",
+        "default": "#3b82f6"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Polices"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_primary_font",
+        "label": "Police principale",
+        "default": "assistant_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_heading_font",
+        "label": "Police titres",
+        "default": "assistant_n4"
       }
     ]
   }

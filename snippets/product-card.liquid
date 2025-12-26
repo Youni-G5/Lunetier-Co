@@ -1,176 +1,219 @@
 {% comment %}
-  Snippet: product-card.liquid
+  Snippet: product-card.liquid (V2.0)
   
-  Description: Carte produit réutilisable pour Lunetier & Co
-  Fonctionnalités:
-  - Image principale + image au survol
-  - Badge (Nouveau, Promo, Épuisé)
-  - Bouton slide-up
-  - Prix avec réduction
-  - Quick view optionnel
-  - Lazy loading optimisé
+  Carte produit intelligente et adaptive pour Lunetier & Co
+  
+  Améliorations V2:
+  - ✅ Affichage vendeur automatique
+  - ✅ Design mobile optimisé (badges/prix repositionnés)
+  - ✅ Adaptation intelligente (pas de 2ème image = pas de hover)
+  - ✅ Options configurables via theme settings
+  - ✅ Performance optimisée
   
   Usage:
-  {% render 'product-card', 
-    product: product,
-    show_second_image: true,
-    show_badge: true,
-    show_vendor: true,
-    image_loading: 'lazy'
-  %}
+  {% render 'product-card', product: product, card_index: forloop.index %}
   
   Paramètres:
-  - product: Objet produit Shopify (required)
-  - show_second_image: Afficher 2ème image au hover (default: true)
-  - show_badge: Afficher badge Nouveau/Promo (default: true)
-  - show_vendor: Afficher la marque/vendor (default: false)
-  - show_quick_view: Afficher bouton quick view (default: false)
-  - image_loading: 'lazy' ou 'eager' (default: 'lazy')
-  - card_class: Classes CSS additionnelles
+  - product: Objet produit Shopify (REQUIS)
+  - card_index: Index pour lazy loading (optionnel, défaut: 1)
+  - force_settings: Ignorer settings et utiliser paramètres custom (optionnel)
 {% endcomment %}
 
 {% liquid
-  assign show_second_image = show_second_image | default: true
-  assign show_badge = show_badge | default: true
-  assign show_vendor = show_vendor | default: false
-  assign show_quick_view = show_quick_view | default: false
-  assign image_loading = image_loading | default: 'lazy'
-  assign card_class = card_class | default: ''
+  # Récupération des settings theme (avec fallbacks)
+  assign show_vendor = settings.product_card_show_vendor | default: true
+  assign show_badges = settings.product_card_show_badges | default: true
+  assign show_second_image = settings.product_card_show_second_image | default: true
+  assign show_quick_add = settings.product_card_show_quick_add | default: false
+  assign badge_style = settings.product_card_badge_style | default: 'rounded'
+  assign hover_effect = settings.product_card_hover_effect | default: 'zoom'
   
-  # Calcul du badge
+  # Card index pour lazy loading intelligent
+  assign card_index = card_index | default: 1
+  assign image_loading = 'lazy'
+  if card_index <= 4
+    assign image_loading = 'eager'
+  endif
+  
+  # Détection intelligente de la 2ème image
+  assign has_second_image = false
+  if product.media.size > 1
+    assign has_second_image = true
+  endif
+  
+  # Si pas de 2ème image, désactiver l'effet hover image
+  if has_second_image == false
+    assign show_second_image = false
+  endif
+  
+  # Calcul intelligent du badge
   assign badge_text = ''
   assign badge_type = ''
+  assign badge_icon = ''
   
-  if show_badge
-    # Vérifier si produit épuisé
+  if show_badges
     unless product.available
       assign badge_text = 'Épuisé'
       assign badge_type = 'sold-out'
+      assign badge_icon = 'x-circle'
     else
-      # Vérifier si en promo
+      # Promo en priorité
       if product.compare_at_price > product.price
-        assign discount_percentage = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price
-        assign badge_text = discount_percentage | append: '% OFF'
+        assign discount = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price
+        assign badge_text = '-' | append: discount | append: '%'
         assign badge_type = 'sale'
-      # Vérifier si nouveau (créé dans les 30 derniers jours)
+        assign badge_icon = 'tag'
       else
-        assign product_date_ts = product.created_at | date: '%s' | plus: 0
-        assign now_ts = 'now' | date: '%s' | plus: 0
-        assign new_threshold = now_ts | minus: 2592000
+        # Nouveau produit (tag ou < 30 jours)
+        assign is_new = false
+        if product.tags contains 'nouveau' or product.tags contains 'new'
+          assign is_new = true
+        else
+          assign product_age = 'now' | date: '%s' | minus: product.created_at | date: '%s'
+          if product_age < 2592000
+            assign is_new = true
+          endif
+        endif
         
-        if product.tags contains 'nouveau' or product.tags contains 'new' or product_date_ts > new_threshold
+        if is_new
           assign badge_text = 'Nouveau'
           assign badge_type = 'new'
+          assign badge_icon = 'star'
         endif
       endif
     endunless
   endif
   
-  # Déterminer les images
+  # Images
   assign main_image = product.featured_media
   assign hover_image = nil
-  if show_second_image and product.media.size > 1
+  if has_second_image and show_second_image
     assign hover_image = product.media[1]
+  endif
+  
+  # Vendor intelligent
+  assign vendor_display = product.vendor
+  if vendor_display == blank or vendor_display == shop.name
+    assign vendor_display = product.type
   endif
 %}
 
-<article class="lunetier-product-card {{ card_class }}" data-product-id="{{ product.id }}">
+<article class="lunetier-product-card{% if has_second_image == false %} no-hover-image{% endif %}" 
+         data-product-id="{{ product.id }}"
+         data-product-available="{{ product.available }}">
+  
   <a href="{{ product.url }}" class="lunetier-card-link" aria-label="Voir {{ product.title }}">
     
-    {%- comment -%} IMAGE CONTAINER {%- endcomment -%}
-    <div class="lunetier-card-image-wrapper">
+    {%- comment -%} === IMAGE CONTAINER === {%- endcomment -%}
+    <div class="lunetier-card-image-wrapper lunetier-hover-{{ hover_effect }}">
       
       {%- comment -%} BADGE {%- endcomment -%}
       {% if badge_text != blank %}
-        <span class="lunetier-card-badge lunetier-badge-{{ badge_type }}">
-          {{ badge_text }}
+        <span class="lunetier-card-badge badge-{{ badge_type }} badge-style-{{ badge_style }}" aria-label="{{ badge_text }}">
+          {% if badge_icon == 'tag' %}
+            <svg class="badge-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"></path><circle cx="7" cy="7" r="1"></circle></svg>
+          {% elsif badge_icon == 'star' %}
+            <svg class="badge-icon" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          {% elsif badge_icon == 'x-circle' %}
+            <svg class="badge-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+          {% endif %}
+          <span>{{ badge_text }}</span>
         </span>
       {% endif %}
       
       {%- comment -%} IMAGE PRINCIPALE {%- endcomment -%}
-      {% if main_image != blank %}
-        {% render 'responsive-image',
-          image: main_image,
-          sizes: '(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw',
-          loading: image_loading,
-          class: 'lunetier-card-img lunetier-card-img-main'
-        %}
-      {% else %}
-        {{ 'product-1' | placeholder_svg_tag: 'lunetier-card-img lunetier-card-img-main' }}
-      {% endif %}
-      
-      {%- comment -%} IMAGE AU SURVOL {%- endcomment -%}
-      {% if hover_image != blank %}
-        {% render 'responsive-image',
-          image: hover_image,
-          sizes: '(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw',
-          loading: 'lazy',
-          class: 'lunetier-card-img lunetier-card-img-hover'
-        %}
-      {% endif %}
-      
-      {%- comment -%} SLIDE-UP BUTTON {%- endcomment -%}
-      <div class="lunetier-card-btn" role="button" tabindex="-1">
-        {% if product.available %}
-          {% if show_quick_view %}
-            Quick View
-          {% else %}
-            Voir - {{ product.price | money_without_trailing_zeros }}
-          {% endif %}
+      <div class="lunetier-card-image-container">
+        {% if main_image != blank %}
+          {% render 'responsive-image',
+            image: main_image,
+            sizes: '(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw',
+            loading: image_loading,
+            class: 'lunetier-card-img lunetier-card-img-main',
+            alt: product.title
+          %}
         {% else %}
-          Épuisé
+          {{ 'product-1' | placeholder_svg_tag: 'lunetier-card-img lunetier-card-img-main' }}
         {% endif %}
+        
+        {%- comment -%} IMAGE HOVER (seulement si existe) {%- endcomment -%}
+        {% if hover_image != blank %}
+          {% render 'responsive-image',
+            image: hover_image,
+            sizes: '(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw',
+            loading: 'lazy',
+            class: 'lunetier-card-img lunetier-card-img-hover',
+            alt: product.title | append: ' - Vue 2'
+          %}
+        {% endif %}
+      </div>
+      
+      {%- comment -%} BOUTON SLIDE-UP (Desktop uniquement) {%- endcomment -%}
+      <div class="lunetier-card-btn-wrapper" role="presentation">
+        <span class="lunetier-card-btn">
+          {% if product.available %}
+            {% if show_quick_add %}
+              Ajout Rapide
+            {% else %}
+              Voir le Produit
+            {% endif %}
+          {% else %}
+            Produit Épuisé
+          {% endif %}
+        </span>
       </div>
     </div>
     
-    {%- comment -%} INFO CONTAINER {%- endcomment -%}
+    {%- comment -%} === INFO CONTAINER === {%- endcomment -%}
     <div class="lunetier-card-info">
-      <div class="lunetier-card-details">
-        <h3 class="lunetier-card-title">{{ product.title }}</h3>
-        
-        {%- comment -%} VENDOR / TYPE {%- endcomment -%}
-        {% if show_vendor %}
-          <p class="lunetier-card-meta">
-            {{ product.vendor | default: product.type }}
-          </p>
+      
+      {%- comment -%} VENDOR + TITRE {%- endcomment -%}
+      <div class="lunetier-card-header">
+        {% if show_vendor and vendor_display != blank %}
+          <p class="lunetier-card-vendor">{{ vendor_display }}</p>
         {% endif %}
-        
-        {%- comment -%} AVIS (si app d'avis installée) {%- endcomment -%}
-        {% comment %}
-        <div class="lunetier-card-rating">
-          {%- render 'product-rating', product: product -%}
-        </div>
-        {% endcomment %}
+        <h3 class="lunetier-card-title">{{ product.title }}</h3>
       </div>
       
       {%- comment -%} PRIX {%- endcomment -%}
-      <div class="lunetier-card-price-wrapper">
-        {% if product.compare_at_price > product.price %}
-          <span class="lunetier-card-price lunetier-card-price-sale">
-            {{ product.price | money_without_trailing_zeros }}
+      <div class="lunetier-card-footer">
+        <div class="lunetier-card-price-wrapper">
+          {% if product.compare_at_price > product.price %}
+            <div class="lunetier-price-group">
+              <span class="lunetier-card-price lunetier-price-sale" aria-label="Prix promo">
+                {{ product.price | money_without_trailing_zeros }}
+              </span>
+              <span class="lunetier-card-price-compare" aria-label="Prix initial">
+                {{ product.compare_at_price | money_without_trailing_zeros }}
+              </span>
+            </div>
+          {% else %}
+            <span class="lunetier-card-price" aria-label="Prix">
+              {{ product.price | money_without_trailing_zeros }}
+            </span>
+          {% endif %}
+        </div>
+        
+        {%- comment -%} VARIANTS COUNT (Mobile) {%- endcomment -%}
+        {% unless product.has_only_default_variant %}
+          <span class="lunetier-card-variants" aria-label="{{ product.variants.size }} variantes disponibles">
+            {{ product.variants.size }} {% if product.variants.size > 1 %}options{% else %}option{% endif %}
           </span>
-          <span class="lunetier-card-price-compare">
-            {{ product.compare_at_price | money_without_trailing_zeros }}
-          </span>
-        {% else %}
-          <span class="lunetier-card-price">
-            {{ product.price | money_without_trailing_zeros }}
-          </span>
-        {% endif %}
+        {% endunless %}
       </div>
     </div>
     
   </a>
   
-  {%- comment -%} QUICK VIEW MODAL (si activé) {%- endcomment -%}
-  {% if show_quick_view %}
-    {%- comment -%}
-    TODO: Implémenter modal quick view avec AJAX
-    <button class="lunetier-quick-view-btn" 
-            data-product-handle="{{ product.handle }}"
-            aria-label="Aperçu rapide de {{ product.title }}">
-      <svg>...</svg>
-    </button>
-    {%- endcomment -%}
+  {%- comment -%} QUICK ADD TO CART (si activé) {%- endcomment -%}
+  {% if show_quick_add and product.available %}
+    <form action="/cart/add" method="post" class="lunetier-quick-add-form">
+      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+      <button type="submit" 
+              class="lunetier-quick-add-btn"
+              aria-label="Ajouter {{ product.title }} au panier">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"></path></svg>
+      </button>
+    </form>
   {% endif %}
+  
 </article>
