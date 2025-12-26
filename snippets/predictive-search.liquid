@@ -269,9 +269,19 @@
   let searchTimeout;
   
   // === FORMAT MONEY ===
-  function formatMoney(cents) {
-    const euros = (cents / 100).toFixed(2).replace('.', ',');
-    return euros + ' €';
+  function formatMoney(price) {
+    // Le prix peut être une string "45.00" ou un nombre 4500
+    let priceFloat;
+    
+    if (typeof price === 'string') {
+      // "45.00" -> 45.00
+      priceFloat = parseFloat(price);
+    } else {
+      // 4500 -> 45.00
+      priceFloat = price / 100;
+    }
+    
+    return priceFloat.toFixed(2).replace('.', ',') + ' €';
   }
   
   // === SEARCH FUNCTION ===
@@ -290,50 +300,15 @@
     
     // ✅ LIMIT 4 PRODUITS
     const url = `/search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=4`;
-    console.log('🔗 API URL:', url);
     
     fetch(url)
-      .then(response => {
-        console.log('📡 Response status:', response.status);
-        console.log('📡 Response headers:', response.headers);
-        return response.text();
-      })
-      .then(text => {
-        console.log('📄 Raw response:', text);
-        let data;
-        try {
-          data = JSON.parse(text);
-        } catch(e) {
-          console.error('❌ JSON parse error:', e);
-          throw new Error('Invalid JSON');
-        }
-        console.log('📦 Parsed data:', data);
-        console.log('📦 Data structure:', Object.keys(data));
-        
+      .then(response => response.json())
+      .then(data => {
         loadingEl.classList.remove('is-active');
         
-        // Essayer différentes structures de données
-        let products = null;
-        
-        if (data.resources?.results?.products) {
-          products = data.resources.results.products;
-          console.log('✅ Found products in: data.resources.results.products');
-        } else if (data.results?.products) {
-          products = data.results.products;
-          console.log('✅ Found products in: data.results.products');
-        } else if (data.products) {
-          products = data.products;
-          console.log('✅ Found products in: data.products');
-        } else if (Array.isArray(data)) {
-          products = data;
-          console.log('✅ Data is array of products');
-        }
-        
-        console.log('📦 Products found:', products ? products.length : 0);
-        
-        if (products && products.length > 0) {
-          console.log('📦 First product:', products[0]);
-          displayResults(products.slice(0, 4), query);
+        if (data.resources?.results?.products?.length > 0) {
+          console.log('✅ Products found:', data.resources.results.products.length);
+          displayResults(data.resources.results.products, query);
         } else {
           console.log('⚠️ No products found');
           displayNoResults(query);
@@ -341,7 +316,6 @@
       })
       .catch(error => {
         console.error('❌ Search error:', error);
-        console.error('❌ Error stack:', error.stack);
         loadingEl.classList.remove('is-active');
         displayNoResults(query);
       });
@@ -353,25 +327,47 @@
     let html = '<div class="predictive-search-grid">';
     
     products.forEach((product, index) => {
+      // Prix formaté
       const price = formatMoney(product.price);
-      const comparePrice = product.compare_at_price_max && product.compare_at_price_max > product.price 
-        ? formatMoney(product.compare_at_price_max) 
-        : null;
+      const compareAtPriceMax = parseFloat(product.compare_at_price_max || 0);
+      const priceValue = typeof product.price === 'string' ? parseFloat(product.price) : product.price / 100;
+      const comparePrice = compareAtPriceMax > priceValue ? formatMoney(product.compare_at_price_max) : null;
       
       console.log(`Product ${index + 1}:`, {
         title: product.title,
         price: price,
         comparePrice: comparePrice,
-        image: product.featured_image ? 'yes' : 'no'
+        featured_image: product.featured_image
       });
       
       // Image optimisée
       let imageHtml = '';
+      let imageUrl = null;
+      
+      // ✅ FIX: featured_image est un OBJET {url: "..."}
       if (product.featured_image) {
-        const imageUrl = product.featured_image.includes('?') 
-          ? product.featured_image.split('?')[0] + '?width=600' 
-          : product.featured_image + '?width=600';
-        imageHtml = `<img src="${imageUrl}" alt="${escapeHtml(product.title)}" loading="lazy">`;
+        if (typeof product.featured_image === 'object' && product.featured_image.url) {
+          imageUrl = product.featured_image.url;
+        } else if (typeof product.featured_image === 'string') {
+          imageUrl = product.featured_image;
+        }
+      }
+      
+      // Fallback sur image si featured_image n'existe pas
+      if (!imageUrl && product.image) {
+        if (typeof product.image === 'object' && product.image.url) {
+          imageUrl = product.image.url;
+        } else if (typeof product.image === 'string') {
+          imageUrl = product.image;
+        }
+      }
+      
+      if (imageUrl) {
+        // Optimiser l'URL
+        const optimizedUrl = imageUrl.includes('?') 
+          ? imageUrl.split('?')[0] + '?width=600' 
+          : imageUrl + '?width=600';
+        imageHtml = `<img src="${optimizedUrl}" alt="${escapeHtml(product.title)}" loading="lazy">`;
       } else {
         imageHtml = `
           <div class="predictive-search-card-placeholder">
