@@ -3,6 +3,8 @@
   Optimisé : CSS externe dans assets/cart.css
 {% endcomment %}
 
+{{ 'cart.css' | asset_url | stylesheet_tag }}
+
 <div class="lunetier-cart-section">
   <div class="lunetier-cart-container">
     
@@ -130,12 +132,325 @@
   </div>
 </div>
 
-{% comment %}
-  JavaScript déplacé dans assets/theme.js :
-  - updateQuantity()
-  - removeItem()
-  - Auto-update cart
-{% endcomment %}
+<script>
+// Update quantity
+function updateQuantity(line, change) {
+  const input = document.querySelector(`input[data-line="${line}"]`);
+  if (!input) return;
+  
+  const currentQty = parseInt(input.value);
+  const newQty = Math.max(0, currentQty + change);
+  
+  input.value = newQty;
+  updateCart(line, newQty);
+}
+
+// Remove item
+function removeItem(line) {
+  updateCart(line, 0);
+}
+
+// Update cart via AJAX
+function updateCart(line, quantity) {
+  const formData = new FormData();
+  formData.append('line', line);
+  formData.append('quantity', quantity);
+  
+  fetch('/cart/change.js', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      line: line,
+      quantity: quantity
+    })
+  })
+  .then(response => response.json())
+  .then(cart => {
+    console.log('✅ Cart updated:', cart);
+    // Reload page to update cart display
+    window.location.reload();
+  })
+  .catch(error => {
+    console.error('❌ Error updating cart:', error);
+  });
+}
+</script>
+
+<style>
+/* Grid layout pour panier */
+.lunetier-cart-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  margin-top: 3rem;
+}
+
+@media (min-width: 1024px) {
+  .lunetier-cart-grid {
+    grid-template-columns: 2fr 1fr;
+    gap: 4rem;
+  }
+}
+
+/* Items */
+.lunetier-cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.lunetier-cart-item {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  gap: 1.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+@media (max-width: 640px) {
+  .lunetier-cart-item {
+    grid-template-columns: 80px 1fr;
+  }
+  
+  .lunetier-cart-item-price {
+    grid-column: 2 / 3;
+    text-align: right;
+    margin-top: 1rem;
+  }
+}
+
+.lunetier-cart-item-image {
+  width: 100%;
+  aspect-ratio: 4/5;
+  background: var(--color-gray-50);
+  overflow: hidden;
+}
+
+.lunetier-cart-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lunetier-cart-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lunetier-cart-item-title {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.lunetier-cart-item-title a {
+  color: var(--color-black);
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+}
+
+.lunetier-cart-item-title a:hover {
+  opacity: 0.7;
+}
+
+.lunetier-cart-item-variant {
+  font-size: 0.875rem;
+  color: var(--color-gray-500);
+  margin: 0;
+}
+
+.lunetier-cart-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Quantity controls */
+.lunetier-cart-qty {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-gray-200);
+  height: 2.5rem;
+}
+
+.lunetier-cart-qty-btn {
+  width: 2.5rem;
+  height: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast);
+}
+
+.lunetier-cart-qty-btn:hover {
+  background: var(--color-gray-50);
+}
+
+.lunetier-cart-qty-input {
+  width: 3rem;
+  height: 100%;
+  border: none;
+  text-align: center;
+  font-size: 0.875rem;
+  appearance: none;
+  -moz-appearance: textfield;
+}
+
+.lunetier-cart-qty-input::-webkit-outer-spin-button,
+.lunetier-cart-qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.lunetier-cart-qty-input:focus {
+  outline: none;
+}
+
+.lunetier-cart-remove {
+  background: none;
+  border: none;
+  color: var(--color-gray-400);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.lunetier-cart-remove:hover {
+  color: var(--color-error);
+}
+
+.lunetier-cart-item-price {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Summary */
+.lunetier-cart-summary {
+  background: var(--color-gray-50);
+  padding: 2rem;
+  height: fit-content;
+  position: sticky;
+  top: 8rem;
+}
+
+.lunetier-cart-summary-title {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.lunetier-cart-summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--color-gray-600);
+}
+
+/* Shipping bar */
+.lunetier-cart-shipping-bar {
+  height: 4px;
+  background: var(--color-gray-200);
+  margin: 1.5rem 0 0.5rem 0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.lunetier-cart-shipping-progress {
+  height: 100%;
+  background: var(--color-black);
+  transition: width 0.3s ease;
+}
+
+.lunetier-cart-shipping-text {
+  font-size: 0.75rem;
+  color: var(--color-gray-500);
+  margin: 0 0 1.5rem 0;
+}
+
+.lunetier-cart-total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-gray-200);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.lunetier-cart-checkout-btn {
+  width: 100%;
+  background: var(--color-black);
+  color: var(--color-white);
+  padding: 1.25rem;
+  text-align: center;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.lunetier-cart-checkout-btn:hover {
+  background: var(--color-gray-800);
+  transform: translateY(-2px);
+}
+
+.lunetier-cart-continue {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  color: var(--color-gray-500);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color var(--transition-fast);
+}
+
+.lunetier-cart-continue:hover {
+  color: var(--color-black);
+}
+
+/* Empty state */
+.lunetier-cart-empty {
+  text-align: center;
+  padding: 6rem 2rem;
+}
+
+.lunetier-cart-empty p {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  color: var(--color-gray-500);
+}
+
+.lunetier-cart-shop-btn {
+  display: inline-block;
+  background: var(--color-black);
+  color: var(--color-white);
+  padding: 1rem 2rem;
+  text-decoration: none;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all var(--transition-fast);
+}
+
+.lunetier-cart-shop-btn:hover {
+  background: var(--color-gray-800);
+  transform: translateY(-2px);
+}
+</style>
 
 {% schema %}
 {
