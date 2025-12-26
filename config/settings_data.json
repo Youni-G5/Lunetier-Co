@@ -1,1 +1,44 @@
-{"current":{"min_page_margin":0,"sections":{"header":{"type":"header","settings":{"logo_width":100,"menu":"customer-account-main-menu"}},"footer":{"type":"footer","settings":{"brand_title":"","brand_description":"Nous changeons la façon dont vous voyez le monde, une paire à la fois. Design français, qualité sans compromis.","menu_1_title":"Aide","menu_1":"footer","menu_2_title":"Social","menu_2":""}}},"content_for_index":[]}}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "color_primary": "#ffffff",
+    "min_page_margin": 0,
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "logo_width": 100,
+          "menu": "customer-account-main-menu"
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+          "footer_logo": "",
+          "tagline": "Design français, qualité premium. Lunettes qui subliment votre style et protègent votre vision.",
+          "show_newsletter": true,
+          "menu_1_title": "Aide",
+          "menu_1": "footer",
+          "menu_2_title": "BOUTIQUE",
+          "menu_2": "customer-account-main-menu",
+          "menu_3_title": "Légal",
+          "menu_3": "",
+          "instagram_url": "shopify://policies/privacy-policy",
+          "facebook_url": "shopify://policies/privacy-policy",
+          "tiktok_url": "shopify://policies/privacy-policy",
+          "show_payment_icons": true,
+          "show_powered_by": false
+        }
+      }
+    },
+    "content_for_index": []
+  }
+}
