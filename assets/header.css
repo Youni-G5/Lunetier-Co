@@ -1,6 +1,7 @@
 /* ========================================
-   HEADER.CSS - Styles header et navigation
+   HEADER.CSS - Version Améliorée
    Lunetier & Co Theme
+   Features: Recherche, Compte, Tiroir mobile
    ======================================== */
 
 #shopify-section-header * {
@@ -20,6 +21,7 @@
   background: transparent;
 }
 
+/* === HEADER WRAPPER === */
 .lunetier-header-wrapper {
   pointer-events: auto;
   transition: all var(--transition-base);
@@ -54,6 +56,7 @@
   }
 }
 
+/* === LOGO === */
 .lunetier-logo {
   font-family: var(--font-serif);
   font-size: 1.5rem;
@@ -81,6 +84,7 @@
   }
 }
 
+/* === NAVIGATION (DESKTOP) === */
 .lunetier-nav {
   display: none;
 }
@@ -108,10 +112,17 @@
   opacity: 0.6;
 }
 
+/* === ACTIONS === */
 .lunetier-actions {
   display: flex;
   align-items: center;
   gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .lunetier-actions {
+    gap: 1rem;
+  }
 }
 
 .lunetier-icon-btn {
@@ -169,6 +180,78 @@
   }
 }
 
+/* === SEARCH BAR SLIDE-DOWN === */
+.lunetier-search-bar {
+  pointer-events: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-gray-100);
+  z-index: 1500;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: transform var(--transition-base), opacity var(--transition-base);
+  padding: 2rem 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.lunetier-search-bar.is-open {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.lunetier-search-form {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.lunetier-search-input {
+  flex: 1;
+  border: none;
+  border-bottom: 2px solid var(--color-black);
+  padding: 0.75rem 3rem 0.75rem 0;
+  font-size: 1.25rem;
+  font-family: var(--font-serif);
+  color: var(--color-black);
+  background: transparent;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.lunetier-search-input:focus {
+  border-bottom-color: var(--color-gray-400);
+}
+
+.lunetier-search-input::placeholder {
+  color: var(--color-gray-400);
+}
+
+.lunetier-search-submit,
+.lunetier-search-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: var(--color-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity var(--transition-fast);
+}
+
+.lunetier-search-submit:hover,
+.lunetier-search-close:hover {
+  opacity: 0.6;
+}
+
+/* === MOBILE DRAWER === */
 .lunetier-drawer-overlay {
   position: fixed;
   top: 0;
@@ -215,7 +298,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 .lunetier-drawer-title {
@@ -238,6 +321,34 @@
   opacity: 0.6;
 }
 
+/* === DRAWER SEARCH (Mobile) === */
+.lunetier-drawer-search {
+  margin-bottom: 2rem;
+}
+
+.lunetier-drawer-search-input {
+  width: 100%;
+  border: 1px solid var(--color-gray-200);
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-family: var(--font-sans);
+  color: var(--color-black);
+  background: var(--color-gray-50);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.lunetier-drawer-search-input:focus {
+  border-color: var(--color-black);
+  background: var(--color-white);
+}
+
+.lunetier-drawer-search-input::placeholder {
+  color: var(--color-gray-400);
+}
+
+/* === DRAWER NAV === */
 .lunetier-drawer-nav {
   display: flex;
   flex-direction: column;
@@ -253,6 +364,8 @@
   border-bottom: 1px solid var(--color-gray-100);
   padding-bottom: 1rem;
   transition: opacity var(--transition-fast);
+  display: flex;
+  align-items: center;
 }
 
 .lunetier-drawer-link:hover {
@@ -262,15 +375,18 @@
 .lunetier-drawer-link--secondary {
   font-size: 1rem !important;
   color: var(--color-gray-500) !important;
-  margin-top: 2rem !important;
+  margin-top: 1rem !important;
   border: none !important;
   font-family: var(--font-sans) !important;
+  padding-bottom: 0 !important;
 }
 
+/* === ACCESSIBILITY & REDUCED MOTION === */
 @media (prefers-reduced-motion: reduce) {
   .lunetier-header-wrapper,
   .lunetier-drawer,
-  .lunetier-drawer-overlay {
+  .lunetier-drawer-overlay,
+  .lunetier-search-bar {
     transition: none;
   }
 }
