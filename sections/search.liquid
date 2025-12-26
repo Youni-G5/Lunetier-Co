@@ -41,6 +41,9 @@
     margin: 0 auto;
     text-align: center;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   /* Empty state (no search performed) */
@@ -61,6 +64,7 @@
     margin-bottom: 1rem;
     letter-spacing: -0.02em;
     line-height: 1.1;
+    width: 100%;
   }
   
   @media (min-width: 768px) {
@@ -83,6 +87,7 @@
     margin-bottom: 3rem;
     font-weight: 400;
     line-height: 1.6;
+    width: 100%;
   }
 
   @media (min-width: 768px) {
@@ -96,6 +101,13 @@
       font-size: 1.25rem;
       margin-bottom: 4rem;
     }
+  }
+
+  .lunetier-search-section .lunetier-search-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .lunetier-search-section .lunetier-search-wrapper {
@@ -189,6 +201,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
+    width: 100%;
   }
 
   @media (min-width: 1024px) {
@@ -244,6 +257,7 @@
   .lunetier-search-section .lunetier-search-popular {
     margin-top: 4rem;
     text-align: center;
+    width: 100%;
   }
 
   @media (min-width: 1024px) {
