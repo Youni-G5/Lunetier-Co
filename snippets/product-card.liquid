@@ -9,6 +9,7 @@
   - Prix avec réduction
   - Quick view optionnel
   - Lazy loading optimisé
+  - Animation hover intelligente (s'adapte si 1 ou 2+ images)
   
   Usage:
   {% render 'product-card', 
@@ -69,12 +70,16 @@
   # Déterminer les images
   assign main_image = product.featured_media
   assign hover_image = nil
+  assign has_single_image = false
+  
   if show_second_image and product.media.size > 1
     assign hover_image = product.media[1]
+  else
+    assign has_single_image = true
   endif
 %}
 
-<article class="lunetier-product-card {{ card_class }}" data-product-id="{{ product.id }}">
+<article class="lunetier-product-card {{ card_class }} {% if has_single_image %}lunetier-card-single-image{% endif %}" data-product-id="{{ product.id }}">
   <a href="{{ product.url }}" class="lunetier-card-link" aria-label="Voir {{ product.title }}">
     
     {%- comment -%} IMAGE CONTAINER {%- endcomment -%}
