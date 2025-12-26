@@ -1,10 +1,16 @@
 {% comment %}
   Section Recherche "Lunetier" - Version Premium & Mobile First
-  Optimisé : Utilise product-card snippet + CSS minimal inline
+  Optimisé : CSS isolé avec préfixe lunetier-search-*
 {% endcomment %}
 
 <style>
-  #shopify-section-{{ section.id }} {
+  /* =================================================================
+     SEARCH SECTION - LUNETIER
+     Classes scope : .lunetier-search-*
+     ================================================================= */
+
+  /* --- SECTION WRAPPER --- */
+  .lunetier-search-section {
     background-color: var(--color-white);
     color: var(--color-black);
     padding-top: 6rem;
@@ -13,20 +19,20 @@
   }
 
   @media (min-width: 1024px) {
-    #shopify-section-{{ section.id }} {
+    .lunetier-search-section {
       padding-top: 9rem;
       padding-bottom: 8rem;
     }
   }
 
-  .lunetier-search-container {
+  .lunetier-search-section .lunetier-search-container {
     max-width: 80rem;
     margin: 0 auto;
     padding: 0 1.25rem;
   }
 
-  /* === SEARCH HEADER & INPUT === */
-  .lunetier-search-header {
+  /* --- HEADER & INPUT --- */
+  .lunetier-search-section .lunetier-search-header {
     max-width: 44rem;
     margin: 0 auto 3rem auto;
     text-align: center;
@@ -34,12 +40,12 @@
   }
   
   @media (min-width: 1024px) {
-    .lunetier-search-header {
+    .lunetier-search-section .lunetier-search-header {
       margin-bottom: 5rem;
     }
   }
 
-  .lunetier-search-title {
+  .lunetier-search-section .lunetier-search-title {
     font-family: var(--font-serif);
     font-size: 2rem;
     font-weight: 500;
@@ -48,19 +54,19 @@
   }
   
   @media (min-width: 1024px) {
-    .lunetier-search-title { 
+    .lunetier-search-section .lunetier-search-title { 
       display: block; 
       font-size: 3rem; 
       margin-bottom: 1.5rem; 
     }
   }
 
-  .lunetier-search-wrapper {
+  .lunetier-search-section .lunetier-search-wrapper {
     position: relative;
     width: 100%;
   }
 
-  .lunetier-search-input {
+  .lunetier-search-section .lunetier-search-input {
     width: 100%;
     border: none;
     border-bottom: 1px solid var(--color-gray-200);
@@ -75,25 +81,25 @@
   }
 
   @media (min-width: 768px) {
-    .lunetier-search-input {
+    .lunetier-search-section .lunetier-search-input {
       font-size: 1.75rem;
       text-align: center;
       padding: 1rem 3rem;
     }
   }
 
-  .lunetier-search-input:focus {
+  .lunetier-search-section .lunetier-search-input:focus {
     outline: none;
     border-bottom-color: var(--color-black);
   }
   
-  .lunetier-search-input::placeholder {
+  .lunetier-search-section .lunetier-search-input::placeholder {
     color: var(--color-gray-400);
     opacity: 1;
   }
 
-  /* Icons */
-  .lunetier-search-icon-submit {
+  /* --- ICONS --- */
+  .lunetier-search-section .lunetier-search-icon-submit {
     position: absolute;
     right: 0;
     top: 50%;
@@ -107,11 +113,11 @@
     transition: opacity var(--transition-fast);
   }
 
-  .lunetier-search-icon-submit:hover {
+  .lunetier-search-section .lunetier-search-icon-submit:hover {
     opacity: 0.6;
   }
 
-  .lunetier-search-clear {
+  .lunetier-search-section .lunetier-search-clear {
     position: absolute;
     right: 2.5rem;
     top: 50%;
@@ -125,16 +131,16 @@
     transition: opacity var(--transition-fast);
   }
   
-  .lunetier-search-input:not(:placeholder-shown) ~ .lunetier-search-clear {
+  .lunetier-search-section .lunetier-search-input:not(:placeholder-shown) ~ .lunetier-search-clear {
     display: block;
   }
 
-  .lunetier-search-clear:hover {
+  .lunetier-search-section .lunetier-search-clear:hover {
     opacity: 0.6;
   }
 
-  /* === QUICK LINKS === */
-  .lunetier-quick-links {
+  /* --- QUICK LINKS --- */
+  .lunetier-search-section .lunetier-search-quick-links {
     margin-top: 1.5rem;
     font-size: 0.75rem;
     color: var(--color-gray-500);
@@ -145,7 +151,7 @@
     font-family: var(--font-sans);
   }
 
-  .lunetier-quick-link {
+  .lunetier-search-section .lunetier-search-quick-link {
     text-decoration: none;
     color: inherit;
     border: 1px solid var(--color-gray-100);
@@ -154,13 +160,13 @@
     transition: all var(--transition-fast);
   }
   
-  .lunetier-quick-link:hover {
+  .lunetier-search-section .lunetier-search-quick-link:hover {
     border-color: var(--color-black);
     color: var(--color-black);
   }
 
-  /* === RESULTS INFO === */
-  .lunetier-results-count {
+  /* --- RESULTS INFO --- */
+  .lunetier-search-section .lunetier-search-results-count {
     text-align: center;
     color: var(--color-gray-500);
     margin-bottom: 2rem;
@@ -170,8 +176,8 @@
     letter-spacing: 0.05em;
   }
 
-  /* === ARTICLE CARD === */
-  .lunetier-article-card {
+  /* --- ARTICLE CARD --- */
+  .lunetier-search-section .lunetier-search-article-card {
     background: var(--color-gray-50);
     padding: 1.5rem;
     height: 100%;
@@ -184,11 +190,11 @@
     transition: border-color var(--transition-fast);
   }
   
-  .lunetier-article-card:hover { 
+  .lunetier-search-section .lunetier-search-article-card:hover { 
     border-color: var(--color-gray-200); 
   }
 
-  .lunetier-article-tag {
+  .lunetier-search-section .lunetier-search-article-tag {
     font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -198,7 +204,7 @@
     font-family: var(--font-sans);
   }
 
-  .lunetier-article-title {
+  .lunetier-search-section .lunetier-search-article-title {
     font-family: var(--font-serif);
     font-size: 1.25rem;
     margin-bottom: 0.75rem;
@@ -206,7 +212,7 @@
     color: var(--color-black);
   }
   
-  .lunetier-article-link {
+  .lunetier-search-section .lunetier-search-article-link {
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -215,25 +221,25 @@
     font-family: var(--font-sans);
   }
 
-  /* === EMPTY STATE === */
-  .lunetier-no-results {
+  /* --- EMPTY STATE --- */
+  .lunetier-search-section .lunetier-search-no-results {
     text-align: center;
     padding: 2rem 0;
   }
   
-  .lunetier-no-results p {
+  .lunetier-search-section .lunetier-search-no-results p {
     color: var(--color-gray-500);
     margin-bottom: 2rem;
     font-family: var(--font-sans);
   }
 
-  /* === LOAD MORE === */
-  .lunetier-load-more {
+  /* --- LOAD MORE --- */
+  .lunetier-search-section .lunetier-search-load-more {
     margin-top: 4rem;
     text-align: center;
   }
 
-  .lunetier-load-more-btn {
+  .lunetier-search-section .lunetier-search-load-more-btn {
     display: inline-block;
     border-bottom: 1px solid var(--color-black);
     padding-bottom: 2px;
@@ -247,118 +253,120 @@
     transition: opacity var(--transition-fast);
   }
 
-  .lunetier-load-more-btn:hover {
+  .lunetier-search-section .lunetier-search-load-more-btn:hover {
     opacity: 0.6;
   }
 </style>
 
-<div class="lunetier-search-container">
-  
-  <div class="lunetier-search-header">
-    <h1 class="lunetier-search-title">Recherche</h1>
+<div class="lunetier-search-section">
+  <div class="lunetier-search-container">
     
-    <form action="{{ routes.search_url }}" method="get" role="search" class="lunetier-search-form">
-      <div class="lunetier-search-wrapper">
-        <input
-          type="text"
-          name="q"
-          value="{{ search.terms | escape }}"
-          placeholder="Rechercher..."
-          class="lunetier-search-input"
-          id="SearchInput"
-          autocomplete="off"
-        >
-        <input type="hidden" name="type" value="product,article,page">
-        
-        <button type="button" class="lunetier-search-clear" onclick="document.getElementById('SearchInput').value = ''; document.getElementById('SearchInput').focus();" aria-label="Effacer">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
+    <div class="lunetier-search-header">
+      <h1 class="lunetier-search-title">Recherche</h1>
+      
+      <form action="{{ routes.search_url }}" method="get" role="search" class="lunetier-search-form">
+        <div class="lunetier-search-wrapper">
+          <input
+            type="text"
+            name="q"
+            value="{{ search.terms | escape }}"
+            placeholder="Rechercher..."
+            class="lunetier-search-input"
+            id="SearchInput"
+            autocomplete="off"
+          >
+          <input type="hidden" name="type" value="product,article,page">
+          
+          <button type="button" class="lunetier-search-clear" onclick="document.getElementById('SearchInput').value = ''; document.getElementById('SearchInput').focus();" aria-label="Effacer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
 
-        <button type="submit" class="lunetier-search-icon-submit" aria-label="Valider">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </button>
-      </div>
-    </form>
+          <button type="submit" class="lunetier-search-icon-submit" aria-label="Valider">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+        </div>
+      </form>
 
-    {%- unless search.performed -%}
-      <div class="lunetier-quick-links">
-        <span>Tendances :</span>
-        <a href="{{ routes.all_products_collection_url }}" class="lunetier-quick-link">Solaire</a>
-        <a href="{{ routes.all_products_collection_url }}" class="lunetier-quick-link">Optique</a>
-        <a href="{{ routes.all_products_collection_url }}" class="lunetier-quick-link">Nouveautés</a>
-      </div>
-    {%- endunless -%}
-  </div>
+      {%- unless search.performed -%}
+        <div class="lunetier-search-quick-links">
+          <span>Tendances :</span>
+          <a href="{{ routes.all_products_collection_url }}" class="lunetier-search-quick-link">Solaire</a>
+          <a href="{{ routes.all_products_collection_url }}" class="lunetier-search-quick-link">Optique</a>
+          <a href="{{ routes.all_products_collection_url }}" class="lunetier-search-quick-link">Nouveautés</a>
+        </div>
+      {%- endunless -%}
+    </div>
 
-  {%- if search.performed -%}
-    
-    {%- if search.results_count > 0 -%}
-      <div class="lunetier-results-count">
-        {{ search.results_count }} résultat{% if search.results_count > 1 %}s{% endif %}
-      </div>
-
-      {% paginate search.results by 12 %}
-        <div class="lunetier-products-grid">
-          {%- for item in search.results -%}
-            
-            {%- case item.object_type -%}
-              {%- when 'product' -%}
-                {% render 'product-card',
-                  product: item,
-                  show_second_image: true,
-                  show_badge: true,
-                  show_vendor: true,
-                  image_loading: 'lazy'
-                %}
-
-              {%- when 'article' -%}
-                <a href="{{ item.url }}" class="lunetier-article-card">
-                  <div class="lunetier-article-tag">Journal</div>
-                  <h3 class="lunetier-article-title">{{ item.title }}</h3>
-                  <div class="lunetier-article-link">Lire l'article</div>
-                </a>
-
-              {%- when 'page' -%}
-                <a href="{{ item.url }}" class="lunetier-article-card">
-                  <div class="lunetier-article-tag">Information</div>
-                  <h3 class="lunetier-article-title">{{ item.title }}</h3>
-                  <div class="lunetier-article-link">Voir la page</div>
-                </a>
-
-            {%- endcase -%}
-
-          {%- endfor -%}
+    {%- if search.performed -%}
+      
+      {%- if search.results_count > 0 -%}
+        <div class="lunetier-search-results-count">
+          {{ search.results_count }} résultat{% if search.results_count > 1 %}s{% endif %}
         </div>
 
-        {%- if paginate.pages > 1 -%}
-          <div class="lunetier-load-more">
-             {%- if paginate.next -%}
-              <a href="{{ paginate.next.url }}" class="lunetier-load-more-btn">
-                Charger plus
-              </a>
-             {%- endif -%}
+        {% paginate search.results by 12 %}
+          <div class="lunetier-products-grid">
+            {%- for item in search.results -%}
+              
+              {%- case item.object_type -%}
+                {%- when 'product' -%}
+                  {% render 'product-card',
+                    product: item,
+                    show_second_image: true,
+                    show_badge: true,
+                    show_vendor: true,
+                    image_loading: 'lazy'
+                  %}
+
+                {%- when 'article' -%}
+                  <a href="{{ item.url }}" class="lunetier-search-article-card">
+                    <div class="lunetier-search-article-tag">Journal</div>
+                    <h3 class="lunetier-search-article-title">{{ item.title }}</h3>
+                    <div class="lunetier-search-article-link">Lire l'article</div>
+                  </a>
+
+                {%- when 'page' -%}
+                  <a href="{{ item.url }}" class="lunetier-search-article-card">
+                    <div class="lunetier-search-article-tag">Information</div>
+                    <h3 class="lunetier-search-article-title">{{ item.title }}</h3>
+                    <div class="lunetier-search-article-link">Voir la page</div>
+                  </a>
+
+              {%- endcase -%}
+
+            {%- endfor -%}
           </div>
-        {%- endif -%}
 
-      {% endpaginate %}
+          {%- if paginate.pages > 1 -%}
+            <div class="lunetier-search-load-more">
+               {%- if paginate.next -%}
+                <a href="{{ paginate.next.url }}" class="lunetier-search-load-more-btn">
+                  Charger plus
+                </a>
+               {%- endif -%}
+            </div>
+          {%- endif -%}
 
-    {%- else -%}
-      <div class="lunetier-no-results">
-        <p>Aucun résultat pour "{{ search.terms }}". Essayez un autre terme.</p>
-        <div class="lunetier-quick-links">
-           <a href="{{ routes.all_products_collection_url }}" class="lunetier-quick-link">Voir toute la collection</a>
+        {% endpaginate %}
+
+      {%- else -%}
+        <div class="lunetier-search-no-results">
+          <p>Aucun résultat pour "{{ search.terms }}". Essayez un autre terme.</p>
+          <div class="lunetier-search-quick-links">
+             <a href="{{ routes.all_products_collection_url }}" class="lunetier-search-quick-link">Voir toute la collection</a>
+          </div>
         </div>
-      </div>
+      {%- endif -%}
+
     {%- endif -%}
 
-  {%- endif -%}
-
+  </div>
 </div>
 
 {% schema %}
