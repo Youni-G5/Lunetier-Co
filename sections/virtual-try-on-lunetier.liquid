@@ -392,13 +392,14 @@
       fps: isMobile ? 30 : 60,
       minDetectionConfidence: isMobile ? 0.6 : 0.7,
       minTrackingConfidence: isMobile ? 0.6 : 0.7,
-      refineLandmarks: !isMobile, // Désactivé sur mobile pour perfs
-      smoothingFactor: isMobile ? 0.6 : 0.5 // Plus de lissage sur mobile
+      refineLandmarks: !isMobile,
+      smoothingFactor: isMobile ? 0.6 : 0.5
     };
 
     let faceMesh = null;
     let camera = null;
     let glassesImg = null;
+    let glassesAspectRatio = 1; // Ratio d'aspect original de l'image
     let scaleMultiplier = 1.0;
     let faceDetected = false;
     let isRunning = false;
@@ -416,12 +417,16 @@
       deviceInfoEl.innerHTML = `Device: ${isMobile ? 'Mobile' : 'Desktop'}<br>Res: ${config.width}x${config.height}<br>Target: ${config.fps} FPS<br>Refine: ${config.refineLandmarks ? 'ON' : 'OFF'}`;
     }
 
-    // Précharger l'image des lunettes
+    // Précharger l'image des lunettes ET calculer son ratio
     {% if product.featured_media %}
     glassesImg = new Image();
     glassesImg.crossOrigin = 'anonymous';
     glassesImg.src = '{{ product.featured_media | image_url: width: 800 }}';
-    glassesImg.onload = () => console.log('✅ Glasses image loaded');
+    glassesImg.onload = () => {
+      // Calculer le ratio d'aspect ORIGINAL de l'image
+      glassesAspectRatio = glassesImg.naturalWidth / glassesImg.naturalHeight;
+      console.log(`✅ Glasses loaded: ${glassesImg.naturalWidth}x${glassesImg.naturalHeight} (ratio: ${glassesAspectRatio.toFixed(2)})`);
+    };
     {% endif %}
 
     // --- OUVERTURE / FERMETURE ---
@@ -588,7 +593,7 @@
       }
     }
 
-    // --- DRAW GLASSES ---
+    // --- DRAW GLASSES (FIX DISTORTION) ---
     
     function drawGlasses(landmarks, width, height) {
       if (!glassesImg || !glassesImg.complete) return;
@@ -612,9 +617,12 @@
         (rightEye.x - leftEye.x) * width
       );
 
-      // Calculate glasses dimensions
+      // Calculate glasses WIDTH based on eye distance
       const glassesWidth = eyeDistance * 2.5 * scaleMultiplier;
-      const glassesHeight = (glassesImg.height / glassesImg.width) * glassesWidth;
+      
+      // ✅ FIX: Calculate height USING ORIGINAL ASPECT RATIO
+      // Au lieu de baser sur l'image potentiellement déformée
+      const glassesHeight = glassesWidth / glassesAspectRatio;
 
       // Y offset
       const yOffset = eyeDistance * 0.15;
@@ -625,6 +633,8 @@
       ctx.imageSmoothingQuality = isMobile ? 'medium' : 'high';
       ctx.translate(centerX, centerY - yOffset);
       ctx.rotate(angle);
+      
+      // Draw image with PRESERVED aspect ratio
       ctx.drawImage(
         glassesImg,
         -glassesWidth / 2,
@@ -662,4 +672,4 @@
     }
   ]
 }
-{% endschema%}
+{% endschema %}
