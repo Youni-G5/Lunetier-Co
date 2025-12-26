@@ -217,6 +217,14 @@
 
   .vto-status-dot.inactive { background: #ef4444; }
 
+  .vto-sliders-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 320px;
+  }
+
   .vto-slider-wrapper {
     display: flex;
     align-items: center;
@@ -232,13 +240,13 @@
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    min-width: 40px;
+    min-width: 60px;
   }
 
   input[type=range] {
     -webkit-appearance: none;
     background: transparent;
-    width: 120px;
+    flex: 1;
   }
 
   input[type=range]::-webkit-slider-thumb {
@@ -335,7 +343,7 @@
 
   <!-- Controls -->
   <div class="vto-controls">
-    <p class="vto-instruction">Les lunettes s'ajustent automatiquement à votre visage</p>
+    <p class="vto-instruction">Ajustez la position et la taille des lunettes</p>
     
     <!-- Status -->
     <div class="vto-status">
@@ -343,11 +351,21 @@
       <span id="vto-status-text">Recherche de visage...</span>
     </div>
 
-    <!-- Scale Control -->
-    <div class="vto-slider-wrapper">
-      <span class="vto-slider-label">Taille</span>
-      <input type="range" id="vto-scale" min="50" max="150" value="100" step="5">
-      <span class="vto-slider-label" id="vto-scale-value">100%</span>
+    <!-- Sliders Group -->
+    <div class="vto-sliders-group">
+      <!-- Scale Control -->
+      <div class="vto-slider-wrapper">
+        <span class="vto-slider-label">Taille</span>
+        <input type="range" id="vto-scale" min="50" max="150" value="100" step="5">
+        <span class="vto-slider-label" id="vto-scale-value" style="min-width:40px; text-align:right;">100%</span>
+      </div>
+      
+      <!-- Y Position Control -->
+      <div class="vto-slider-wrapper">
+        <span class="vto-slider-label">Position Y</span>
+        <input type="range" id="vto-yoffset" min="-20" max="20" value="0" step="1">
+        <span class="vto-slider-label" id="vto-yoffset-value" style="min-width:40px; text-align:right;">0</span>
+      </div>
     </div>
   </div>
 
@@ -373,6 +391,8 @@
     const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true, willReadFrequently: false });
     const scaleInput = document.getElementById('vto-scale');
     const scaleValue = document.getElementById('vto-scale-value');
+    const yOffsetInput = document.getElementById('vto-yoffset');
+    const yOffsetValue = document.getElementById('vto-yoffset-value');
     const statusDot = document.getElementById('vto-status-dot');
     const statusText = document.getElementById('vto-status-text');
     const loadingEl = document.getElementById('vto-loading');
@@ -399,8 +419,9 @@
     let faceMesh = null;
     let camera = null;
     let glassesImg = null;
-    let glassesAspectRatio = 1; // Ratio d'aspect original de l'image
+    let glassesAspectRatio = 1;
     let scaleMultiplier = 1.0;
+    let yOffsetAdjust = 0; // Ajustement Y manuel
     let faceDetected = false;
     let isRunning = false;
     
@@ -423,7 +444,6 @@
     glassesImg.crossOrigin = 'anonymous';
     glassesImg.src = '{{ product.featured_media | image_url: width: 800 }}';
     glassesImg.onload = () => {
-      // Calculer le ratio d'aspect ORIGINAL de l'image
       glassesAspectRatio = glassesImg.naturalWidth / glassesImg.naturalHeight;
       console.log(`✅ Glasses loaded: ${glassesImg.naturalWidth}x${glassesImg.naturalHeight} (ratio: ${glassesAspectRatio.toFixed(2)})`);
     };
@@ -456,12 +476,20 @@
       }
     });
 
-    // --- SCALE CONTROL ---
+    // --- CONTROLS ---
+    
     if (scaleInput) {
       scaleInput.addEventListener('input', (e) => {
         const value = parseFloat(e.target.value);
         scaleMultiplier = value / 100;
         if (scaleValue) scaleValue.textContent = value + '%';
+      });
+    }
+
+    if (yOffsetInput) {
+      yOffsetInput.addEventListener('input', (e) => {
+        yOffsetAdjust = parseFloat(e.target.value);
+        if (yOffsetValue) yOffsetValue.textContent = yOffsetAdjust;
       });
     }
 
@@ -473,7 +501,6 @@
         errorMsg.style.display = 'none';
         smoothedLandmarks = null;
         
-        // Init MediaPipe Face Mesh
         if (!faceMesh) {
           faceMesh = new FaceMesh({
             locateFile: (file) => {
@@ -491,7 +518,6 @@
           faceMesh.onResults(onFaceMeshResults);
         }
 
-        // Init Camera avec settings optimisés
         if (!camera) {
           camera = new Camera(video, {
             onFrame: async () => {
@@ -574,8 +600,6 @@
 
       if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
         const rawLandmarks = results.multiFaceLandmarks[0];
-        
-        // Apply smoothing
         const landmarks = smoothLandmarks(rawLandmarks);
         
         if (!faceDetected) {
@@ -583,7 +607,6 @@
           updateStatus(true);
         }
 
-        // Draw glasses
         drawGlasses(landmarks, canvas.width, canvas.height);
       } else {
         if (faceDetected) {
@@ -593,48 +616,64 @@
       }
     }
 
-    // --- DRAW GLASSES (FIX DISTORTION) ---
+    // --- DRAW GLASSES (IMPROVED POSITIONING) ---
     
     function drawGlasses(landmarks, width, height) {
       if (!glassesImg || !glassesImg.complete) return;
 
-      // Key landmarks
-      const leftEye = landmarks[33];
-      const rightEye = landmarks[263];
-
-      // Calculate eye distance
-      const eyeDistance = Math.sqrt(
-        Math.pow((rightEye.x - leftEye.x) * width, 2) +
-        Math.pow((rightEye.y - leftEye.y) * height, 2)
-      );
-
-      const centerX = ((leftEye.x + rightEye.x) / 2) * width;
-      const centerY = ((leftEye.y + rightEye.y) / 2) * height;
-
-      // Calculate rotation angle
-      const angle = Math.atan2(
-        (rightEye.y - leftEye.y) * height,
-        (rightEye.x - leftEye.x) * width
-      );
-
-      // Calculate glasses WIDTH based on eye distance
-      const glassesWidth = eyeDistance * 2.5 * scaleMultiplier;
+      // ✅ Landmarks optimisés pour lunettes
+      // 33 = coin extérieur oeil gauche
+      // 263 = coin extérieur oeil droit  
+      // 159 = coin intérieur oeil gauche (plus précis pour centre)
+      // 386 = coin intérieur oeil droit
+      // 168 = milieu entre les yeux (pont du nez)
       
-      // ✅ FIX: Calculate height USING ORIGINAL ASPECT RATIO
-      // Au lieu de baser sur l'image potentiellement déformée
+      const leftEyeOuter = landmarks[33];
+      const rightEyeOuter = landmarks[263];
+      const leftEyeInner = landmarks[159];
+      const rightEyeInner = landmarks[386];
+      const noseBridge = landmarks[168]; // Point clé : pont du nez
+
+      // Distance entre coins extérieurs des yeux
+      const eyeDistance = Math.sqrt(
+        Math.pow((rightEyeOuter.x - leftEyeOuter.x) * width, 2) +
+        Math.pow((rightEyeOuter.y - leftEyeOuter.y) * height, 2)
+      );
+
+      // Centre X : milieu entre coins extérieurs
+      const centerX = ((leftEyeOuter.x + rightEyeOuter.x) / 2) * width;
+      
+      // ✅ Centre Y amélioré : utilise le pont du nez comme référence
+      // Les lunettes doivent reposer sur le pont du nez, pas flotter au-dessus
+      const eyeCenterY = ((leftEyeOuter.y + rightEyeOuter.y) / 2) * height;
+      const noseBridgeY = noseBridge.y * height;
+      
+      // Position Y = moyenne entre centre des yeux et pont du nez
+      // Cela positionne les lunettes exactement où elles doivent être
+      const centerY = (eyeCenterY + noseBridgeY) / 2;
+
+      // Angle de rotation
+      const angle = Math.atan2(
+        (rightEyeOuter.y - leftEyeOuter.y) * height,
+        (rightEyeOuter.x - leftEyeOuter.x) * width
+      );
+
+      // Dimensions avec ratio préservé
+      const glassesWidth = eyeDistance * 2.5 * scaleMultiplier;
       const glassesHeight = glassesWidth / glassesAspectRatio;
 
-      // Y offset
-      const yOffset = eyeDistance * 0.15;
+      // ✅ Y offset ajustable : permet un fine-tuning manuel
+      // Valeur de base réduite car on utilise déjà le pont du nez
+      const baseYOffset = eyeDistance * 0.05; // Réduit de 0.15 à 0.05
+      const manualYOffset = yOffsetAdjust * (eyeDistance * 0.01); // 1% par unité
+      const finalYOffset = baseYOffset + manualYOffset;
 
-      // Draw with smooth rendering
+      // Draw
       ctx.save();
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = isMobile ? 'medium' : 'high';
-      ctx.translate(centerX, centerY - yOffset);
+      ctx.translate(centerX, centerY - finalYOffset);
       ctx.rotate(angle);
-      
-      // Draw image with PRESERVED aspect ratio
       ctx.drawImage(
         glassesImg,
         -glassesWidth / 2,
