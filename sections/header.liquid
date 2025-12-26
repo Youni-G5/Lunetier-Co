@@ -1,7 +1,7 @@
 {% comment %}
-  Section Header "Lunetier" - Fix Overlay Pointer Events
-  Mode PC : PARFAIT - Ne pas toucher
-  Mode Mobile : Désactiver overlay pendant ouverture
+  Section Header "Lunetier" - VERSION FINALE
+  Mode PC : PARFAIT
+  Mode Mobile : Tiroir 100% fonctionnel avec pointer-events
 {% endcomment %}
 
 <div class="lunetier-header-wrapper" id="HeaderWrapper-{{ section.id }}">
@@ -59,7 +59,7 @@
       </a>
 
       <!-- MOBILE BURGER TRIGGER -->
-      <button class="lunetier-icon-btn lunetier-mobile-toggle" aria-label="Ouvrir le menu" id="MobileMenuTrigger-{{ section.id }}" data-lunetier-burger>
+      <button class="lunetier-icon-btn lunetier-mobile-toggle" aria-label="Ouvrir le menu" id="MobileMenuTrigger-{{ section.id }}">
          <svg xmlns="http://www.w3.org/2000/svg" class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -102,13 +102,13 @@
 </div>
 
 <!-- MOBILE DRAWER OVERLAY -->
-<div class="lunetier-drawer-overlay" id="MobileDrawerOverlay-{{ section.id }}" data-lunetier-overlay></div>
+<div class="lunetier-drawer-overlay" id="MobileDrawerOverlay-{{ section.id }}"></div>
 
 <!-- MOBILE DRAWER -->
-<div class="lunetier-drawer" id="MobileDrawer-{{ section.id }}" data-lunetier-drawer>
+<div class="lunetier-drawer" id="MobileDrawer-{{ section.id }}">
   <div class="lunetier-drawer-header">
     <span class="lunetier-drawer-title">Menu</span>
-    <button type="button" class="lunetier-drawer-close" id="MobileDrawerClose-{{ section.id }}" data-lunetier-close aria-label="Fermer le menu">
+    <button type="button" class="lunetier-drawer-close" id="MobileDrawerClose-{{ section.id }}" aria-label="Fermer le menu">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -120,7 +120,7 @@
     <!-- NAVIGATION LINKS -->
     <nav class="lunetier-drawer-nav">
       {%- for link in section.settings.menu.links -%}
-        <a href="{{ link.url }}" class="lunetier-drawer-link" data-lunetier-link>{{ link.title }}</a>
+        <a href="{{ link.url }}" class="lunetier-drawer-link">{{ link.title }}</a>
       {%- endfor -%}
     </nav>
 
@@ -129,7 +129,7 @@
 
     <!-- SECONDARY LINKS -->
     <div class="lunetier-drawer-secondary">
-      <a href="{{ routes.account_url }}" class="lunetier-drawer-secondary-link" data-lunetier-link>
+      <a href="{{ routes.account_url }}" class="lunetier-drawer-secondary-link">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
           <circle cx="12" cy="7" r="4"></circle>
@@ -139,7 +139,7 @@
 
       {% if shop.customer_accounts_enabled %}
         {% if customer %}
-          <a href="{{ routes.account_logout_url }}" class="lunetier-drawer-secondary-link" data-lunetier-link>
+          <a href="{{ routes.account_logout_url }}" class="lunetier-drawer-secondary-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
               <polyline points="16 17 21 12 16 7"></polyline>
@@ -148,7 +148,7 @@
             <span>Déconnexion</span>
           </a>
         {% else %}
-          <a href="{{ routes.account_login_url }}" class="lunetier-drawer-secondary-link" data-lunetier-link>
+          <a href="{{ routes.account_login_url }}" class="lunetier-drawer-secondary-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
               <polyline points="10 17 15 12 10 7"></polyline>
@@ -167,228 +167,114 @@
 (function() {
   'use strict';
   
-  const LunetierHeader = {
-    sectionId: '{{ section.id }}',
-    isDrawerOpen: false,
-    isSearchOpen: false,
-    overlayClickEnabled: false,
-    elements: {},
-    
-    init: function() {
-      console.log('🎯 Lunetier Header Init');
-      this.cacheElements();
-      this.bindEvents();
-      this.updateHeader();
-    },
-    
-    cacheElements: function() {
-      this.elements = {
-        header: document.getElementById('HeaderWrapper-' + this.sectionId),
-        searchBar: document.getElementById('SearchBar-' + this.sectionId),
-        searchToggle: document.getElementById('SearchToggle-' + this.sectionId),
-        searchClose: document.getElementById('SearchClose-' + this.sectionId),
-        searchInput: document.getElementById('SearchInput-' + this.sectionId),
-        burgerBtn: document.querySelector('[data-lunetier-burger]'),
-        drawer: document.querySelector('[data-lunetier-drawer]'),
-        overlay: document.querySelector('[data-lunetier-overlay]'),
-        closeBtn: document.querySelector('[data-lunetier-close]')
-      };
-      
-      console.log('✅ Elements cached');
-    },
-    
-    bindEvents: function() {
-      const self = this;
-      
-      // SCROLL
-      let ticking = false;
-      window.addEventListener('scroll', function() {
-        if (!ticking) {
-          window.requestAnimationFrame(function() {
-            self.updateHeader();
-            ticking = false;
-          });
-          ticking = true;
-        }
-      }, { passive: true });
-      
-      // SEARCH
-      if (this.elements.searchToggle) {
-        this.elements.searchToggle.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          self.toggleSearch();
-        });
-      }
-      
-      if (this.elements.searchClose) {
-        this.elements.searchClose.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          self.closeSearch();
-        });
-      }
-      
-      // BURGER
-      if (this.elements.burgerBtn) {
-        this.elements.burgerBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          console.log('🍔 Burger clicked');
-          self.toggleDrawer();
-        }, true);
-      }
-      
-      // CLOSE BUTTON
-      if (this.elements.closeBtn) {
-        this.elements.closeBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          console.log('❌ Close clicked');
-          self.closeDrawer();
-        }, true);
-      }
-      
-      // OVERLAY - Protection avec flag
-      if (this.elements.overlay) {
-        this.elements.overlay.addEventListener('click', function(e) {
-          // VÉRIFIER SI L'OVERLAY PEUT RECEVOIR DES CLICS
-          if (!self.overlayClickEnabled) {
-            console.log('⛔ Overlay click BLOCKED (not ready)');
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            return;
-          }
-          
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          console.log('🌑 Overlay clicked');
-          self.closeDrawer();
-        }, true);
-      }
-      
-      // ESC
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          if (self.isSearchOpen) self.closeSearch();
-          if (self.isDrawerOpen) self.closeDrawer();
-        }
-      });
-      
-      // PREVENT DRAWER CLOSE ON DRAWER CLICK
-      if (this.elements.drawer) {
-        this.elements.drawer.addEventListener('click', function(e) {
-          if (e.target.closest('[data-lunetier-link]')) {
-            console.log('🔗 Link clicked');
-            return;
-          }
-          e.stopPropagation();
-        });
-      }
-    },
-    
-    updateHeader: function() {
-      if (!this.elements.header) return;
-      if (window.scrollY > 50) {
-        this.elements.header.classList.add('is-scrolled');
-      } else {
-        this.elements.header.classList.remove('is-scrolled');
-      }
-    },
-    
-    toggleSearch: function() {
-      if (this.isSearchOpen) {
-        this.closeSearch();
-      } else {
-        this.openSearch();
-      }
-    },
-    
-    openSearch: function() {
-      if (!this.elements.searchBar) return;
-      this.isSearchOpen = true;
-      this.elements.searchBar.classList.add('is-open');
-      this.elements.searchToggle.setAttribute('aria-expanded', 'true');
-      document.body.style.overflow = 'hidden';
-      
-      const self = this;
-      setTimeout(function() {
-        if (self.elements.searchInput) self.elements.searchInput.focus();
-      }, 300);
-    },
-    
-    closeSearch: function() {
-      if (!this.elements.searchBar) return;
-      this.isSearchOpen = false;
-      this.elements.searchBar.classList.remove('is-open');
-      this.elements.searchToggle.setAttribute('aria-expanded', 'false');
-      document.body.style.overflow = '';
-    },
-    
-    toggleDrawer: function() {
-      if (this.isDrawerOpen) {
-        this.closeDrawer();
-      } else {
-        this.openDrawer();
-      }
-    },
-    
-    openDrawer: function() {
-      if (!this.elements.drawer || !this.elements.overlay) return;
-      
-      console.log('🟢 Opening drawer...');
-      
-      // DÉSACTIVER OVERLAY CLICS
-      this.overlayClickEnabled = false;
-      console.log('🔒 Overlay clicks DISABLED');
-      
-      // Ouvrir
-      this.elements.drawer.classList.add('is-open');
-      this.elements.overlay.classList.add('is-open');
-      document.body.style.overflow = 'hidden';
-      
-      const self = this;
-      
-      // Marquer comme ouvert après 100ms
-      setTimeout(function() {
-        self.isDrawerOpen = true;
-        console.log('✅ Drawer state: OPEN');
-      }, 100);
-      
-      // ACTIVER OVERLAY CLICS après 250ms
-      setTimeout(function() {
-        self.overlayClickEnabled = true;
-        console.log('🔓 Overlay clicks ENABLED');
-      }, 250);
-    },
-    
-    closeDrawer: function() {
-      if (!this.elements.drawer || !this.elements.overlay) return;
-      
-      console.log('🔴 Closing drawer...');
-      
-      this.isDrawerOpen = false;
-      this.overlayClickEnabled = false;
-      
-      this.elements.drawer.classList.remove('is-open');
-      this.elements.overlay.classList.remove('is-open');
-      document.body.style.overflow = '';
-      
-      console.log('✅ Drawer closed');
+  const sectionId = '{{ section.id }}';
+  const header = document.getElementById('HeaderWrapper-' + sectionId);
+  const searchBar = document.getElementById('SearchBar-' + sectionId);
+  const searchToggle = document.getElementById('SearchToggle-' + sectionId);
+  const searchClose = document.getElementById('SearchClose-' + sectionId);
+  const searchInput = document.getElementById('SearchInput-' + sectionId);
+  const burgerBtn = document.getElementById('MobileMenuTrigger-' + sectionId);
+  const drawer = document.getElementById('MobileDrawer-' + sectionId);
+  const overlay = document.getElementById('MobileDrawerOverlay-' + sectionId);
+  const closeBtn = document.getElementById('MobileDrawerClose-' + sectionId);
+
+  // === SCROLL HEADER ===
+  let ticking = false;
+  function updateHeader() {
+    if (window.scrollY > 50) {
+      header.classList.add('is-scrolled');
+    } else {
+      header.classList.remove('is-scrolled');
     }
-  };
-  
-  // INIT
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      LunetierHeader.init();
-    });
-  } else {
-    LunetierHeader.init();
+    ticking = false;
   }
-  
-  window.LunetierHeader = LunetierHeader;
-  
+
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      window.requestAnimationFrame(updateHeader);
+      ticking = true;
+    }
+  }, { passive: true });
+
+  // === SEARCH ===
+  if (searchToggle && searchBar && searchClose && searchInput) {
+    function openSearch() {
+      searchBar.classList.add('is-open');
+      searchToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      setTimeout(function() {
+        searchInput.focus();
+      }, 300);
+    }
+
+    function closeSearch() {
+      searchBar.classList.remove('is-open');
+      searchToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    searchToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (searchBar.classList.contains('is-open')) {
+        closeSearch();
+      } else {
+        openSearch();
+      }
+    });
+
+    searchClose.addEventListener('click', function(e) {
+      e.preventDefault();
+      closeSearch();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && searchBar.classList.contains('is-open')) {
+        closeSearch();
+      }
+    });
+  }
+
+  // === DRAWER ===
+  if (burgerBtn && drawer && overlay && closeBtn) {
+    
+    function openDrawer() {
+      drawer.classList.add('is-open');
+      overlay.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove('is-open');
+      overlay.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    burgerBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      openDrawer();
+    });
+
+    closeBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeDrawer();
+    });
+
+    overlay.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeDrawer();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+        closeDrawer();
+      }
+    });
+  }
+
+  updateHeader();
 })();
 </script>
 
