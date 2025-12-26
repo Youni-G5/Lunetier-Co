@@ -314,7 +314,7 @@
       console.log('✅ Product added to cart:', data);
       
       // Success feedback
-      button.textContent = '✅ Ajouté !';
+      button.textContent = 'Ajouté !';
       
       // Update cart count
       fetch('/cart.js')
@@ -335,7 +335,7 @@
     })
     .catch(error => {
       console.error('❌ Error adding to cart:', error);
-      button.textContent = '❌ Erreur';
+      button.textContent = 'Erreur';
       
       setTimeout(function() {
         button.disabled = false;
