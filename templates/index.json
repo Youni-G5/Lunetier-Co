@@ -74,8 +74,8 @@
         "description": "Quelques pièces exclusives pour compléter votre style.",
         "collection": "frontpage",
         "limit": 3,
-        "padding_top": 24,
-        "padding_bottom": 32
+        "padding_top": 32,
+        "padding_bottom": 64
       }
     },
     "testimonials_XdmgYh": {
