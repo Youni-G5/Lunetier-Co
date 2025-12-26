@@ -1,7 +1,7 @@
 /* ========================================
-   HEADER.CSS - VERSION FINALE
+   HEADER.CSS - Avec Recherche Prédictive
    PC : PARFAIT
-   Mobile : Tiroir fonctionnel avec pointer-events
+   Mobile : Tiroir fonctionnel + Recherche en haut
    ======================================== */
 
 #shopify-section-header * {
@@ -171,14 +171,12 @@
   }
 }
 
-/* MOBILE: Hide ONLY account in header */
 @media (max-width: 768px) {
   .lunetier-account-desktop {
     display: none !important;
   }
 }
 
-/* DESKTOP: Hide burger menu */
 .lunetier-mobile-toggle {
   display: none;
 }
@@ -206,7 +204,7 @@
   font-family: var(--font-sans);
 }
 
-/* === SEARCH BAR === */
+/* === SEARCH BAR - EN HAUT === */
 .lunetier-search-bar {
   pointer-events: auto;
   position: fixed;
@@ -220,10 +218,8 @@
   opacity: 0;
   visibility: hidden;
   transition: opacity var(--transition-base), visibility var(--transition-base);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .lunetier-search-bar.is-open {
@@ -231,48 +227,41 @@
   visibility: visible;
 }
 
-.lunetier-search-container {
+.lunetier-search-wrapper {
   width: 100%;
-  max-width: 600px;
-}
-
-.lunetier-search-form {
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.lunetier-search-input {
-  flex: 1;
-  border: none;
-  border-bottom: 2px solid var(--color-black);
-  padding: 1rem 0;
-  font-size: 1.5rem;
-  font-family: var(--font-serif);
-  color: var(--color-black);
-  background: transparent;
-  outline: none;
-  transition: border-color var(--transition-fast);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
 @media (max-width: 768px) {
-  .lunetier-search-input {
-    font-size: 1.25rem;
-    padding: 0.75rem 0;
+  .lunetier-search-wrapper {
+    padding: 1.5rem;
   }
 }
 
-.lunetier-search-input:focus {
-  border-bottom-color: var(--color-gray-400);
+/* HEADER */
+.lunetier-search-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 
-.lunetier-search-input::placeholder {
-  color: var(--color-gray-400);
+.lunetier-search-title {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-black);
+  margin: 0;
 }
 
-.lunetier-search-submit,
+@media (max-width: 768px) {
+  .lunetier-search-title {
+    font-size: 1.25rem;
+  }
+}
+
 .lunetier-search-close {
   background: none;
   border: none;
@@ -283,15 +272,60 @@
   align-items: center;
   justify-content: center;
   transition: opacity var(--transition-fast);
-  flex-shrink: 0;
 }
 
-.lunetier-search-submit:hover,
 .lunetier-search-close:hover {
   opacity: 0.6;
 }
 
-/* === MOBILE DRAWER OVERLAY === */
+/* CONTAINER */
+.lunetier-search-container {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.lunetier-search-form {
+  width: 100%;
+}
+
+.lunetier-search-input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background-color: var(--color-gray-50, #f9fafb);
+  border: 2px solid var(--color-gray-200, #e5e7eb);
+  border-radius: 8px;
+  padding: 0 1rem;
+  transition: border-color var(--transition-fast);
+}
+
+.lunetier-search-input-wrapper:focus-within {
+  border-color: var(--color-black);
+  background-color: var(--color-white);
+}
+
+.lunetier-search-icon {
+  flex-shrink: 0;
+  color: var(--color-gray-400);
+}
+
+.lunetier-search-input {
+  flex: 1;
+  border: none;
+  padding: 1rem 0 1rem 0.75rem;
+  font-size: 1rem;
+  font-family: var(--font-sans);
+  color: var(--color-black);
+  background: transparent;
+  outline: none;
+}
+
+.lunetier-search-input::placeholder {
+  color: var(--color-gray-400);
+}
+
+/* === DRAWER OVERLAY === */
 .lunetier-drawer-overlay {
   position: fixed;
   top: 0;
@@ -312,7 +346,7 @@
   pointer-events: auto;
 }
 
-/* === MOBILE DRAWER === */
+/* === DRAWER === */
 .lunetier-drawer {
   position: fixed;
   top: 0;
@@ -372,7 +406,6 @@
   opacity: 0.6;
 }
 
-/* === DRAWER CONTENT === */
 .lunetier-drawer-content {
   flex: 1;
   overflow-y: auto;
@@ -382,7 +415,6 @@
   position: relative;
 }
 
-/* === DRAWER NAV === */
 .lunetier-drawer-nav {
   display: flex;
   flex-direction: column;
@@ -409,14 +441,12 @@
   opacity: 0.6;
 }
 
-/* === DRAWER DIVIDER === */
 .lunetier-drawer-divider {
   height: 1px;
   background-color: var(--color-gray-200);
   margin: 1rem 0 1.5rem 0;
 }
 
-/* === DRAWER SECONDARY === */
 .lunetier-drawer-secondary {
   display: flex;
   flex-direction: column;
@@ -447,7 +477,6 @@
   color: var(--color-black);
 }
 
-/* === ACCESSIBILITY === */
 @media (prefers-reduced-motion: reduce) {
   .lunetier-header-wrapper,
   .lunetier-drawer,

@@ -1,7 +1,7 @@
 {% comment %}
-  Section Header "Lunetier" - VERSION FINALE
+  Section Header "Lunetier" - Avec Recherche Prédictive
   Mode PC : PARFAIT
-  Mode Mobile : Tiroir 100% fonctionnel avec pointer-events
+  Mode Mobile : Tiroir fonctionnel + Recherche en haut
 {% endcomment %}
 
 <div class="lunetier-header-wrapper" id="HeaderWrapper-{{ section.id }}">
@@ -73,31 +73,42 @@
 
 <!-- SEARCH BAR SLIDE-DOWN (Desktop + Mobile) -->
 <div class="lunetier-search-bar" id="SearchBar-{{ section.id }}" role="search">
-  <div class="lunetier-search-container">
-    <form action="{{ routes.search_url }}" method="get" class="lunetier-search-form">
-      <input
-        type="text"
-        name="q"
-        placeholder="Rechercher un produit..."
-        class="lunetier-search-input"
-        id="SearchInput-{{ section.id }}"
-        autocomplete="off"
-        aria-label="Champ de recherche"
-      >
-      <input type="hidden" name="type" value="product">
-      <button type="submit" class="lunetier-search-submit" aria-label="Lancer la recherche">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-      </button>
+  <div class="lunetier-search-wrapper">
+    <!-- HEADER -->
+    <div class="lunetier-search-header">
+      <h2 class="lunetier-search-title">Rechercher</h2>
       <button type="button" class="lunetier-search-close" id="SearchClose-{{ section.id }}" aria-label="Fermer la recherche">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
-    </form>
+    </div>
+    
+    <!-- SEARCH FORM -->
+    <div class="lunetier-search-container">
+      <form action="{{ routes.search_url }}" method="get" class="lunetier-search-form">
+        <div class="lunetier-search-input-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lunetier-search-icon">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            type="text"
+            name="q"
+            placeholder="Rechercher un produit..."
+            class="lunetier-search-input"
+            id="SearchInput-{{ section.id }}"
+            autocomplete="off"
+            aria-label="Champ de recherche"
+          >
+          <input type="hidden" name="type" value="product">
+        </div>
+      </form>
+    </div>
+    
+    <!-- PREDICTIVE SEARCH RESULTS -->
+    {% render 'predictive-search', section_id: section.id %}
   </div>
 </div>
 
@@ -211,6 +222,13 @@
       searchBar.classList.remove('is-open');
       searchToggle.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
+      searchInput.value = '';
+      // Clear results
+      const resultsEl = document.getElementById('PredictiveSearchResults-' + sectionId);
+      if (resultsEl) {
+        resultsEl.classList.remove('is-visible');
+        resultsEl.innerHTML = '';
+      }
     }
 
     searchToggle.addEventListener('click', function(e) {
