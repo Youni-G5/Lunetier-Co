@@ -1,7 +1,7 @@
 {% comment %}
-  Section Header "Lunetier" - Version Corrigée
+  Section Header "Lunetier" - Fix Propagation Overlay
   Mode PC : PARFAIT - Ne pas toucher
-  Mode Mobile : Tiroir fonctionnel + panier ajouté
+  Mode Mobile : Tiroir fixé avec délai overlay
 {% endcomment %}
 
 <div class="lunetier-header-wrapper" id="HeaderWrapper-{{ section.id }}">
@@ -244,15 +244,25 @@
   // === MOBILE DRAWER TOGGLE ===
   if (mobileMenuTrigger && mobileDrawer && mobileDrawerOverlay && mobileDrawerClose) {
     
+    let isOpening = false; // Flag pour éviter propagation immédiate
+
     function openDrawer() {
       console.log('Opening drawer...');
+      isOpening = true;
       mobileDrawer.classList.add('is-open');
       mobileDrawerOverlay.classList.add('is-open');
       document.body.style.overflow = 'hidden';
+      
+      // Désactiver le flag après 100ms
+      setTimeout(function() {
+        isOpening = false;
+        console.log('Drawer fully opened, overlay now active');
+      }, 100);
     }
 
     function closeDrawer() {
       console.log('Closing drawer...');
+      isOpening = false;
       mobileDrawer.classList.remove('is-open');
       mobileDrawerOverlay.classList.remove('is-open');
       document.body.style.overflow = '';
@@ -261,7 +271,7 @@
     // Open drawer
     mobileMenuTrigger.addEventListener('click', function(e) {
       e.preventDefault();
-      e.stopPropagation();
+      e.stopImmediatePropagation();
       console.log('Burger clicked');
       
       if (mobileDrawer.classList.contains('is-open')) {
@@ -269,20 +279,25 @@
       } else {
         openDrawer();
       }
-    });
+    }, true); // USE CAPTURE PHASE
 
     // Close drawer button
     mobileDrawerClose.addEventListener('click', function(e) {
       e.preventDefault();
-      e.stopPropagation();
+      e.stopImmediatePropagation();
       console.log('Close button clicked');
       closeDrawer();
     });
 
-    // Close on overlay click
+    // Close on overlay click (avec protection)
     mobileDrawerOverlay.addEventListener('click', function(e) {
+      if (isOpening) {
+        console.log('Overlay click ignored (drawer opening)');
+        return; // Ignorer si en cours d'ouverture
+      }
+      
       e.preventDefault();
-      e.stopPropagation();
+      e.stopImmediatePropagation();
       console.log('Overlay clicked');
       closeDrawer();
     });
