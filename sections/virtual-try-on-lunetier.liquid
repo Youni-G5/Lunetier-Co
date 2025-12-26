@@ -247,7 +247,6 @@
     <video id="vto-video" autoplay playsinline muted></video>
     
     <!-- Image Lunettes (Overlay) -->
-    <!-- On utilise l'image du produit (si PNG détouré c'est mieux, sinon l'image featured) -->
     {%- if product.featured_media -%}
       <img src="{{ product.featured_media | image_url: width: 800 }}" 
            alt="Lunettes Virtuelles" 
@@ -262,7 +261,7 @@
     <div id="vto-error-msg" class="vto-error">
       <h3>Caméra inaccessible</h3>
       <p>Veuillez autoriser l'accès à la caméra pour utiliser l'essai virtuel.</p>
-      <button class="vto-btn" onclick="startCamera()">Réessayer</button>
+      <button class="vto-btn" onclick="window.vtoStartCamera()">Réessayer</button>
     </div>
   </div>
 
@@ -288,7 +287,15 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+(function() {
+  // Attendre que le DOM soit prêt
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVTO);
+  } else {
+    initVTO();
+  }
+
+  function initVTO() {
     const modal = document.getElementById('vto-modal');
     const closeBtn = document.getElementById('vto-close');
     const video = document.getElementById('vto-video');
@@ -297,41 +304,64 @@
     const rotateInput = document.getElementById('vto-rotate');
     const errorMsg = document.getElementById('vto-error-msg');
     
+    if (!modal || !video || !glasses) {
+      console.warn('VTO: Elements not found');
+      return;
+    }
+
     let stream = null;
     let isDragging = false;
     let startX, startY, initialLeft, initialTop;
 
     // --- 1. OUVERTURE / FERMETURE ---
     
-    // Fonction globale accessible depuis les autres sections
-    window.openVirtualTryOn = () => {
+    // Fonction globale accessible depuis product.liquid
+    window.openVirtualTryOn = function() {
+      console.log('✅ Opening Virtual Try-On...');
       modal.classList.add('is-active');
+      document.body.style.overflow = 'hidden'; // Bloquer scroll
       startCamera();
       centerGlasses();
     };
 
-    closeBtn.addEventListener('click', () => {
-      modal.classList.remove('is-active');
-      stopCamera();
-    });
+    // Export startCamera pour le bouton retry
+    window.vtoStartCamera = startCamera;
 
-    // Lier au bouton "Essai Virtuel" existant s'il y en a un
-    const triggerButtons = document.querySelectorAll('button:contains("Essai Virtuel"), button[data-vto-trigger]');
-    triggerButtons.forEach(btn => btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.openVirtualTryOn();
-    }));
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        modal.classList.remove('is-active');
+        document.body.style.overflow = ''; // Réactiver scroll
+        stopCamera();
+      });
+    }
+
+    // Fermer avec Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('is-active')) {
+        modal.classList.remove('is-active');
+        document.body.style.overflow = '';
+        stopCamera();
+      }
+    });
     
     // --- 2. GESTION CAMERA ---
     
     async function startCamera() {
-      errorMsg.style.display = 'none';
+      if (errorMsg) errorMsg.style.display = 'none';
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+        console.log('📹 Requesting camera access...');
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { 
+            facingMode: 'user',
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          } 
+        });
         video.srcObject = stream;
+        console.log('✅ Camera started');
       } catch (err) {
-        console.error("Erreur caméra:", err);
-        errorMsg.style.display = 'block';
+        console.error("❌ Camera error:", err);
+        if (errorMsg) errorMsg.style.display = 'block';
       }
     }
 
@@ -339,6 +369,7 @@
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
         video.srcObject = null;
+        console.log('🛑 Camera stopped');
       }
     }
 
@@ -352,19 +383,24 @@
     }
 
     // Slider Taille
-    scaleInput.addEventListener('input', (e) => {
-      glasses.style.width = e.target.value + 'px';
-    });
+    if (scaleInput) {
+      scaleInput.addEventListener('input', (e) => {
+        glasses.style.width = e.target.value + 'px';
+      });
+    }
 
     // Slider Rotation
-    rotateInput.addEventListener('input', (e) => {
-      glasses.style.transform = `rotate(${e.target.value}deg)`;
-    });
+    if (rotateInput) {
+      rotateInput.addEventListener('input', (e) => {
+        const rotation = e.target.value;
+        const currentWidth = glasses.style.width || '200px';
+        glasses.style.transform = `rotate(${rotation}deg)`;
+      });
+    }
 
     // Drag & Drop Mouse/Touch
     const startDrag = (e) => {
-      if (e.target !== glasses && e.target !== scaleInput && e.target !== rotateInput) return;
-      if (e.target === scaleInput || e.target === rotateInput) return; // Ne pas drag si on touche les sliders
+      if (e.target !== glasses) return;
       
       isDragging = true;
       const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
@@ -395,14 +431,17 @@
 
     // Events
     glasses.addEventListener('mousedown', startDrag);
-    glasses.addEventListener('touchstart', startDrag);
+    glasses.addEventListener('touchstart', startDrag, { passive: false });
     
     window.addEventListener('mousemove', doDrag);
-    window.addEventListener('touchmove', doDrag);
+    window.addEventListener('touchmove', doDrag, { passive: false });
     
     window.addEventListener('mouseup', stopDrag);
     window.addEventListener('touchend', stopDrag);
-  });
+
+    console.log('✅ VTO initialized');
+  }
+})();
 </script>
 
 {% schema %}
