@@ -1,19 +1,16 @@
 {% comment %}
   Section "Essai Virtuel" (VTO) - Lunetier
-  Technologie : Webcam Stream + Overlay Produit 2D
-  Fonctionnalité : Modal immersive, accès caméra, ajustement manuel de la monture.
+  Technologie : MediaPipe Face Mesh (468 landmarks) + Overlay Intelligent
+  Features : Détection faciale temps réel, positionnement automatique, suivi visage
 {% endcomment %}
 
 <style>
-  /* --- VARIABLES --- */
   :root {
     --vto-bg: #000000;
     --vto-accent: #ffffff;
-    --vto-ui-bg: rgba(255, 255, 255, 0.1);
     --vto-font: ui-sans-serif, system-ui, sans-serif;
   }
 
-  /* --- MODAL CONTAINER --- */
   .vto-modal {
     position: fixed;
     top: 0;
@@ -36,7 +33,7 @@
     pointer-events: auto;
   }
 
-  /* --- HEADER --- */
+  /* Header */
   .vto-header {
     position: absolute;
     top: 0;
@@ -58,18 +55,17 @@
     letter-spacing: 0.1em;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
   }
 
-  .vto-live-indicator {
-    width: 8px;
-    height: 8px;
-    background-color: #ef4444;
-    border-radius: 50%;
+  .vto-camera-icon {
+    width: 20px;
+    height: 20px;
+    color: #ef4444;
     animation: pulse 2s infinite;
   }
 
-  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
   .vto-close-btn {
     background: rgba(255,255,255,0.2);
@@ -88,7 +84,7 @@
   
   .vto-close-btn:hover { background: rgba(255,255,255,0.4); }
 
-  /* --- CAMERA AREA --- */
+  /* Viewport */
   .vto-viewport {
     flex: 1;
     position: relative;
@@ -99,43 +95,85 @@
     overflow: hidden;
   }
 
-  /* Le flux vidéo */
   #vto-video {
     position: absolute;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scaleX(-1); /* Effet miroir */
+    transform: scaleX(-1);
   }
 
-  /* L'image des lunettes superposée */
-  #vto-glasses-overlay {
+  #vto-canvas {
     position: absolute;
-    width: 200px; /* Taille initiale */
-    cursor: grab;
+    width: 100%;
+    height: 100%;
+    transform: scaleX(-1);
     z-index: 10;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
-    user-select: none;
-    touch-action: none;
   }
 
-  #vto-glasses-overlay:active { cursor: grabbing; }
-
-  /* Guide visage (Optionnel, décoratif) */
-  .vto-face-guide {
+  /* Loading */
+  .vto-loading {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 280px;
-    height: 350px;
-    border: 2px dashed rgba(255,255,255,0.3);
-    border-radius: 140px;
-    pointer-events: none;
-    z-index: 5;
+    text-align: center;
+    color: white;
+    z-index: 30;
   }
 
-  /* --- CONTROLS FOOTER --- */
+  .vto-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 1rem;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Error */
+  .vto-error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    display: none;
+    z-index: 30;
+    max-width: 20rem;
+    padding: 2rem;
+  }
+
+  .vto-error h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.25rem;
+  }
+
+  .vto-error p {
+    margin: 0 0 1.5rem 0;
+    opacity: 0.8;
+    line-height: 1.5;
+  }
+
+  .vto-btn {
+    background: white;
+    color: black;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: opacity 0.2s;
+  }
+
+  .vto-btn:hover { opacity: 0.9; }
+
+  /* Controls */
   .vto-controls {
     position: absolute;
     bottom: 0;
@@ -147,44 +185,58 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
   }
 
   .vto-instruction {
-    color: rgba(255,255,255,0.8);
+    color: rgba(255,255,255,0.9);
     font-size: 0.875rem;
     text-align: center;
-    max-width: 20rem;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
   }
 
-  /* Sliders de réglage */
-  .vto-sliders-group {
+  .vto-status {
     display: flex;
-    gap: 2rem;
     align-items: center;
+    gap: 0.5rem;
     background: rgba(0,0,0,0.5);
-    padding: 1rem 2rem;
+    padding: 0.5rem 1rem;
     border-radius: 99px;
     backdrop-filter: blur(10px);
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.8);
   }
+
+  .vto-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+  }
+
+  .vto-status-dot.inactive { background: #ef4444; }
 
   .vto-slider-wrapper {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
+    background: rgba(0,0,0,0.5);
+    padding: 0.75rem 1.5rem;
+    border-radius: 99px;
+    backdrop-filter: blur(10px);
   }
 
-  .vto-icon {
+  .vto-slider-label {
     color: white;
-    width: 20px;
-    height: 20px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   input[type=range] {
     -webkit-appearance: none;
     background: transparent;
-    width: 100px;
+    width: 120px;
   }
 
   input[type=range]::-webkit-slider-thumb {
@@ -204,29 +256,6 @@
     border-radius: 2px;
   }
 
-  /* --- ERROR STATE --- */
-  .vto-error {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: white;
-    display: none;
-    z-index: 30;
-  }
-
-  .vto-btn {
-    background: white;
-    color: black;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-top: 1rem;
-    cursor: pointer;
-  }
-
 </style>
 
 <div id="vto-modal" class="vto-modal" aria-hidden="true">
@@ -234,30 +263,32 @@
   <!-- Header -->
   <div class="vto-header">
     <div class="vto-title">
-      <div class="vto-live-indicator"></div>
+      <svg class="vto-camera-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+        <circle cx="12" cy="13" r="4"></circle>
+      </svg>
       Essai Virtuel
     </div>
     <button class="vto-close-btn" id="vto-close" aria-label="Fermer">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
     </button>
   </div>
 
-  <!-- Viewport Caméra -->
+  <!-- Viewport -->
   <div class="vto-viewport">
     <video id="vto-video" autoplay playsinline muted></video>
-    
-    <!-- Image Lunettes (Overlay) -->
-    {%- if product.featured_media -%}
-      <img src="{{ product.featured_media | image_url: width: 800 }}" 
-           alt="Lunettes Virtuelles" 
-           id="vto-glasses-overlay"
-           draggable="false">
-    {%- endif -%}
+    <canvas id="vto-canvas"></canvas>
 
-    <!-- Guide Visage -->
-    <div class="vto-face-guide"></div>
+    <!-- Loading -->
+    <div id="vto-loading" class="vto-loading">
+      <div class="vto-spinner"></div>
+      <p>Initialisation de la caméra...</p>
+    </div>
 
-    <!-- Message Erreur -->
+    <!-- Error -->
     <div id="vto-error-msg" class="vto-error">
       <h3>Caméra inaccessible</h3>
       <p>Veuillez autoriser l'accès à la caméra pour utiliser l'essai virtuel.</p>
@@ -265,30 +296,31 @@
     </div>
   </div>
 
-  <!-- Contrôles -->
+  <!-- Controls -->
   <div class="vto-controls">
-    <p class="vto-instruction">Placez votre visage dans l'ovale et ajustez la monture.</p>
+    <p class="vto-instruction">Les lunettes s'ajustent automatiquement à votre visage</p>
     
-    <div class="vto-sliders-group">
-      <!-- Contrôle Taille -->
-      <div class="vto-slider-wrapper" title="Ajuster la taille">
-        <svg class="vto-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
-        <input type="range" id="vto-scale" min="100" max="500" value="200">
-      </div>
-      
-      <!-- Contrôle Rotation (Optionnel) -->
-      <div class="vto-slider-wrapper" title="Ajuster l'inclinaison">
-        <svg class="vto-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
-        <input type="range" id="vto-rotate" min="-20" max="20" value="0">
-      </div>
+    <!-- Status -->
+    <div class="vto-status">
+      <div class="vto-status-dot" id="vto-status-dot"></div>
+      <span id="vto-status-text">Recherche de visage...</span>
+    </div>
+
+    <!-- Scale Control -->
+    <div class="vto-slider-wrapper">
+      <span class="vto-slider-label">Taille</span>
+      <input type="range" id="vto-scale" min="80" max="150" value="100">
     </div>
   </div>
 
 </div>
 
+<!-- MediaPipe Face Mesh CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+
 <script>
 (function() {
-  // Attendre que le DOM soit prêt
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initVTO);
   } else {
@@ -299,154 +331,218 @@
     const modal = document.getElementById('vto-modal');
     const closeBtn = document.getElementById('vto-close');
     const video = document.getElementById('vto-video');
-    const glasses = document.getElementById('vto-glasses-overlay');
+    const canvas = document.getElementById('vto-canvas');
+    const ctx = canvas.getContext('2d');
     const scaleInput = document.getElementById('vto-scale');
-    const rotateInput = document.getElementById('vto-rotate');
+    const statusDot = document.getElementById('vto-status-dot');
+    const statusText = document.getElementById('vto-status-text');
+    const loadingEl = document.getElementById('vto-loading');
     const errorMsg = document.getElementById('vto-error-msg');
     
-    if (!modal || !video || !glasses) {
-      console.warn('VTO: Elements not found');
-      return;
-    }
+    if (!modal || !video || !canvas) return;
 
-    let stream = null;
-    let isDragging = false;
-    let startX, startY, initialLeft, initialTop;
+    let faceMesh = null;
+    let camera = null;
+    let glassesImg = null;
+    let scaleMultiplier = 1.0;
+    let faceDetected = false;
 
-    // --- 1. OUVERTURE / FERMETURE ---
+    // Précharger l'image des lunettes
+    {% if product.featured_media %}
+    glassesImg = new Image();
+    glassesImg.crossOrigin = 'anonymous';
+    glassesImg.src = '{{ product.featured_media | image_url: width: 800 }}';
+    glassesImg.onload = () => console.log('✅ Glasses image loaded');
+    {% endif %}
+
+    // --- OUVERTURE / FERMETURE ---
     
-    // Fonction globale accessible depuis product.liquid
-    window.openVirtualTryOn = function() {
+    window.openVirtualTryOn = async function() {
       console.log('✅ Opening Virtual Try-On...');
       modal.classList.add('is-active');
-      document.body.style.overflow = 'hidden'; // Bloquer scroll
-      startCamera();
-      centerGlasses();
+      document.body.style.overflow = 'hidden';
+      await startVTO();
     };
 
-    // Export startCamera pour le bouton retry
-    window.vtoStartCamera = startCamera;
+    window.vtoStartCamera = async function() {
+      await startVTO();
+    };
 
     if (closeBtn) {
       closeBtn.addEventListener('click', () => {
-        modal.classList.remove('is-active');
-        document.body.style.overflow = ''; // Réactiver scroll
-        stopCamera();
+        stopVTO();
       });
     }
 
-    // Fermer avec Escape
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && modal.classList.contains('is-active')) {
-        modal.classList.remove('is-active');
-        document.body.style.overflow = '';
-        stopCamera();
+        stopVTO();
       }
     });
-    
-    // --- 2. GESTION CAMERA ---
-    
-    async function startCamera() {
-      if (errorMsg) errorMsg.style.display = 'none';
-      try {
-        console.log('📹 Requesting camera access...');
-        stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { 
-            facingMode: 'user',
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-          } 
-        });
-        video.srcObject = stream;
-        console.log('✅ Camera started');
-      } catch (err) {
-        console.error("❌ Camera error:", err);
-        if (errorMsg) errorMsg.style.display = 'block';
-      }
-    }
 
-    function stopCamera() {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        video.srcObject = null;
-        console.log('🛑 Camera stopped');
-      }
-    }
-
-    // --- 3. MANIPULATION LUNETTES (Drag & Drop & Scale) ---
-
-    function centerGlasses() {
-      // Centrer au démarrage
-      const rect = modal.getBoundingClientRect();
-      glasses.style.left = (rect.width / 2 - glasses.offsetWidth / 2) + 'px';
-      glasses.style.top = (rect.height / 2 - glasses.offsetHeight / 2) + 'px';
-    }
-
-    // Slider Taille
+    // --- SCALE CONTROL ---
     if (scaleInput) {
       scaleInput.addEventListener('input', (e) => {
-        glasses.style.width = e.target.value + 'px';
+        scaleMultiplier = parseFloat(e.target.value) / 100;
       });
     }
 
-    // Slider Rotation
-    if (rotateInput) {
-      rotateInput.addEventListener('input', (e) => {
-        const rotation = e.target.value;
-        const currentWidth = glasses.style.width || '200px';
-        glasses.style.transform = `rotate(${rotation}deg)`;
-      });
+    // --- MEDIAPIPE FACE MESH ---
+    
+    async function startVTO() {
+      try {
+        loadingEl.style.display = 'block';
+        errorMsg.style.display = 'none';
+        
+        // Init MediaPipe Face Mesh
+        if (!faceMesh) {
+          faceMesh = new FaceMesh({
+            locateFile: (file) => {
+              return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
+            }
+          });
+
+          faceMesh.setOptions({
+            maxNumFaces: 1,
+            refineLandmarks: true,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+          });
+
+          faceMesh.onResults(onFaceMeshResults);
+        }
+
+        // Init Camera
+        if (!camera) {
+          camera = new Camera(video, {
+            onFrame: async () => {
+              await faceMesh.send({ image: video });
+            },
+            width: 1280,
+            height: 720
+          });
+        }
+
+        await camera.start();
+        loadingEl.style.display = 'none';
+        console.log('✅ VTO started');
+
+      } catch (err) {
+        console.error('❌ VTO error:', err);
+        loadingEl.style.display = 'none';
+        errorMsg.style.display = 'block';
+      }
     }
 
-    // Drag & Drop Mouse/Touch
-    const startDrag = (e) => {
-      if (e.target !== glasses) return;
+    function stopVTO() {
+      modal.classList.remove('is-active');
+      document.body.style.overflow = '';
       
-      isDragging = true;
-      const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-      const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+      if (camera) {
+        camera.stop();
+      }
       
-      startX = clientX;
-      startY = clientY;
-      initialLeft = glasses.offsetLeft;
-      initialTop = glasses.offsetTop;
-      
-      e.preventDefault();
-    };
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      faceDetected = false;
+      updateStatus(false);
+      console.log('🛑 VTO stopped');
+    }
 
-    const doDrag = (e) => {
-      if (!isDragging) return;
-      
-      const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-      const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-      
-      const dx = clientX - startX;
-      const dy = clientY - startY;
-      
-      glasses.style.left = (initialLeft + dx) + 'px';
-      glasses.style.top = (initialTop + dy) + 'px';
-    };
-
-    const stopDrag = () => { isDragging = false; };
-
-    // Events
-    glasses.addEventListener('mousedown', startDrag);
-    glasses.addEventListener('touchstart', startDrag, { passive: false });
+    // --- FACE MESH RESULTS ---
     
-    window.addEventListener('mousemove', doDrag);
-    window.addEventListener('touchmove', doDrag, { passive: false });
-    
-    window.addEventListener('mouseup', stopDrag);
-    window.addEventListener('touchend', stopDrag);
+    function onFaceMeshResults(results) {
+      // Resize canvas to match video
+      canvas.width = results.image.width;
+      canvas.height = results.image.height;
 
-    console.log('✅ VTO initialized');
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+        const landmarks = results.multiFaceLandmarks[0];
+        
+        if (!faceDetected) {
+          faceDetected = true;
+          updateStatus(true);
+        }
+
+        // Draw glasses
+        drawGlasses(landmarks, canvas.width, canvas.height);
+      } else {
+        if (faceDetected) {
+          faceDetected = false;
+          updateStatus(false);
+        }
+      }
+    }
+
+    // --- DRAW GLASSES ---
+    
+    function drawGlasses(landmarks, width, height) {
+      if (!glassesImg || !glassesImg.complete) return;
+
+      // Key landmarks (MediaPipe Face Mesh indices)
+      const leftEye = landmarks[33];   // Left eye outer corner
+      const rightEye = landmarks[263]; // Right eye outer corner
+      const noseTip = landmarks[1];    // Nose tip
+      const forehead = landmarks[10];  // Forehead center
+
+      // Calculate eye distance and center
+      const eyeDistance = Math.sqrt(
+        Math.pow((rightEye.x - leftEye.x) * width, 2) +
+        Math.pow((rightEye.y - leftEye.y) * height, 2)
+      );
+
+      const centerX = ((leftEye.x + rightEye.x) / 2) * width;
+      const centerY = ((leftEye.y + rightEye.y) / 2) * height;
+
+      // Calculate rotation angle
+      const angle = Math.atan2(
+        (rightEye.y - leftEye.y) * height,
+        (rightEye.x - leftEye.x) * width
+      );
+
+      // Calculate glasses width (proportional to eye distance)
+      const glassesWidth = eyeDistance * 2.5 * scaleMultiplier;
+      const glassesHeight = (glassesImg.height / glassesImg.width) * glassesWidth;
+
+      // Adjust Y position (slightly above eyes)
+      const yOffset = eyeDistance * 0.15;
+
+      // Draw glasses with rotation
+      ctx.save();
+      ctx.translate(centerX, centerY - yOffset);
+      ctx.rotate(angle);
+      ctx.drawImage(
+        glassesImg,
+        -glassesWidth / 2,
+        -glassesHeight / 2,
+        glassesWidth,
+        glassesHeight
+      );
+      ctx.restore();
+    }
+
+    // --- UPDATE STATUS ---
+    
+    function updateStatus(detected) {
+      if (detected) {
+        statusDot.classList.remove('inactive');
+        statusText.textContent = 'Visage détecté';
+      } else {
+        statusDot.classList.add('inactive');
+        statusText.textContent = 'Recherche de visage...';
+      }
+    }
+
+    console.log('✅ VTO initialized with MediaPipe Face Mesh');
   }
 })();
 </script>
 
 {% schema %}
 {
-  "name": "Essai Virtuel (Modal)",
+  "name": "Essai Virtuel MediaPipe",
   "settings": [],
   "presets": [
     {
