@@ -7,8 +7,8 @@
 <style>
   #shopify-section-{{ section.id }} {
     background-color: var(--color-white);
-    padding-top: 6rem;
-    padding-bottom: 6rem;
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
   }
 
   .lunetier-collection-container {
@@ -70,6 +70,20 @@
     .lunetier-product-card {
       flex: 0 0 75%;
       scroll-snap-align: center;
+    }
+
+    /* FIX: Prix inline si espace suffisant */
+    .lunetier-product-card .lunetier-card-info {
+      flex-direction: row !important;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .lunetier-product-card .lunetier-card-price-wrapper {
+      flex-direction: column !important;
+      align-items: flex-end;
+      gap: 0.25rem;
     }
 
     /* Navigation Dots */
@@ -253,6 +267,30 @@
       "step": 3,
       "default": 3,
       "label": "Nombre de produits"
+    },
+    {
+      "type": "header",
+      "content": "Espacement"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "label": "Marge supérieure",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "label": "Marge inférieure",
+      "default": 96
     }
   ],
   "presets": [
