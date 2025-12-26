@@ -299,7 +299,6 @@
       .catch(error => {
         console.error('❌ Search error:', error);
         loadingEl.classList.remove('is-active');
-        // Ne pas afficher d'erreur, juste "aucun résultat"
         displayNoResults(query);
       });
   }
@@ -310,11 +309,7 @@
     let html = '<div class="predictive-search-grid">';
     
     products.forEach((product, index) => {
-      console.log(`Product ${index + 1}:`, {
-        title: product.title,
-        price: product.price,
-        image: product.featured_image ? 'yes' : 'no'
-      });
+      console.log(`Product ${index + 1}:`, product);
       
       const price = formatMoney(product.price);
       const comparePrice = product.compare_at_price_max && product.compare_at_price_max > product.price 
@@ -323,11 +318,34 @@
       
       // Image avec taille optimisée
       let imageHtml = '';
+      let imageUrl = null;
+      
+      // featured_image peut être un objet {url: "..."} ou une string
       if (product.featured_image) {
-        const imageUrl = product.featured_image.includes('?') 
-          ? product.featured_image + '&width=400' 
-          : product.featured_image + '?width=400';
-        imageHtml = `<img src="${imageUrl}" alt="${escapeHtml(product.title)}" loading="lazy">`;
+        if (typeof product.featured_image === 'object' && product.featured_image.url) {
+          imageUrl = product.featured_image.url;
+        } else if (typeof product.featured_image === 'string') {
+          imageUrl = product.featured_image;
+        }
+      }
+      
+      // Ou utiliser image si featured_image n'existe pas
+      if (!imageUrl && product.image) {
+        if (typeof product.image === 'object' && product.image.url) {
+          imageUrl = product.image.url;
+        } else if (typeof product.image === 'string') {
+          imageUrl = product.image;
+        }
+      }
+      
+      console.log(`Image URL for product ${index + 1}:`, imageUrl);
+      
+      if (imageUrl) {
+        // Optimiser l'URL
+        const optimizedUrl = imageUrl.includes('?') 
+          ? imageUrl.split('?')[0] + '?width=400' 
+          : imageUrl + '?width=400';
+        imageHtml = `<img src="${optimizedUrl}" alt="${escapeHtml(product.title)}" loading="lazy">`;
       } else {
         imageHtml = `
           <div class="predictive-search-card-placeholder">
@@ -372,6 +390,7 @@
     
     resultsEl.innerHTML = html;
     resultsEl.classList.add('is-visible');
+    console.log('✅ Results displayed successfully!');
   }
   
   // === NO RESULTS ===
