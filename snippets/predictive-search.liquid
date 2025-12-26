@@ -65,66 +65,63 @@
   font-family: var(--font-sans);
 }
 
-/* === RESULTS GRID === */
+/* === RESULTS GRID (Identique à product-card.css) === */
 .predictive-search-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
   padding: 0;
   margin: 0 0 2rem 0;
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 768px) {
   .predictive-search-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
   }
 }
 
-@media (max-width: 768px) {
-  .predictive-search-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-}
-
-/* === PRODUCT CARD === */
+/* === PRODUCT CARD (Adapté de product-card.css) === */
 .predictive-search-card {
-  display: block;
-  text-decoration: none;
-  background: transparent;
-  transition: transform var(--transition-fast);
-  position: relative;
-}
-
-.predictive-search-card:hover {
-  transform: translateY(-4px);
-}
-
-.predictive-search-card-image {
   position: relative;
   width: 100%;
-  padding-top: 100%;
-  background-color: var(--color-gray-50, #f9fafb);
-  overflow: hidden;
-  border-radius: 4px;
-  margin-bottom: 1rem;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
 }
 
-.predictive-search-card-image img {
-  position: absolute;
-  top: 0;
-  left: 0;
+/* IMAGE WRAPPER */
+.predictive-search-card-image-wrapper {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background-color: var(--color-gray-50, #f9fafb);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .predictive-search-card-image-wrapper {
+    aspect-ratio: 3 / 4;
+  }
+}
+
+/* IMAGE */
+.predictive-search-card-image-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--transition-base);
+  display: block;
+  transition: opacity var(--transition-base), transform var(--transition-slow);
 }
 
-.predictive-search-card:hover .predictive-search-card-image img {
-  transform: scale(1.05);
+/* Zoom au hover */
+.predictive-search-card:hover .predictive-search-card-image-wrapper img {
+  transform: scale(1.08);
 }
 
+/* PLACEHOLDER */
 .predictive-search-card-placeholder {
   position: absolute;
   top: 50%;
@@ -143,43 +140,81 @@
   color: var(--color-gray-300);
 }
 
+/* INFO CONTAINER */
 .predictive-search-card-info {
-  text-align: left;
-}
-
-.predictive-search-card-title {
-  font-size: 0.9375rem;
-  font-weight: 400;
-  color: var(--color-black);
-  margin: 0 0 0.5rem 0;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  font-family: var(--font-serif);
-  min-height: 2.8em;
-}
-
-.predictive-search-card-price {
-  font-size: 0.875rem;
-  font-weight: 400;
-  color: var(--color-black);
-  font-family: var(--font-sans);
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  font-family: var(--font-sans);
 }
 
-.predictive-search-card-price--compare {
-  text-decoration: line-through;
-  color: var(--color-gray-400);
-  font-size: 0.8125rem;
+@media (max-width: 640px) {
+  .predictive-search-card-info {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+.predictive-search-card-details {
+  flex: 1;
+  min-width: 0;
+}
+
+/* TITLE */
+.predictive-search-card-title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 0.25rem 0;
+  color: var(--color-black);
+  line-height: 1.3;
+  transition: opacity var(--transition-fast);
+}
+
+@media (min-width: 768px) {
+  .predictive-search-card-title {
+    font-size: 1.125rem;
+  }
+}
+
+.predictive-search-card:hover .predictive-search-card-title {
+  opacity: 0.7;
+}
+
+/* PRICE WRAPPER */
+.predictive-search-card-price-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .predictive-search-card-price-wrapper {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+/* PRICE */
+.predictive-search-card-price {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-black);
+  white-space: nowrap;
 }
 
 .predictive-search-card-price--sale {
-  color: #dc2626;
-  font-weight: 500;
+  color: var(--color-error, #dc2626);
+}
+
+.predictive-search-card-price--compare {
+  font-size: 0.875rem;
+  color: var(--color-gray-400);
+  text-decoration: line-through;
+  white-space: nowrap;
 }
 
 /* === VIEW ALL === */
@@ -232,29 +267,11 @@
   console.log('✅ Predictive search initialized');
   
   let searchTimeout;
-  let currentQuery = '';
   
-  // === SHOPIFY MONEY FORMAT ===
-  {% if shop.money_format %}
-    const moneyFormat = '{{ shop.money_format }}';
-  {% else %}
-    const moneyFormat = '{{amount_with_comma_separator}} €';
-  {% endif %}
-  
+  // === FORMAT MONEY (SIMPLE ET PROPRE) ===
   function formatMoney(cents) {
-    if (typeof cents === 'string') {
-      cents = cents.replace('.', '');
-    }
-    const value = Number(cents) / 100;
-    let formatted = moneyFormat;
-    
-    // Replace placeholders
-    formatted = formatted.replace('{{amount}}', value.toFixed(2));
-    formatted = formatted.replace('{{amount_with_comma_separator}}', value.toFixed(2).replace('.', ','));
-    formatted = formatted.replace('{{amount_no_decimals}}', Math.round(value).toString());
-    formatted = formatted.replace('{{amount_with_space_separator}}', value.toFixed(2).replace('.', ','));
-    
-    return formatted;
+    const euros = (cents / 100).toFixed(2).replace('.', ',');
+    return euros + ' €';
   }
   
   // === SEARCH FUNCTION ===
@@ -265,30 +282,27 @@
       return;
     }
     
-    currentQuery = query;
     console.log('🔍 Searching for:', query);
     
     // Show loading
     loadingEl.classList.add('is-active');
     resultsEl.classList.remove('is-visible');
     
-    // Shopify Predictive Search API
-    const url = `/search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=8`;
+    // ✅ LIMIT 4 PRODUITS
+    const url = `/search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=4`;
     console.log('🔗 API URL:', url);
     
     fetch(url)
       .then(response => {
         console.log('📡 Response status:', response.status);
-        if (!response.ok) {
-          throw new Error('HTTP ' + response.status);
-        }
+        if (!response.ok) throw new Error('HTTP ' + response.status);
         return response.json();
       })
       .then(data => {
         console.log('📦 API Response:', data);
         loadingEl.classList.remove('is-active');
         
-        if (data.resources && data.resources.results && data.resources.results.products && data.resources.results.products.length > 0) {
+        if (data.resources?.results?.products?.length > 0) {
           console.log('✅ Products found:', data.resources.results.products.length);
           displayResults(data.resources.results.products, query);
         } else {
@@ -309,43 +323,25 @@
     let html = '<div class="predictive-search-grid">';
     
     products.forEach((product, index) => {
-      console.log(`Product ${index + 1}:`, product);
-      
       const price = formatMoney(product.price);
       const comparePrice = product.compare_at_price_max && product.compare_at_price_max > product.price 
         ? formatMoney(product.compare_at_price_max) 
         : null;
       
-      // Image avec taille optimisée
+      console.log(`Product ${index + 1}:`, {
+        title: product.title,
+        price: price,
+        comparePrice: comparePrice,
+        image: product.featured_image ? 'yes' : 'no'
+      });
+      
+      // Image optimisée
       let imageHtml = '';
-      let imageUrl = null;
-      
-      // featured_image peut être un objet {url: "..."} ou une string
       if (product.featured_image) {
-        if (typeof product.featured_image === 'object' && product.featured_image.url) {
-          imageUrl = product.featured_image.url;
-        } else if (typeof product.featured_image === 'string') {
-          imageUrl = product.featured_image;
-        }
-      }
-      
-      // Ou utiliser image si featured_image n'existe pas
-      if (!imageUrl && product.image) {
-        if (typeof product.image === 'object' && product.image.url) {
-          imageUrl = product.image.url;
-        } else if (typeof product.image === 'string') {
-          imageUrl = product.image;
-        }
-      }
-      
-      console.log(`Image URL for product ${index + 1}:`, imageUrl);
-      
-      if (imageUrl) {
-        // Optimiser l'URL
-        const optimizedUrl = imageUrl.includes('?') 
-          ? imageUrl.split('?')[0] + '?width=400' 
-          : imageUrl + '?width=400';
-        imageHtml = `<img src="${optimizedUrl}" alt="${escapeHtml(product.title)}" loading="lazy">`;
+        const imageUrl = product.featured_image.includes('?') 
+          ? product.featured_image.split('?')[0] + '?width=600' 
+          : product.featured_image + '?width=600';
+        imageHtml = `<img src="${imageUrl}" alt="${escapeHtml(product.title)}" loading="lazy">`;
       } else {
         imageHtml = `
           <div class="predictive-search-card-placeholder">
@@ -360,14 +356,16 @@
       
       html += `
         <a href="${product.url}" class="predictive-search-card">
-          <div class="predictive-search-card-image">
+          <div class="predictive-search-card-image-wrapper">
             ${imageHtml}
           </div>
           <div class="predictive-search-card-info">
-            <h3 class="predictive-search-card-title">${escapeHtml(product.title)}</h3>
-            <div class="predictive-search-card-price">
+            <div class="predictive-search-card-details">
+              <h3 class="predictive-search-card-title">${escapeHtml(product.title)}</h3>
+            </div>
+            <div class="predictive-search-card-price-wrapper">
               ${comparePrice ? `<span class="predictive-search-card-price--compare">${comparePrice}</span>` : ''}
-              <span class="${comparePrice ? 'predictive-search-card-price--sale' : ''}">${price}</span>
+              <span class="predictive-search-card-price ${comparePrice ? 'predictive-search-card-price--sale' : ''}">${price}</span>
             </div>
           </div>
         </a>
@@ -390,12 +388,11 @@
     
     resultsEl.innerHTML = html;
     resultsEl.classList.add('is-visible');
-    console.log('✅ Results displayed successfully!');
+    console.log('✅ Results displayed!');
   }
   
   // === NO RESULTS ===
   function displayNoResults(query) {
-    console.log('🚫 Displaying no results message');
     resultsEl.innerHTML = `
       <div class="predictive-search-status">
         <p>Aucun résultat pour "<strong>${escapeHtml(query)}</strong>"</p>
@@ -426,9 +423,7 @@
     }
     
     // Debounce 300ms
-    searchTimeout = setTimeout(function() {
-      performSearch(query);
-    }, 300);
+    searchTimeout = setTimeout(() => performSearch(query), 300);
   });
   
 })();
