@@ -137,12 +137,10 @@
   background-color: var(--color-gray-800);
 }
 
-/* Mobile: Toujours afficher le bouton */
+/* Mobile: Masquer le bouton "Voir" */
 @media (max-width: 768px) {
   .lunetier-card-btn {
-    transform: translateY(0);
-    padding: 0.75rem 0;
-    font-size: 0.75rem;
+    display: none;
   }
 }
 
@@ -279,6 +277,26 @@
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;
+  }
+}
+
+/* === MOBILE BADGE ADJUSTMENTS === */
+@media (max-width: 768px) {
+  .lunetier-card-badge {
+    top: 0.5rem;
+    left: 0.5rem;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.625rem;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Tous les badges visibles en mobile */
+  .lunetier-badge-new,
+  .lunetier-badge-sale,
+  .lunetier-badge-sold-out {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
