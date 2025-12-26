@@ -8,99 +8,6 @@
     "theme_support_url": "https://github.com/Youni-G5/Lunetier-Co/issues"
   },
   {
-    "name": "Product Cards",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Affichage des Cartes Produits"
-      },
-      {
-        "type": "paragraph",
-        "content": "Personnalisez l'apparence des cartes produits sur les pages collections, recherche et featured collection."
-      },
-      {
-        "type": "checkbox",
-        "id": "product_card_show_vendor",
-        "label": "Afficher le vendeur/marque",
-        "default": true,
-        "info": "Affiche le nom du vendeur ou le type de produit au-dessus du titre"
-      },
-      {
-        "type": "checkbox",
-        "id": "product_card_show_badges",
-        "label": "Afficher les badges",
-        "default": true,
-        "info": "Badges automatiques : Nouveau, Promo, Épuisé"
-      },
-      {
-        "type": "select",
-        "id": "product_card_badge_style",
-        "label": "Style des badges",
-        "options": [
-          {
-            "value": "rounded",
-            "label": "Arrondi"
-          },
-          {
-            "value": "square",
-            "label": "Carré"
-          },
-          {
-            "value": "pill",
-            "label": "Pilule"
-          }
-        ],
-        "default": "rounded"
-      },
-      {
-        "type": "checkbox",
-        "id": "product_card_show_second_image",
-        "label": "Afficher 2ème image au survol",
-        "default": true,
-        "info": "Active automatiquement si le produit a plusieurs images"
-      },
-      {
-        "type": "select",
-        "id": "product_card_hover_effect",
-        "label": "Effet de survol",
-        "options": [
-          {
-            "value": "zoom",
-            "label": "Zoom doux"
-          },
-          {
-            "value": "lift",
-            "label": "Lévitation"
-          },
-          {
-            "value": "none",
-            "label": "Aucun"
-          }
-        ],
-        "default": "zoom",
-        "info": "Effet appliqué sur desktop uniquement"
-      },
-      {
-        "type": "checkbox",
-        "id": "product_card_show_quick_add",
-        "label": "Afficher bouton 'Ajout Rapide'",
-        "default": false,
-        "info": "Ajoute un bouton panier sur chaque carte (AJAX)"
-      },
-      {
-        "type": "header",
-        "content": "Mobile"
-      },
-      {
-        "type": "checkbox",
-        "id": "product_card_mobile_compact",
-        "label": "Mode compact sur mobile",
-        "default": true,
-        "info": "Réduit les espacements et optimise l'affichage mobile"
-      }
-    ]
-  },
-  {
     "name": "Colors",
     "settings": [
       {
@@ -124,22 +31,6 @@
         "id": "color_accent",
         "label": "Couleur accent",
         "default": "#6b7280"
-      },
-      {
-        "type": "header",
-        "content": "Badges"
-      },
-      {
-        "type": "color",
-        "id": "badge_sale_bg",
-        "label": "Badge promo - Fond",
-        "default": "#ef4444"
-      },
-      {
-        "type": "color",
-        "id": "badge_new_bg",
-        "label": "Badge nouveau - Fond",
-        "default": "#3b82f6"
       }
     ]
   },
