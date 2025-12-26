@@ -2,7 +2,7 @@
   Section "Essai Virtuel" (VTO) - Lunetier
   Technologie : MediaPipe Face Mesh (468 landmarks) + Overlay Intelligent
   Features : Détection faciale temps réel, positionnement automatique, suivi visage
-  Optimisé : Framerate 60 FPS, lissage mouvement, responsive scaling
+  Optimisé : Framerate 60 FPS desktop, 30 FPS mobile, résolution adaptative
 {% endcomment %}
 
 <style>
@@ -272,6 +272,21 @@
     z-index: 20;
   }
 
+  .vto-device-info {
+    position: absolute;
+    top: 8rem;
+    right: 1.5rem;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-family: monospace;
+    backdrop-filter: blur(10px);
+    z-index: 20;
+    line-height: 1.4;
+  }
+
 </style>
 
 <div id="vto-modal" class="vto-modal" aria-hidden="true">
@@ -295,6 +310,9 @@
 
   <!-- FPS Counter -->
   <div class="vto-fps" id="vto-fps">FPS: --</div>
+  
+  <!-- Device Info -->
+  <div class="vto-device-info" id="vto-device-info"></div>
 
   <!-- Viewport -->
   <div class="vto-viewport">
@@ -352,7 +370,7 @@
     const closeBtn = document.getElementById('vto-close');
     const video = document.getElementById('vto-video');
     const canvas = document.getElementById('vto-canvas');
-    const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+    const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true, willReadFrequently: false });
     const scaleInput = document.getElementById('vto-scale');
     const scaleValue = document.getElementById('vto-scale-value');
     const statusDot = document.getElementById('vto-status-dot');
@@ -360,8 +378,23 @@
     const loadingEl = document.getElementById('vto-loading');
     const errorMsg = document.getElementById('vto-error-msg');
     const fpsEl = document.getElementById('vto-fps');
+    const deviceInfoEl = document.getElementById('vto-device-info');
     
     if (!modal || !video || !canvas) return;
+
+    // Détection mobile
+    const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent) || window.innerWidth < 768;
+    
+    // Config adaptative selon device
+    const config = {
+      width: isMobile ? 640 : 1280,
+      height: isMobile ? 480 : 720,
+      fps: isMobile ? 30 : 60,
+      minDetectionConfidence: isMobile ? 0.6 : 0.7,
+      minTrackingConfidence: isMobile ? 0.6 : 0.7,
+      refineLandmarks: !isMobile, // Désactivé sur mobile pour perfs
+      smoothingFactor: isMobile ? 0.6 : 0.5 // Plus de lissage sur mobile
+    };
 
     let faceMesh = null;
     let camera = null;
@@ -370,14 +403,18 @@
     let faceDetected = false;
     let isRunning = false;
     
-    // Smoothing pour mouvement fluide
+    // Smoothing
     let smoothedLandmarks = null;
-    const smoothingFactor = 0.5; // 0 = pas de lissage, 1 = lissage max
 
     // FPS counter
     let lastFrameTime = Date.now();
     let frameCount = 0;
     let fps = 0;
+
+    // Device info
+    if (deviceInfoEl) {
+      deviceInfoEl.innerHTML = `Device: ${isMobile ? 'Mobile' : 'Desktop'}<br>Res: ${config.width}x${config.height}<br>Target: ${config.fps} FPS<br>Refine: ${config.refineLandmarks ? 'ON' : 'OFF'}`;
+    }
 
     // Précharger l'image des lunettes
     {% if product.featured_media %}
@@ -390,7 +427,7 @@
     // --- OUVERTURE / FERMETURE ---
     
     window.openVirtualTryOn = async function() {
-      console.log('✅ Opening Virtual Try-On...');
+      console.log(`✅ Opening VTO (${isMobile ? 'Mobile' : 'Desktop'} mode)...`);
       modal.classList.add('is-active');
       document.body.style.overflow = 'hidden';
       isRunning = true;
@@ -429,7 +466,7 @@
       try {
         loadingEl.style.display = 'block';
         errorMsg.style.display = 'none';
-        smoothedLandmarks = null; // Reset smoothing
+        smoothedLandmarks = null;
         
         // Init MediaPipe Face Mesh
         if (!faceMesh) {
@@ -441,9 +478,9 @@
 
           faceMesh.setOptions({
             maxNumFaces: 1,
-            refineLandmarks: true,
-            minDetectionConfidence: 0.7,  // Augmenté pour plus de stabilité
-            minTrackingConfidence: 0.7    // Augmenté pour meilleur tracking
+            refineLandmarks: config.refineLandmarks,
+            minDetectionConfidence: config.minDetectionConfidence,
+            minTrackingConfidence: config.minTrackingConfidence
           });
 
           faceMesh.onResults(onFaceMeshResults);
@@ -457,15 +494,15 @@
                 await faceMesh.send({ image: video });
               }
             },
-            width: 1280,
-            height: 720,
-            fps: 60  // Force 60 FPS
+            width: config.width,
+            height: config.height,
+            fps: config.fps
           });
         }
 
         await camera.start();
         loadingEl.style.display = 'none';
-        console.log('✅ VTO started at 60 FPS');
+        console.log(`✅ VTO started: ${config.width}x${config.height} @ ${config.fps} FPS`);
 
       } catch (err) {
         console.error('❌ VTO error:', err);
@@ -498,11 +535,10 @@
         return newLandmarks;
       }
 
-      // Interpolation linéaire entre anciens et nouveaux landmarks
       const smoothed = newLandmarks.map((landmark, i) => ({
-        x: smoothedLandmarks[i].x + (landmark.x - smoothedLandmarks[i].x) * smoothingFactor,
-        y: smoothedLandmarks[i].y + (landmark.y - smoothedLandmarks[i].y) * smoothingFactor,
-        z: smoothedLandmarks[i].z + (landmark.z - smoothedLandmarks[i].z) * smoothingFactor
+        x: smoothedLandmarks[i].x + (landmark.x - smoothedLandmarks[i].x) * config.smoothingFactor,
+        y: smoothedLandmarks[i].y + (landmark.y - smoothedLandmarks[i].y) * config.smoothingFactor,
+        z: smoothedLandmarks[i].z + (landmark.z - smoothedLandmarks[i].z) * config.smoothingFactor
       }));
 
       smoothedLandmarks = smoothed;
@@ -580,13 +616,13 @@
       const glassesWidth = eyeDistance * 2.5 * scaleMultiplier;
       const glassesHeight = (glassesImg.height / glassesImg.width) * glassesWidth;
 
-      // Y offset (au-dessus des yeux)
+      // Y offset
       const yOffset = eyeDistance * 0.15;
 
       // Draw with smooth rendering
       ctx.save();
       ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
+      ctx.imageSmoothingQuality = isMobile ? 'medium' : 'high';
       ctx.translate(centerX, centerY - yOffset);
       ctx.rotate(angle);
       ctx.drawImage(
@@ -611,7 +647,7 @@
       }
     }
 
-    console.log('✅ VTO initialized with MediaPipe Face Mesh (Optimized)');
+    console.log(`✅ VTO initialized (${isMobile ? 'Mobile' : 'Desktop'})`);
   }
 })();
 </script>
@@ -626,4 +662,4 @@
     }
   ]
 }
-{% endschema %}
+{% endschema%}
