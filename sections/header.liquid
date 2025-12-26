@@ -1,7 +1,7 @@
 {% comment %}
   Section Header "Lunetier" - Version Corrigée
   Mode PC : PARFAIT - Ne pas toucher
-  Mode Mobile : Refait de 0
+  Mode Mobile : Tiroir fonctionnel + panier ajouté
 {% endcomment %}
 
 <div class="lunetier-header-wrapper" id="HeaderWrapper-{{ section.id }}">
@@ -46,8 +46,8 @@
         </svg>
       </a>
 
-      <!-- CART ICON (Desktop only) -->
-      <a href="{{ routes.cart_url }}" class="lunetier-icon-btn lunetier-cart-desktop" id="cart-icon-bubble" aria-label="Panier ({{ cart.item_count }} article{% if cart.item_count > 1 %}s{% endif %})">
+      <!-- CART ICON (Desktop + Mobile) -->
+      <a href="{{ routes.cart_url }}" class="lunetier-icon-btn" id="cart-icon-bubble" aria-label="Panier ({{ cart.item_count }} article{% if cart.item_count > 1 %}s{% endif %})">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
           <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -104,11 +104,11 @@
 <!-- MOBILE DRAWER OVERLAY -->
 <div class="lunetier-drawer-overlay" id="MobileDrawerOverlay-{{ section.id }}"></div>
 
-<!-- MOBILE DRAWER (Refait de 0) -->
+<!-- MOBILE DRAWER -->
 <div class="lunetier-drawer" id="MobileDrawer-{{ section.id }}">
   <div class="lunetier-drawer-header">
     <span class="lunetier-drawer-title">Menu</span>
-    <button class="lunetier-drawer-close" id="MobileDrawerClose-{{ section.id }}" aria-label="Fermer le menu">
+    <button type="button" class="lunetier-drawer-close" id="MobileDrawerClose-{{ section.id }}" aria-label="Fermer le menu">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -135,15 +135,6 @@
           <circle cx="12" cy="7" r="4"></circle>
         </svg>
         <span>Mon Compte</span>
-      </a>
-
-      <a href="{{ routes.cart_url }}" class="lunetier-drawer-secondary-link">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <path d="M16 10a4 4 0 0 1-8 0"></path>
-        </svg>
-        <span>Panier ({{ cart.item_count }})</span>
       </a>
 
       {% if shop.customer_accounts_enabled %}
@@ -174,6 +165,8 @@
 <!-- JAVASCRIPT -->
 <script>
 (function() {
+  'use strict';
+  
   const sectionId = '{{ section.id }}';
   const header = document.getElementById('HeaderWrapper-' + sectionId);
   const searchBar = document.getElementById('SearchBar-' + sectionId);
@@ -208,54 +201,69 @@
 
   // === SEARCH BAR TOGGLE ===
   if (searchToggle && searchBar && searchClose && searchInput) {
-    searchToggle.addEventListener('click', function() {
-      const isOpen = searchBar.classList.contains('is-open');
-      
-      if (isOpen) {
-        searchBar.classList.remove('is-open');
-        searchToggle.setAttribute('aria-expanded', 'false');
-        document.body.style.overflow = '';
-      } else {
-        searchBar.classList.add('is-open');
-        searchToggle.setAttribute('aria-expanded', 'true');
-        document.body.style.overflow = 'hidden';
-        setTimeout(function() {
-          searchInput.focus();
-        }, 300);
-      }
-    });
+    function openSearch() {
+      searchBar.classList.add('is-open');
+      searchToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      setTimeout(function() {
+        searchInput.focus();
+      }, 300);
+    }
 
-    searchClose.addEventListener('click', function() {
+    function closeSearch() {
       searchBar.classList.remove('is-open');
       searchToggle.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
+    }
+
+    searchToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      if (searchBar.classList.contains('is-open')) {
+        closeSearch();
+      } else {
+        openSearch();
+      }
+    });
+
+    searchClose.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeSearch();
     });
 
     // Close on ESC
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape' && searchBar.classList.contains('is-open')) {
-        searchBar.classList.remove('is-open');
-        searchToggle.setAttribute('aria-expanded', 'false');
-        document.body.style.overflow = '';
+        closeSearch();
       }
     });
   }
 
   // === MOBILE DRAWER TOGGLE ===
   if (mobileMenuTrigger && mobileDrawer && mobileDrawerOverlay && mobileDrawerClose) {
+    
     function openDrawer() {
+      console.log('Opening drawer...');
       mobileDrawer.classList.add('is-open');
       mobileDrawerOverlay.classList.add('is-open');
       document.body.style.overflow = 'hidden';
     }
 
     function closeDrawer() {
+      console.log('Closing drawer...');
       mobileDrawer.classList.remove('is-open');
       mobileDrawerOverlay.classList.remove('is-open');
       document.body.style.overflow = '';
     }
 
-    mobileMenuTrigger.addEventListener('click', function() {
+    // Open drawer
+    mobileMenuTrigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Burger clicked');
+      
       if (mobileDrawer.classList.contains('is-open')) {
         closeDrawer();
       } else {
@@ -263,8 +271,21 @@
       }
     });
 
-    mobileDrawerClose.addEventListener('click', closeDrawer);
-    mobileDrawerOverlay.addEventListener('click', closeDrawer);
+    // Close drawer button
+    mobileDrawerClose.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Close button clicked');
+      closeDrawer();
+    });
+
+    // Close on overlay click
+    mobileDrawerOverlay.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Overlay clicked');
+      closeDrawer();
+    });
 
     // Close on ESC
     document.addEventListener('keydown', function(e) {
