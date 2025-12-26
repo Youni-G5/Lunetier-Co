@@ -94,7 +94,7 @@
             </div>
             <p class="lunetier-cart-shipping-text">
               {%- if cart.total_price >= 5000 -%}
-                ✅ Livraison express gratuite débloquée !
+                Livraison express gratuite débloquée !
               {%- else -%}
                 {%- assign remaining = 5000 | minus: cart.total_price -%}
                 Plus que {{ remaining | money }} pour la livraison express gratuite
