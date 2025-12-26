@@ -15,13 +15,16 @@
     color: var(--color-black);
     padding-top: 6rem;
     padding-bottom: 4rem;
-    min-height: 60vh;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
   }
 
   @media (min-width: 1024px) {
     .lunetier-search-section {
-      padding-top: 9rem;
-      padding-bottom: 8rem;
+      padding-top: 8rem;
+      padding-bottom: 6rem;
+      min-height: 85vh;
     }
   }
 
@@ -29,50 +32,86 @@
     max-width: 80rem;
     margin: 0 auto;
     padding: 0 1.25rem;
+    width: 100%;
   }
 
   /* --- HEADER & INPUT --- */
   .lunetier-search-section .lunetier-search-header {
-    max-width: 44rem;
-    margin: 0 auto 3rem auto;
+    max-width: 48rem;
+    margin: 0 auto;
     text-align: center;
     position: relative;
   }
   
+  /* Empty state (no search performed) */
+  .lunetier-search-section .lunetier-search-header.is-empty {
+    padding: 3rem 0;
+  }
+
   @media (min-width: 1024px) {
-    .lunetier-search-section .lunetier-search-header {
-      margin-bottom: 5rem;
+    .lunetier-search-section .lunetier-search-header.is-empty {
+      padding: 4rem 0;
     }
   }
 
   .lunetier-search-section .lunetier-search-title {
     font-family: var(--font-serif);
-    font-size: 2rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-    display: none;
+    font-size: 2.5rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
   }
   
+  @media (min-width: 768px) {
+    .lunetier-search-section .lunetier-search-title { 
+      font-size: 3.5rem; 
+    }
+  }
+
   @media (min-width: 1024px) {
     .lunetier-search-section .lunetier-search-title { 
-      display: block; 
-      font-size: 3rem; 
-      margin-bottom: 1.5rem; 
+      font-size: 4.5rem;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  .lunetier-search-section .lunetier-search-subtitle {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: var(--color-gray-500);
+    margin-bottom: 3rem;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  @media (min-width: 768px) {
+    .lunetier-search-section .lunetier-search-subtitle {
+      font-size: 1.125rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .lunetier-search-section .lunetier-search-subtitle {
+      font-size: 1.25rem;
+      margin-bottom: 4rem;
     }
   }
 
   .lunetier-search-section .lunetier-search-wrapper {
     position: relative;
     width: 100%;
+    max-width: 42rem;
+    margin: 0 auto;
   }
 
   .lunetier-search-section .lunetier-search-input {
     width: 100%;
     border: none;
-    border-bottom: 1px solid var(--color-gray-200);
-    padding: 0.75rem 2.5rem 0.75rem 0;
+    border-bottom: 2px solid var(--color-gray-200);
+    padding: 1rem 3rem 1rem 1rem;
     font-family: var(--font-serif);
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     color: var(--color-black);
     background: transparent;
     border-radius: 0;
@@ -82,9 +121,10 @@
 
   @media (min-width: 768px) {
     .lunetier-search-section .lunetier-search-input {
-      font-size: 1.75rem;
+      font-size: 1.5rem;
       text-align: center;
-      padding: 1rem 3rem;
+      padding: 1.25rem 3.5rem;
+      border-bottom-width: 2px;
     }
   }
 
@@ -106,20 +146,21 @@
     transform: translateY(-50%);
     background: none;
     border: none;
-    padding: 0.5rem;
+    padding: 0.625rem;
     color: var(--color-black);
     cursor: pointer;
     z-index: 2;
-    transition: opacity var(--transition-fast);
+    transition: all var(--transition-fast);
   }
 
   .lunetier-search-section .lunetier-search-icon-submit:hover {
     opacity: 0.6;
+    transform: translateY(-50%) scale(1.1);
   }
 
   .lunetier-search-section .lunetier-search-clear {
     position: absolute;
-    right: 2.5rem;
+    right: 3rem;
     top: 50%;
     transform: translateY(-50%);
     background: none;
@@ -127,8 +168,8 @@
     color: var(--color-gray-400);
     cursor: pointer;
     display: none;
-    padding: 0.5rem;
-    transition: opacity var(--transition-fast);
+    padding: 0.625rem;
+    transition: all var(--transition-fast);
   }
   
   .lunetier-search-section .lunetier-search-input:not(:placeholder-shown) ~ .lunetier-search-clear {
@@ -137,43 +178,128 @@
 
   .lunetier-search-section .lunetier-search-clear:hover {
     opacity: 0.6;
+    transform: translateY(-50%) scale(1.1);
   }
 
   /* --- QUICK LINKS --- */
   .lunetier-search-section .lunetier-search-quick-links {
-    margin-top: 1.5rem;
-    font-size: 0.75rem;
-    color: var(--color-gray-500);
+    margin-top: 2.5rem;
     display: flex;
     justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    .lunetier-search-section .lunetier-search-quick-links {
+      margin-top: 3.5rem;
+      gap: 1.25rem;
+    }
+  }
+
+  .lunetier-search-section .lunetier-search-quick-label {
     font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    color: var(--color-gray-400);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  @media (min-width: 768px) {
+    .lunetier-search-section .lunetier-search-quick-label {
+      font-size: 0.875rem;
+    }
   }
 
   .lunetier-search-section .lunetier-search-quick-link {
     text-decoration: none;
-    color: inherit;
-    border: 1px solid var(--color-gray-100);
-    padding: 0.4rem 0.8rem;
+    color: var(--color-black);
+    border: 1px solid var(--color-gray-200);
+    padding: 0.625rem 1.25rem;
     border-radius: 99px;
-    transition: all var(--transition-fast);
+    transition: all var(--transition-base);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: inline-block;
+  }
+
+  @media (min-width: 768px) {
+    .lunetier-search-section .lunetier-search-quick-link {
+      font-size: 0.9375rem;
+      padding: 0.75rem 1.5rem;
+    }
   }
   
   .lunetier-search-section .lunetier-search-quick-link:hover {
     border-color: var(--color-black);
+    background-color: var(--color-black);
+    color: var(--color-white);
+    transform: translateY(-2px);
+  }
+
+  /* --- POPULAR SEARCHES --- */
+  .lunetier-search-section .lunetier-search-popular {
+    margin-top: 4rem;
+    text-align: center;
+  }
+
+  @media (min-width: 1024px) {
+    .lunetier-search-section .lunetier-search-popular {
+      margin-top: 5rem;
+    }
+  }
+
+  .lunetier-search-section .lunetier-search-popular-title {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-gray-400);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+  }
+
+  .lunetier-search-section .lunetier-search-popular-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    max-width: 36rem;
+    margin: 0 auto;
+  }
+
+  .lunetier-search-section .lunetier-search-popular-item {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--color-gray-600);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+    cursor: pointer;
+  }
+
+  .lunetier-search-section .lunetier-search-popular-item:hover {
     color: var(--color-black);
+    text-decoration: underline;
+  }
+
+  .lunetier-search-section .lunetier-search-popular-separator {
+    color: var(--color-gray-300);
   }
 
   /* --- RESULTS INFO --- */
   .lunetier-search-section .lunetier-search-results-count {
     text-align: center;
     color: var(--color-gray-500);
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
+    margin-top: 2rem;
     font-family: var(--font-sans);
-    font-size: 0.8rem;
+    font-size: 0.8125rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    font-weight: 600;
   }
 
   /* --- ARTICLE CARD --- */
@@ -224,13 +350,17 @@
   /* --- EMPTY STATE --- */
   .lunetier-search-section .lunetier-search-no-results {
     text-align: center;
-    padding: 2rem 0;
+    padding: 4rem 0;
+    max-width: 32rem;
+    margin: 0 auto;
   }
   
   .lunetier-search-section .lunetier-search-no-results p {
     color: var(--color-gray-500);
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
     font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
   }
 
   /* --- LOAD MORE --- */
@@ -261,8 +391,12 @@
 <div class="lunetier-search-section">
   <div class="lunetier-search-container">
     
-    <div class="lunetier-search-header">
-      <h1 class="lunetier-search-title">Recherche</h1>
+    <div class="lunetier-search-header {% unless search.performed %}is-empty{% endunless %}">
+      
+      {%- unless search.performed -%}
+        <h1 class="lunetier-search-title">Que recherchez-vous ?</h1>
+        <p class="lunetier-search-subtitle">Lunettes de vue, solaires, accessoires... Trouvez la paire parfaite qui vous ressemble</p>
+      {%- endunless -%}
       
       <form action="{{ routes.search_url }}" method="get" role="search" class="lunetier-search-form">
         <div class="lunetier-search-wrapper">
@@ -270,22 +404,23 @@
             type="text"
             name="q"
             value="{{ search.terms | escape }}"
-            placeholder="Rechercher..."
+            placeholder="Rechercher un produit, une marque..."
             class="lunetier-search-input"
             id="SearchInput"
             autocomplete="off"
+            autofocus
           >
           <input type="hidden" name="type" value="product,article,page">
           
           <button type="button" class="lunetier-search-clear" onclick="document.getElementById('SearchInput').value = ''; document.getElementById('SearchInput').focus();" aria-label="Effacer">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </button>
 
-          <button type="submit" class="lunetier-search-icon-submit" aria-label="Valider">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <button type="submit" class="lunetier-search-icon-submit" aria-label="Rechercher">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
@@ -295,10 +430,25 @@
 
       {%- unless search.performed -%}
         <div class="lunetier-search-quick-links">
-          <span>Tendances :</span>
+          <span class="lunetier-search-quick-label">Catégories :</span>
           <a href="{{ routes.all_products_collection_url }}" class="lunetier-search-quick-link">Solaire</a>
           <a href="{{ routes.all_products_collection_url }}" class="lunetier-search-quick-link">Optique</a>
           <a href="{{ routes.all_products_collection_url }}" class="lunetier-search-quick-link">Nouveautés</a>
+        </div>
+
+        <div class="lunetier-search-popular">
+          <div class="lunetier-search-popular-title">Recherches populaires</div>
+          <div class="lunetier-search-popular-list">
+            <a href="{{ routes.search_url }}?q=aviateur&type=product" class="lunetier-search-popular-item">Aviateur</a>
+            <span class="lunetier-search-popular-separator">•</span>
+            <a href="{{ routes.search_url }}?q=ray-ban&type=product" class="lunetier-search-popular-item">Ray-Ban</a>
+            <span class="lunetier-search-popular-separator">•</span>
+            <a href="{{ routes.search_url }}?q=cat-eye&type=product" class="lunetier-search-popular-item">Cat Eye</a>
+            <span class="lunetier-search-popular-separator">•</span>
+            <a href="{{ routes.search_url }}?q=vintage&type=product" class="lunetier-search-popular-item">Vintage</a>
+            <span class="lunetier-search-popular-separator">•</span>
+            <a href="{{ routes.search_url }}?q=sport&type=product" class="lunetier-search-popular-item">Sport</a>
+          </div>
         </div>
       {%- endunless -%}
     </div>
@@ -307,7 +457,7 @@
       
       {%- if search.results_count > 0 -%}
         <div class="lunetier-search-results-count">
-          {{ search.results_count }} résultat{% if search.results_count > 1 %}s{% endif %}
+          {{ search.results_count }} résultat{% if search.results_count > 1 %}s{% endif %} pour "{{ search.terms }}"
         </div>
 
         {% paginate search.results by 12 %}
@@ -357,7 +507,7 @@
 
       {%- else -%}
         <div class="lunetier-search-no-results">
-          <p>Aucun résultat pour "{{ search.terms }}". Essayez un autre terme.</p>
+          <p>Aucun résultat pour "{{ search.terms }}". Essayez avec d'autres termes ou parcourez nos collections.</p>
           <div class="lunetier-search-quick-links">
              <a href="{{ routes.all_products_collection_url }}" class="lunetier-search-quick-link">Voir toute la collection</a>
           </div>
