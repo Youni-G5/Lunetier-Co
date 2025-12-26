@@ -230,16 +230,26 @@
   let currentQuery = '';
   
   // === SHOPIFY MONEY FORMAT ===
-  const moneyFormat = '{{ shop.money_format | default: "{{amount_with_comma_separator}} €" }}';
+  {% if shop.money_format %}
+    const moneyFormat = '{{ shop.money_format }}';
+  {% else %}
+    const moneyFormat = '{{amount_with_comma_separator}} €';
+  {% endif %}
   
   function formatMoney(cents) {
     if (typeof cents === 'string') {
       cents = cents.replace('.', '');
     }
     const value = Number(cents) / 100;
-    return moneyFormat.replace('{{amount}}', value.toFixed(2))
-                      .replace('{{amount_with_comma_separator}}', value.toFixed(2).replace('.', ','))
-                      .replace('{{amount_no_decimals}}', Math.round(value).toString());
+    let formatted = moneyFormat;
+    
+    // Replace placeholders
+    formatted = formatted.replace('{{amount}}', value.toFixed(2));
+    formatted = formatted.replace('{{amount_with_comma_separator}}', value.toFixed(2).replace('.', ','));
+    formatted = formatted.replace('{{amount_no_decimals}}', Math.round(value).toString());
+    formatted = formatted.replace('{{amount_with_space_separator}}', value.toFixed(2).replace('.', ','));
+    
+    return formatted;
   }
   
   // === SEARCH FUNCTION ===
