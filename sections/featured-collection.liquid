@@ -1,6 +1,7 @@
 {% comment %}
   Section "Collection Capsule" Lunetier - Grille de produits Cross-sell
   Design : Images épurées, effet hover sophistiqué, utilise le snippet product-card
+  Mobile : Carrousel avec swipe et navigation
 {% endcomment %}
 
 <style>
@@ -42,6 +43,60 @@
     max-width: 40rem;
     margin: 0 auto;
   }
+
+  /* === MOBILE CAROUSEL === */
+  @media (max-width: 767px) {
+    .lunetier-collection-carousel-wrapper {
+      position: relative;
+      padding-bottom: 3rem;
+    }
+
+    .lunetier-products-grid--3-col {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 1rem;
+      padding: 0 1rem;
+      margin: 0 -1.5rem;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      scroll-behavior: smooth;
+    }
+
+    .lunetier-products-grid--3-col::-webkit-scrollbar {
+      display: none;
+    }
+
+    .lunetier-product-card {
+      flex: 0 0 75%;
+      scroll-snap-align: center;
+    }
+
+    /* Navigation Dots */
+    .lunetier-carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 2rem;
+    }
+
+    .lunetier-carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--color-gray-300);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .lunetier-carousel-dot.active {
+      width: 24px;
+      border-radius: 4px;
+      background-color: var(--color-black);
+    }
+  }
 </style>
 
 <div class="lunetier-collection-container">
@@ -56,45 +111,118 @@
     </p>
   </div>
 
-  <!-- GRID -->
-  <div class="lunetier-products-grid lunetier-products-grid--3-col">
-    {%- assign collection = collections[section.settings.collection] -%}
-    
-    {%- if collection != blank -%}
-      {%- for product in collection.products limit: section.settings.limit -%}
-        {% render 'product-card',
-          product: product,
-          show_second_image: true,
-          show_badge: true,
-          show_vendor: true,
-          image_loading: 'lazy'
-        %}
-      {%- endfor -%}
-    {%- else -%}
-      {% comment %} PLACEHOLDER CONTENT {% endcomment %}
-      {%- for i in (1..section.settings.limit) -%}
-        <article class="lunetier-product-card">
-          <a href="#" class="lunetier-card-link">
-            <div class="lunetier-card-image-wrapper">
-              <span class="lunetier-card-badge lunetier-badge-new">Nouveau</span>
-              {{ 'product-' | append: i | placeholder_svg_tag: 'lunetier-card-img lunetier-card-img-main' }}
-              <div class="lunetier-card-btn">Voir - 129€</div>
-            </div>
-            <div class="lunetier-card-info">
-              <div class="lunetier-card-details">
-                <h3 class="lunetier-card-title">Nom du Modèle</h3>
-                <p class="lunetier-card-meta">Acétate Italien</p>
+  <!-- CAROUSEL WRAPPER (Mobile) / GRID (Desktop) -->
+  <div class="lunetier-collection-carousel-wrapper">
+    <div class="lunetier-products-grid lunetier-products-grid--3-col" id="featured-carousel-{{ section.id }}">
+      {%- assign collection = collections[section.settings.collection] -%}
+      
+      {%- if collection != blank -%}
+        {%- for product in collection.products limit: section.settings.limit -%}
+          {% render 'product-card',
+            product: product,
+            show_second_image: true,
+            show_badge: true,
+            show_vendor: true,
+            image_loading: 'lazy'
+          %}
+        {%- endfor -%}
+      {%- else -%}
+        {% comment %} PLACEHOLDER CONTENT {% endcomment %}
+        {%- for i in (1..section.settings.limit) -%}
+          <article class="lunetier-product-card">
+            <a href="#" class="lunetier-card-link">
+              <div class="lunetier-card-image-wrapper">
+                <span class="lunetier-card-badge lunetier-badge-new">Nouveau</span>
+                {{ 'product-' | append: i | placeholder_svg_tag: 'lunetier-card-img lunetier-card-img-main' }}
+                <div class="lunetier-card-btn">Voir - 129€</div>
               </div>
-              <div class="lunetier-card-price-wrapper">
-                <span class="lunetier-card-price">129 €</span>
+              <div class="lunetier-card-info">
+                <div class="lunetier-card-details">
+                  <h3 class="lunetier-card-title">Nom du Modèle</h3>
+                  <p class="lunetier-card-meta">Acétate Italien</p>
+                </div>
+                <div class="lunetier-card-price-wrapper">
+                  <span class="lunetier-card-price">129 €</span>
+                </div>
               </div>
-            </div>
-          </a>
-        </article>
-      {%- endfor -%}
-    {%- endif -%}
+            </a>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    <!-- DOTS NAVIGATION (Mobile only) -->
+    <div class="lunetier-carousel-dots" id="carousel-dots-{{ section.id }}"></div>
   </div>
 </div>
+
+<script>
+(function() {
+  'use strict';
+
+  // Vérifier si mobile
+  if (window.innerWidth >= 768) return;
+
+  const sectionId = '{{ section.id }}';
+  const carousel = document.getElementById('featured-carousel-' + sectionId);
+  const dotsContainer = document.getElementById('carousel-dots-' + sectionId);
+
+  if (!carousel || !dotsContainer) return;
+
+  const cards = carousel.querySelectorAll('.lunetier-product-card');
+  const cardCount = cards.length;
+
+  if (cardCount === 0) return;
+
+  // Créer les dots
+  for (let i = 0; i < cardCount; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'lunetier-carousel-dot';
+    dot.setAttribute('aria-label', 'Aller au produit ' + (i + 1));
+    if (i === 0) dot.classList.add('active');
+    
+    dot.addEventListener('click', function() {
+      const card = cards[i];
+      const cardLeft = card.offsetLeft;
+      const cardWidth = card.offsetWidth;
+      const carouselWidth = carousel.offsetWidth;
+      const scrollPosition = cardLeft - (carouselWidth / 2) + (cardWidth / 2);
+      
+      carousel.scrollTo({
+        left: scrollPosition,
+        behavior: 'smooth'
+      });
+    });
+    
+    dotsContainer.appendChild(dot);
+  }
+
+  const dots = dotsContainer.querySelectorAll('.lunetier-carousel-dot');
+
+  // Update active dot on scroll
+  let scrollTimeout;
+  carousel.addEventListener('scroll', function() {
+    clearTimeout(scrollTimeout);
+    
+    scrollTimeout = setTimeout(function() {
+      const scrollLeft = carousel.scrollLeft;
+      const cardWidth = cards[0].offsetWidth;
+      const gap = 16; // 1rem gap
+      const currentIndex = Math.round(scrollLeft / (cardWidth + gap));
+      
+      dots.forEach(function(dot, index) {
+        if (index === currentIndex) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }, 100);
+  });
+
+  console.log('✅ Featured collection carousel initialized (' + cardCount + ' products)');
+})();
+</script>
 
 {% schema %}
 {
