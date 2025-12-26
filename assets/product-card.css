@@ -46,8 +46,8 @@
   transition: opacity var(--transition-base), transform var(--transition-slow);
 }
 
-/* Hover Effects */
-.lunetier-card-link:hover .lunetier-card-img-main {
+/* Hover Effects - Si 2 images ou plus */
+.lunetier-card-link:hover .lunetier-card-img-main:not(:only-child) {
   opacity: 0;
 }
 
@@ -56,10 +56,9 @@
   transform: scale(1.05);
 }
 
-/* Si pas de 2ème image, zoom sur la principale */
+/* Si UNE SEULE image - Zoom léger au survol */
 .lunetier-card-link:hover .lunetier-card-img-main:only-child {
-  opacity: 1;
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 /* === BADGE === */
