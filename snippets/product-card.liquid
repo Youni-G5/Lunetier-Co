@@ -1,15 +1,15 @@
 {% comment %}
   Snippet: product-card.liquid
   
-  Description: Carte produit réutilisable pour Lunetier & Co
-  Fonctionnalités:
-  - Image principale + image au survol
-  - Badge (Nouveau, Promo, Épuisé)
-  - Bouton slide-up
-  - Prix avec réduction
-  - Quick view optionnel
-  - Lazy loading optimisé
-  - Animation hover intelligente (s'adapte si 1 ou 2+ images)
+  Description: Reusable product card for Lunetier & Co
+  Features:
+  - Main image + hover image
+  - Badge (New, Sale, Sold Out)
+  - Slide-up button
+  - Price with discount
+  - Optional quick view
+  - Optimized lazy loading
+  - Smart hover animation (adapts for 1 or 2+ images)
   
   Usage:
   {% render 'product-card', 
@@ -20,14 +20,14 @@
     image_loading: 'lazy'
   %}
   
-  Paramètres:
-  - product: Objet produit Shopify (required)
-  - show_second_image: Afficher 2ème image au hover (default: true)
-  - show_badge: Afficher badge Nouveau/Promo (default: true)
-  - show_vendor: Afficher la marque/vendor (default: false)
-  - show_quick_view: Afficher bouton quick view (default: false)
-  - image_loading: 'lazy' ou 'eager' (default: 'lazy')
-  - card_class: Classes CSS additionnelles
+  Parameters:
+  - product: Shopify product object (required)
+  - show_second_image: Show 2nd image on hover (default: true)
+  - show_badge: Show New/Sale badge (default: true)
+  - show_vendor: Show brand/vendor (default: false)
+  - show_quick_view: Show quick view button (default: false)
+  - image_loading: 'lazy' or 'eager' (default: 'lazy')
+  - card_class: Additional CSS classes
 {% endcomment %}
 
 {% liquid
@@ -38,36 +38,36 @@
   assign image_loading = image_loading | default: 'lazy'
   assign card_class = card_class | default: ''
   
-  # Calcul du badge
+  # Calculate badge
   assign badge_text = ''
   assign badge_type = ''
   
   if show_badge
-    # Vérifier si produit épuisé
+    # Check if product is sold out
     unless product.available
-      assign badge_text = 'Épuisé'
+      assign badge_text = 'Sold Out'
       assign badge_type = 'sold-out'
     else
-      # Vérifier si en promo
+      # Check if on sale
       if product.compare_at_price > product.price
         assign discount_percentage = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price
         assign badge_text = discount_percentage | append: '% OFF'
         assign badge_type = 'sale'
-      # Vérifier si nouveau (créé dans les 30 derniers jours)
+      # Check if new (created in last 30 days)
       else
         assign product_date_ts = product.created_at | date: '%s' | plus: 0
         assign now_ts = 'now' | date: '%s' | plus: 0
         assign new_threshold = now_ts | minus: 2592000
         
-        if product.tags contains 'nouveau' or product.tags contains 'new' or product_date_ts > new_threshold
-          assign badge_text = 'Nouveau'
+        if product.tags contains 'new' or product_date_ts > new_threshold
+          assign badge_text = 'New'
           assign badge_type = 'new'
         endif
       endif
     endunless
   endif
   
-  # Déterminer les images
+  # Determine images
   assign main_image = product.featured_media
   assign hover_image = nil
   assign has_single_image = false
@@ -80,7 +80,7 @@
 %}
 
 <article class="lunetier-product-card {{ card_class }} {% if has_single_image %}lunetier-card-single-image{% endif %}" data-product-id="{{ product.id }}">
-  <a href="{{ product.url }}" class="lunetier-card-link" aria-label="Voir {{ product.title }}">
+  <a href="{{ product.url }}" class="lunetier-card-link" aria-label="View {{ product.title }}">
     
     {%- comment -%} IMAGE CONTAINER {%- endcomment -%}
     <div class="lunetier-card-image-wrapper">
@@ -92,7 +92,7 @@
         </span>
       {% endif %}
       
-      {%- comment -%} IMAGE PRINCIPALE {%- endcomment -%}
+      {%- comment -%} MAIN IMAGE {%- endcomment -%}
       {% if main_image != blank %}
         {% render 'responsive-image',
           image: main_image,
@@ -104,7 +104,7 @@
         {{ 'product-1' | placeholder_svg_tag: 'lunetier-card-img lunetier-card-img-main' }}
       {% endif %}
       
-      {%- comment -%} IMAGE AU SURVOL {%- endcomment -%}
+      {%- comment -%} HOVER IMAGE {%- endcomment -%}
       {% if hover_image != blank %}
         {% render 'responsive-image',
           image: hover_image,
@@ -120,10 +120,10 @@
           {% if show_quick_view %}
             Quick View
           {% else %}
-            Voir - {{ product.price | money_without_trailing_zeros }}
+            View - {{ product.price | money_without_trailing_zeros }}
           {% endif %}
         {% else %}
-          Épuisé
+          Out of Stock
         {% endif %}
       </div>
     </div>
@@ -140,7 +140,7 @@
           </p>
         {% endif %}
         
-        {%- comment -%} AVIS (si app d'avis installée) {%- endcomment -%}
+        {%- comment -%} REVIEWS (if review app installed) {%- endcomment -%}
         {% comment %}
         <div class="lunetier-card-rating">
           {%- render 'product-rating', product: product -%}
@@ -148,7 +148,7 @@
         {% endcomment %}
       </div>
       
-      {%- comment -%} PRIX {%- endcomment -%}
+      {%- comment -%} PRICE {%- endcomment -%}
       <div class="lunetier-card-price-wrapper">
         {% if product.compare_at_price > product.price %}
           <span class="lunetier-card-price lunetier-card-price-sale">
@@ -167,13 +167,13 @@
     
   </a>
   
-  {%- comment -%} QUICK VIEW MODAL (si activé) {%- endcomment -%}
+  {%- comment -%} QUICK VIEW MODAL (if enabled) {%- endcomment -%}
   {% if show_quick_view %}
     {%- comment -%}
-    TODO: Implémenter modal quick view avec AJAX
+    TODO: Implement quick view modal with AJAX
     <button class="lunetier-quick-view-btn" 
             data-product-handle="{{ product.handle }}"
-            aria-label="Aperçu rapide de {{ product.title }}">
+            aria-label="Quick view of {{ product.title }}">
       <svg>...</svg>
     </button>
     {%- endcomment -%}
