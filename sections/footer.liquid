@@ -214,12 +214,19 @@
     width: auto;
   }
 
+  /* Language Selector Row */
+  .lunetier-footer-lang-row {
+    display: flex;
+    justify-content: center;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-gray-200);
+    margin-top: 2rem;
+  }
+
   /* Copyright */
   .lunetier-copyright {
     text-align: center;
     padding-top: 2rem;
-    border-top: 1px solid var(--color-gray-200);
-    margin-top: 2rem;
   }
 
   .lunetier-copyright p {
@@ -358,6 +365,11 @@
           {%- endfor -%}
         </div>
       {%- endif -%}
+    </div>
+
+    <!-- LANGUAGE SELECTOR -->
+    <div class="lunetier-footer-lang-row">
+      {% render 'language-selector' %}
     </div>
 
     <!-- COPYRIGHT -->
