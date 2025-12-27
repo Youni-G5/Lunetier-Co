@@ -1,7 +1,7 @@
 {% comment %}
-  Section "Collection Capsule" Lunetier - Grille de produits Cross-sell
-  Design : Images épurées, effet hover sophistiqué, utilise le snippet product-card
-  Mobile : Carrousel avec swipe et navigation
+  "Capsule Collection" Lunetier Section - Cross-sell Product Grid
+  Design: Clean images, sophisticated hover effect, uses product-card snippet
+  Mobile: Swipeable carousel with navigation
 {% endcomment %}
 
 <style>
@@ -72,7 +72,7 @@
       scroll-snap-align: center;
     }
 
-    /* FIX: Prix inline si espace suffisant */
+    /* FIX: Inline price if enough space */
     .lunetier-product-card .lunetier-card-info {
       flex-direction: row !important;
       justify-content: space-between;
@@ -118,10 +118,10 @@
   <!-- HEADER -->
   <div class="lunetier-collection-header">
     <h2 class="lunetier-collection-title">
-      {{ section.settings.title | default: "La Collection Capsule" }}
+      {{ section.settings.title | default: "The Capsule Collection" }}
     </h2>
     <p class="lunetier-collection-desc">
-      {{ section.settings.description | default: "Quelques pièces exclusives pour compléter votre style." }}
+      {{ section.settings.description | default: "A few exclusive pieces to complete your style." }}
     </p>
   </div>
 
@@ -146,17 +146,17 @@
           <article class="lunetier-product-card">
             <a href="#" class="lunetier-card-link">
               <div class="lunetier-card-image-wrapper">
-                <span class="lunetier-card-badge lunetier-badge-new">Nouveau</span>
+                <span class="lunetier-card-badge lunetier-badge-new">New</span>
                 {{ 'product-' | append: i | placeholder_svg_tag: 'lunetier-card-img lunetier-card-img-main' }}
-                <div class="lunetier-card-btn">Voir - 129€</div>
+                <div class="lunetier-card-btn">View - €129</div>
               </div>
               <div class="lunetier-card-info">
                 <div class="lunetier-card-details">
-                  <h3 class="lunetier-card-title">Nom du Modèle</h3>
-                  <p class="lunetier-card-meta">Acétate Italien</p>
+                  <h3 class="lunetier-card-title">Model Name</h3>
+                  <p class="lunetier-card-meta">Italian Acetate</p>
                 </div>
                 <div class="lunetier-card-price-wrapper">
-                  <span class="lunetier-card-price">129 €</span>
+                  <span class="lunetier-card-price">€129</span>
                 </div>
               </div>
             </a>
@@ -174,7 +174,7 @@
 (function() {
   'use strict';
 
-  // Vérifier si mobile
+  // Check if mobile
   if (window.innerWidth >= 768) return;
 
   const sectionId = '{{ section.id }}';
@@ -188,11 +188,11 @@
 
   if (cardCount === 0) return;
 
-  // Créer les dots
+  // Create dots
   for (let i = 0; i < cardCount; i++) {
     const dot = document.createElement('button');
     dot.className = 'lunetier-carousel-dot';
-    dot.setAttribute('aria-label', 'Aller au produit ' + (i + 1));
+    dot.setAttribute('aria-label', 'Go to product ' + (i + 1));
     if (i === 0) dot.classList.add('active');
     
     dot.addEventListener('click', function() {
@@ -240,24 +240,24 @@
 
 {% schema %}
 {
-  "name": "Collection Capsule",
+  "name": "Capsule Collection",
   "settings": [
     {
       "type": "text",
       "id": "title",
-      "label": "Titre",
-      "default": "La Collection Capsule"
+      "label": "Title",
+      "default": "The Capsule Collection"
     },
     {
       "type": "textarea",
       "id": "description",
       "label": "Description",
-      "default": "Quelques pièces exclusives pour compléter votre style."
+      "default": "A few exclusive pieces to complete your style."
     },
     {
       "type": "collection",
       "id": "collection",
-      "label": "Choisir la collection"
+      "label": "Choose collection"
     },
     {
       "type": "range",
@@ -266,11 +266,11 @@
       "max": 12,
       "step": 3,
       "default": 3,
-      "label": "Nombre de produits"
+      "label": "Number of products"
     },
     {
       "type": "header",
-      "content": "Espacement"
+      "content": "Spacing"
     },
     {
       "type": "range",
@@ -279,7 +279,7 @@
       "max": 120,
       "step": 8,
       "unit": "px",
-      "label": "Marge supérieure",
+      "label": "Top margin",
       "default": 96
     },
     {
@@ -289,13 +289,13 @@
       "max": 120,
       "step": 8,
       "unit": "px",
-      "label": "Marge inférieure",
+      "label": "Bottom margin",
       "default": 96
     }
   ],
   "presets": [
     {
-      "name": "Collection Capsule Lunetier"
+      "name": "Capsule Collection Lunetier"
     }
   ]
 }

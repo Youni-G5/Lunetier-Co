@@ -1,6 +1,6 @@
 {% comment %}
-  Section Témoignages "Lunetier" - Preuve sociale à fort impact
-  Design : Fond sombre, typographie large, focus sur la confiance
+  Testimonials Section "Lunetier" - High-impact social proof
+  Design: Dark background, large typography, focus on trust
 {% endcomment %}
 
 <style>
@@ -102,7 +102,7 @@
 
   <!-- QUOTE -->
   <h2 class="lunetier-quote">
-    "{{ section.settings.quote_text }}"
+    “{{ section.settings.quote_text }}”
   </h2>
 
   <!-- AUTHOR -->
@@ -114,7 +114,7 @@
           alt: section.settings.author_name 
         }}
       {%- else -%}
-        <!-- Placeholder discret -->
+        <!-- Subtle placeholder -->
         {{ 'image' | placeholder_svg_tag }}
       {%- endif -%}
     </div>
@@ -129,18 +129,18 @@
 
 {% schema %}
 {
-  "name": "Témoignage Unique",
+  "name": "Single Testimonial",
   "settings": [
     {
       "type": "color",
       "id": "bg_color",
-      "label": "Couleur de fond",
+      "label": "Background color",
       "default": "#000000"
     },
     {
       "type": "color",
       "id": "text_color",
-      "label": "Couleur du texte",
+      "label": "Text color",
       "default": "#ffffff"
     },
     {
@@ -149,36 +149,36 @@
       "min": 1,
       "max": 5,
       "step": 1,
-      "label": "Nombre d'étoiles",
+      "label": "Number of stars",
       "default": 5
     },
     {
       "type": "textarea",
       "id": "quote_text",
-      "label": "Citation",
-      "default": "Enfin des lunettes que je ne sens pas sur mon nez. La qualité est comparable aux grandes marques de luxe, mais à un prix juste."
+      "label": "Quote",
+      "default": "Finally glasses I don't feel on my nose. The quality is comparable to luxury brands, but at a fair price."
     },
     {
       "type": "image_picker",
       "id": "author_image",
-      "label": "Photo de l'auteur"
+      "label": "Author photo"
     },
     {
       "type": "text",
       "id": "author_name",
-      "label": "Nom de l'auteur",
+      "label": "Author name",
       "default": "Sophie M."
     },
     {
       "type": "text",
       "id": "author_details",
-      "label": "Détails auteur",
-      "default": "Cliente vérifiée • Paris"
+      "label": "Author details",
+      "default": "Verified customer • Paris"
     }
   ],
   "presets": [
     {
-      "name": "Témoignage Lunetier"
+      "name": "Testimonial Lunetier"
     }
   ]
 }

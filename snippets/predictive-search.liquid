@@ -1,16 +1,16 @@
 {% comment %}
-  Snippet: Recherche Prédictive
-  Affiche les résultats de recherche en temps réel avec cartes produits
+  Snippet: Predictive Search
+  Displays real-time search results with product cards
 {% endcomment %}
 
 <div class="predictive-search" id="PredictiveSearch-{{ section_id }}" role="status" aria-live="polite">
   <div class="predictive-search-loading" id="PredictiveSearchLoading-{{ section_id }}">
     <span class="predictive-search-spinner"></span>
-    <span>Recherche en cours...</span>
+    <span>Searching...</span>
   </div>
   
   <div class="predictive-search-results" id="PredictiveSearchResults-{{ section_id }}">
-    <!-- Résultats injectés par JavaScript -->
+    <!-- Results injected by JavaScript -->
   </div>
 </div>
 
@@ -65,7 +65,7 @@
   font-family: var(--font-sans);
 }
 
-/* === RESULTS GRID (Identique à product-card.css) === */
+/* === RESULTS GRID (Identical to product-card.css) === */
 .predictive-search-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -81,7 +81,7 @@
   }
 }
 
-/* === PRODUCT CARD (Adapté de product-card.css) === */
+/* === PRODUCT CARD (Adapted from product-card.css) === */
 .predictive-search-card {
   position: relative;
   width: 100%;
@@ -116,7 +116,7 @@
   transition: opacity var(--transition-base), transform var(--transition-slow);
 }
 
-/* Zoom au hover */
+/* Zoom on hover */
 .predictive-search-card:hover .predictive-search-card-image-wrapper img {
   transform: scale(1.08);
 }
@@ -270,7 +270,7 @@
   
   // === FORMAT MONEY ===
   function formatMoney(price) {
-    // Le prix peut être une string "45.00" ou un nombre 4500
+    // Price can be a string "45.00" or a number 4500
     let priceFloat;
     
     if (typeof price === 'string') {
@@ -298,7 +298,7 @@
     loadingEl.classList.add('is-active');
     resultsEl.classList.remove('is-visible');
     
-    // ✅ LIMIT 4 PRODUITS
+    // ✅ LIMIT 4 PRODUCTS
     const url = `/search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=4`;
     
     fetch(url)
@@ -327,7 +327,7 @@
     let html = '<div class="predictive-search-grid">';
     
     products.forEach((product, index) => {
-      // Prix formaté
+      // Formatted price
       const price = formatMoney(product.price);
       const compareAtPriceMax = parseFloat(product.compare_at_price_max || 0);
       const priceValue = typeof product.price === 'string' ? parseFloat(product.price) : product.price / 100;
@@ -340,11 +340,11 @@
         featured_image: product.featured_image
       });
       
-      // Image optimisée
+      // Optimized image
       let imageHtml = '';
       let imageUrl = null;
       
-      // ✅ FIX: featured_image est un OBJET {url: "..."}
+      // ✅ FIX: featured_image is an OBJECT {url: "..."}
       if (product.featured_image) {
         if (typeof product.featured_image === 'object' && product.featured_image.url) {
           imageUrl = product.featured_image.url;
@@ -353,7 +353,7 @@
         }
       }
       
-      // Fallback sur image si featured_image n'existe pas
+      // Fallback to image if featured_image doesn't exist
       if (!imageUrl && product.image) {
         if (typeof product.image === 'object' && product.image.url) {
           imageUrl = product.image.url;
@@ -363,7 +363,7 @@
       }
       
       if (imageUrl) {
-        // Optimiser l'URL
+        // Optimize URL
         const optimizedUrl = imageUrl.includes('?') 
           ? imageUrl.split('?')[0] + '?width=600' 
           : imageUrl + '?width=600';
@@ -403,7 +403,7 @@
     html += `
       <div class="predictive-search-footer">
         <a href="/search?q=${encodeURIComponent(query)}&type=product" class="predictive-search-view-all">
-          <span>Voir tous les résultats</span>
+          <span>View all results</span>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
@@ -421,8 +421,8 @@
   function displayNoResults(query) {
     resultsEl.innerHTML = `
       <div class="predictive-search-status">
-        <p>Aucun résultat pour "<strong>${escapeHtml(query)}</strong>"</p>
-        <p style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--color-gray-500);">Essayez avec un autre terme de recherche</p>
+        <p>No results for "<strong>${escapeHtml(query)}</strong>"</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--color-gray-500);">Try another search term</p>
       </div>
     `;
     resultsEl.classList.add('is-visible');

@@ -1,13 +1,13 @@
 {% comment %}
-  Section Contact "Lunetier"
-  Design : Approche Conciergerie, champs soulignés, layout asymétrique.
+  Contact Section "Lunetier"
+  Design: Concierge Approach, underlined fields, asymmetric layout.
 {% endcomment %}
 
 <style>
   #shopify-section-{{ section.id }} {
     background-color: #ffffff;
     color: #111827;
-    /* Espace généreux pour le header sticky */
+    /* Generous space for sticky header */
     padding-top: 10rem; 
     padding-bottom: 8rem;
   }
@@ -51,7 +51,7 @@
 
   @media (min-width: 1024px) {
     .lunetier-contact-grid {
-      grid-template-columns: 1fr 1.5fr; /* Info (petit) | Form (grand) */
+      grid-template-columns: 1fr 1.5fr; /* Info (small) | Form (large) */
       gap: 6rem;
       align-items: start;
     }
@@ -181,9 +181,9 @@
   
   <!-- HEADER -->
   <div class="lunetier-contact-header">
-    <h1 class="lunetier-contact-title">{{ section.settings.title | default: "Contactez-nous" }}</h1>
+    <h1 class="lunetier-contact-title">{{ section.settings.title | default: "Contact Us" }}</h1>
     <div class="lunetier-contact-desc">
-      {{ section.settings.description | default: "Notre service de conciergerie est à votre disposition du lundi au vendredi, de 9h à 18h." }}
+      {{ section.settings.description | default: "Our concierge service is available Monday to Friday, 9am to 6pm." }}
     </div>
   </div>
 
@@ -192,15 +192,15 @@
     <!-- LEFT: INFO -->
     <div class="lunetier-info-col">
       <div class="lunetier-info-block">
-        <h3>Service Client</h3>
-        <p>Une question sur votre commande ou nos montures ?</p>
+        <h3>Customer Service</h3>
+        <p>Questions about your order or our frames?</p>
         <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
         <a href="tel:{{ section.settings.phone }}">{{ section.settings.phone }}</a>
       </div>
 
       <div class="lunetier-info-block">
-        <h3>Presse & Partenariats</h3>
-        <p>Pour toute demande de collaboration.</p>
+        <h3>Press & Partnerships</h3>
+        <p>For collaboration inquiries.</p>
         <a href="mailto:press@lunetier.com">press@lunetier.com</a>
       </div>
 
@@ -213,7 +213,7 @@
         {{ section.settings.image | image_url: width: 600 | image_tag: 
           class: 'lunetier-contact-img', 
           loading: 'lazy',
-          alt: 'Notre Atelier'
+          alt: 'Our Workshop'
         }}
       {%- endif -%}
     </div>
@@ -224,46 +224,46 @@
         
         {%- if form.posted_successfully? -%}
           <div class="lunetier-success">
-            Merci. Votre message a bien été envoyé. Notre équipe vous répondra sous 24h.
+            Thank you. Your message has been sent successfully. Our team will respond within 24 hours.
           </div>
         {%- elsif form.errors -%}
           <div class="lunetier-error">
-            Veuillez corriger les erreurs ci-dessous : {{ form.errors | default_errors }}
+            Please correct the errors below: {{ form.errors | default_errors }}
           </div>
         {%- endif -%}
 
         <div class="lunetier-field-group">
-          <label for="ContactFormName" class="lunetier-label">Nom Complet</label>
-          <input type="text" id="ContactFormName" name="contact[name]" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}" class="lunetier-input" placeholder="Votre nom" required>
+          <label for="ContactFormName" class="lunetier-label">Full Name</label>
+          <input type="text" id="ContactFormName" name="contact[name]" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}" class="lunetier-input" placeholder="Your name" required>
         </div>
 
         <div class="lunetier-field-group">
           <label for="ContactFormEmail" class="lunetier-label">Email</label>
-          <input type="email" id="ContactFormEmail" name="contact[email]" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" class="lunetier-input" placeholder="votre@email.com" required>
+          <input type="email" id="ContactFormEmail" name="contact[email]" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" class="lunetier-input" placeholder="your@email.com" required>
         </div>
 
         <div class="lunetier-field-group">
-          <label for="ContactFormPhone" class="lunetier-label">Téléphone (Optionnel)</label>
+          <label for="ContactFormPhone" class="lunetier-label">Phone (Optional)</label>
           <input type="tel" id="ContactFormPhone" name="contact[phone]" value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}" class="lunetier-input" placeholder="+33 6...">
         </div>
 
         <div class="lunetier-field-group">
-          <label for="ContactFormSubject" class="lunetier-label">Sujet</label>
-          <select id="ContactFormSubject" name="contact[sujet]" class="lunetier-select">
-            <option value="Information produit">Information produit</option>
-            <option value="Suivi de commande">Suivi de commande</option>
-            <option value="Retour / Échange">Retour / Échange</option>
-            <option value="Autre">Autre</option>
+          <label for="ContactFormSubject" class="lunetier-label">Subject</label>
+          <select id="ContactFormSubject" name="contact[subject]" class="lunetier-select">
+            <option value="Product information">Product information</option>
+            <option value="Order tracking">Order tracking</option>
+            <option value="Return / Exchange">Return / Exchange</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
         <div class="lunetier-field-group">
           <label for="ContactFormMessage" class="lunetier-label">Message</label>
-          <textarea rows="10" id="ContactFormMessage" name="contact[body]" class="lunetier-textarea" placeholder="Comment pouvons-nous vous aider ?" required>{% if form.body %}{{ form.body }}{% endif %}</textarea>
+          <textarea rows="10" id="ContactFormMessage" name="contact[body]" class="lunetier-textarea" placeholder="How can we help you?" required>{% if form.body %}{{ form.body }}{% endif %}</textarea>
         </div>
 
         <button type="submit" class="lunetier-submit">
-          Envoyer le message
+          Send message
         </button>
 
       {%- endform -%}
@@ -279,30 +279,30 @@
     {
       "type": "text",
       "id": "title",
-      "label": "Titre",
-      "default": "Contactez-nous"
+      "label": "Title",
+      "default": "Contact Us"
     },
     {
       "type": "textarea",
       "id": "description",
       "label": "Description",
-      "default": "Notre service de conciergerie est à votre disposition du lundi au vendredi, de 9h à 18h."
+      "default": "Our concierge service is available Monday to Friday, 9am to 6pm."
     },
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Image d'ambiance"
+      "label": "Atmosphere image"
     },
     {
       "type": "text",
       "id": "email",
-      "label": "Email de contact",
-      "default": "bonjour@lunetier.com"
+      "label": "Contact email",
+      "default": "hello@lunetier.com"
     },
     {
       "type": "text",
       "id": "phone",
-      "label": "Téléphone",
+      "label": "Phone",
       "default": "01 23 45 67 89"
     }
   ],

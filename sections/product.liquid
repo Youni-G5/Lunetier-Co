@@ -1,6 +1,6 @@
 {% comment %}
-  Section Produit "Lunetier" - Design Premium
-  Optimisé : CSS externe dans assets/product.css
+  Product Section "Lunetier" - Premium Design
+  Optimized: External CSS in assets/product.css
 {% endcomment %}
 
 <div class="lunetier-prod-section">
@@ -11,7 +11,7 @@
 
       <div class="lunetier-prod-grid">
         
-        <!-- GALERIE -->
+        <!-- GALLERY -->
         <div class="lunetier-prod-gallery">
           {%- if product.media.size > 0 -%}
             {%- for media in product.media limit: 6 -%}
@@ -36,24 +36,24 @@
           {%- endif -%}
         </div>
 
-        <!-- DETAILS STICKY -->
+        <!-- STICKY DETAILS -->
         <div class="lunetier-prod-details">
           
           <div class="lunetier-prod-collection">
-            {{ product.vendor | default: "Collection Signature" }}
+            {{ product.vendor | default: "Signature Collection" }}
           </div>
           
           <h1 class="lunetier-prod-title">{{ product.title }}</h1>
           
           <div class="lunetier-prod-meta-row">
             <span class="lunetier-prod-price">{{ product.price | money }}</span>
-            <div class="lunetier-prod-rating" role="img" aria-label="Note 5 étoiles sur 5">
+            <div class="lunetier-prod-rating" role="img" aria-label="5 star rating out of 5">
               <div style="display:flex;">
                 {%- for i in (1..5) -%}
                   <svg class="lunetier-prod-star" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                 {%- endfor -%}
               </div>
-              <span>(48 avis)</span>
+              <span>(48 reviews)</span>
             </div>
           </div>
 
@@ -64,7 +64,7 @@
           {%- unless product.has_only_default_variant -%}
             <div class="lunetier-prod-variants">
               {%- for option in product.options_with_values -%}
-                <span class="lunetier-prod-variant-label">{{ option.name }} : <span id="selected-option-{{ forloop.index0 }}">{{ option.selected_value }}</span></span>
+                <span class="lunetier-prod-variant-label">{{ option.name }}: <span id="selected-option-{{ forloop.index0 }}">{{ option.selected_value }}</span></span>
                 <div class="lunetier-prod-options-group" role="group" aria-label="{{ option.name }}">
                   {%- for value in option.values -%}
                     <label>
@@ -84,7 +84,7 @@
           {%- endunless -%}
 
           <div class="lunetier-prod-fit">
-            <div class="lunetier-prod-fit-title">Guide de Fit</div>
+            <div class="lunetier-prod-fit-title">Fit Guide</div>
             <div class="lunetier-prod-fit-bar">
               {%- assign fit_pos = '50%' -%}
               {%- if section.settings.fit_type == 'narrow' %}{% assign fit_pos = '15%' %}{% endif -%}
@@ -92,32 +92,32 @@
               <div class="lunetier-prod-fit-dot" style="left: {{ fit_pos }};"></div>
             </div>
             <div class="lunetier-prod-fit-labels">
-              <span>Étroit</span>
-              <span>Moyen</span>
-              <span>Large</span>
+              <span>Narrow</span>
+              <span>Medium</span>
+              <span>Wide</span>
             </div>
           </div>
 
           <div class="lunetier-prod-actions">
             <button type="submit" name="add" class="lunetier-prod-btn-primary" 
                     {% unless product.available %}disabled{% endunless %}
-                    aria-label="Ajouter {{ product.title }} au panier">
+                    aria-label="Add {{ product.title }} to cart">
               {%- if product.available -%}
-                Ajouter au panier - {{ product.price | money }}
+                Add to cart - {{ product.price | money }}
               {%- else -%}
-                Épuisé
+                Sold Out
               {%- endif -%}
             </button>
             <button type="button" 
                     class="lunetier-prod-btn-secondary" 
                     onclick="openVirtualTryOn()" 
-                    aria-label="Essayer virtuellement">
+                    aria-label="Try virtually">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-right:0.35rem;">
                 <rect x="2" y="6" width="20" height="14" rx="2"></rect>
                 <circle cx="12" cy="13" r="3"></circle>
                 <path d="M16 6l2-3h-12l2 3"></path>
               </svg>
-              Essai Virtuel (Bêta)
+              Virtual Try-On (Beta)
             </button>
           </div>
 
@@ -125,7 +125,7 @@
             
             <details class="lunetier-prod-accordion-item" open>
               <summary class="lunetier-prod-summary">
-                <span class="lunetier-prod-summary-title">Description & Conception</span>
+                <span class="lunetier-prod-summary-title">Description & Design</span>
                 <span class="lunetier-prod-icon" aria-hidden="true"></span>
               </summary>
               <div class="lunetier-prod-accordion-content">
@@ -140,21 +140,21 @@
               </summary>
               <div class="lunetier-prod-accordion-content">
                 <ul style="padding-left:1.2rem; margin:0;">
-                  <li>Largeur totale : 140mm</li>
-                  <li>Verres : 48mm</li>
-                  <li>Pont : 22mm</li>
-                  <li>Branches : 145mm</li>
+                  <li>Total width: 140mm</li>
+                  <li>Lenses: 48mm</li>
+                  <li>Bridge: 22mm</li>
+                  <li>Temples: 145mm</li>
                 </ul>
               </div>
             </details>
 
             <details class="lunetier-prod-accordion-item">
               <summary class="lunetier-prod-summary">
-                <span class="lunetier-prod-summary-title">Livraison & Retours</span>
+                <span class="lunetier-prod-summary-title">Shipping & Returns</span>
                 <span class="lunetier-prod-icon" aria-hidden="true"></span>
               </summary>
               <div class="lunetier-prod-accordion-content">
-                <p style="margin:0;">Livraison express offerte (24-48h). Essayez-les chez vous pendant 30 jours. Si elles ne conviennent pas, le retour est gratuit et immédiat.</p>
+                <p style="margin:0;">Free express shipping (24-48h). Try them at home for 30 days. If they don't suit you, return is free and immediate.</p>
               </div>
             </details>
 
@@ -163,15 +163,15 @@
           <div class="lunetier-prod-trust">
             <div class="lunetier-prod-trust-item">
               <svg class="lunetier-prod-trust-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-              <span class="lunetier-prod-trust-text">Garantie 2 ans</span>
+              <span class="lunetier-prod-trust-text">2 Year Warranty</span>
             </div>
             <div class="lunetier-prod-trust-item">
               <svg class="lunetier-prod-trust-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-              <span class="lunetier-prod-trust-text">Livraison 24h</span>
+              <span class="lunetier-prod-trust-text">24h Delivery</span>
             </div>
             <div class="lunetier-prod-trust-item">
               <svg class="lunetier-prod-trust-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-              <span class="lunetier-prod-trust-text">Retours Gratuits</span>
+              <span class="lunetier-prod-trust-text">Free Returns</span>
             </div>
           </div>
 
@@ -185,14 +185,14 @@
             {% unless product.has_only_default_variant %}
               {{ product.selected_or_first_available_variant.title }}
             {% else %}
-               Taille unique
+               One size
             {% endunless %}
           </div>
         </div>
         <button type="submit" name="add" class="lunetier-prod-mobile-btn" 
                 {% unless product.available %}disabled{% endunless %}
-                aria-label="Ajouter au panier">
-           Ajouter - {{ product.price | money }}
+                aria-label="Add to cart">
+           Add - {{ product.price | money }}
         </button>
       </div>
 
@@ -201,24 +201,24 @@
 </div>
 
 {% comment %}
-  JavaScript déplacé dans assets/theme.js :
+  JavaScript moved to assets/theme.js:
   - updateVariant()
-  - Gestion des variantes combinées
-  - Mise à jour des images selon variante
+  - Combined variants management
+  - Image update based on variant
 {% endcomment %}
 
 {% schema %}
 {
-  "name": "Page Produit Lunetier",
+  "name": "Product Page Lunetier",
   "settings": [
     {
       "type": "select",
       "id": "fit_type",
-      "label": "Type de Fit (Défaut)",
+      "label": "Fit Type (Default)",
       "options": [
-        { "value": "narrow", "label": "Étroit" },
-        { "value": "medium", "label": "Moyen" },
-        { "value": "wide", "label": "Large" }
+        { "value": "narrow", "label": "Narrow" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "wide", "label": "Wide" }
       ],
       "default": "medium"
     }

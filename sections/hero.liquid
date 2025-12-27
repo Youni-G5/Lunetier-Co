@@ -1,14 +1,14 @@
 {% comment %}
-  Section Hero "Lunetier" - Plein écran avec produit en vedette
-  Reproduit le design React : Image immersive, typographie élégante, badge "Best-seller"
-  Bouton 1 : Ajoute au panier si produit sélectionné
+  Hero Section "Lunetier" - Full screen with featured product
+  Reproduces React design: Immersive image, elegant typography, "Bestseller" badge
+  Button 1: Adds to cart if product selected
 {% endcomment %}
 
 <style>
   .lunetier-hero-section {
     position: relative;
-    height: 100vh; /* Plein écran */
-    min-height: 700px; /* Hauteur min pour les petits écrans */
+    height: 100vh; /* Full screen */
+    min-height: 700px; /* Min height for small screens */
     width: 100%;
     display: flex;
     align-items: center;
@@ -199,7 +199,7 @@
         widths: '375, 550, 750, 1100, 1500, 2000, 3000' 
       }}
     {%- else -%}
-      <!-- Placeholder SVG si pas d'image -->
+      <!-- Placeholder SVG if no image -->
       {{ 'lifestyle-1' | placeholder_svg_tag }}
     {%- endif -%}
   </div>
@@ -236,9 +236,9 @@
       
       <div class="lunetier-btn-group">
         
-        <!-- MAIN BUTTON (Add to Cart si produit, sinon lien) -->
+        <!-- MAIN BUTTON (Add to Cart if product, otherwise link) -->
         {%- if product != blank -%}
-          <!-- Form Ajout Panier -->
+          <!-- Cart Add Form -->
           <form action="/cart/add" method="post" id="hero-add-to-cart-{{ section.id }}">
             <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
             <button 
@@ -249,12 +249,12 @@
               {% if product.available %}
                 {{ section.settings.button_text_1 }} - {{ product.selected_or_first_available_variant.price | money_without_trailing_zeros }}
               {% else %}
-                Épuisé
+                Sold Out
               {% endif %}
             </button>
           </form>
         {%- else -%}
-          <!-- Lien classique si pas de produit -->
+          <!-- Classic link if no product -->
           <a href="{{ section.settings.button_link_1 }}" class="lunetier-btn lunetier-btn-primary">
             {{ section.settings.button_text_1 }}
           </a>
@@ -301,7 +301,7 @@
     
     // Loading state
     button.disabled = true;
-    button.textContent = 'Ajout en cours...';
+    button.textContent = 'Adding...';
     
     const formData = new FormData(form);
     
@@ -314,7 +314,7 @@
       console.log('✅ Product added to cart:', data);
       
       // Success feedback
-      button.textContent = 'Ajouté !';
+      button.textContent = 'Added!';
       
       // Update cart count
       fetch('/cart.js')
@@ -335,7 +335,7 @@
     })
     .catch(error => {
       console.error('❌ Error adding to cart:', error);
-      button.textContent = 'Erreur';
+      button.textContent = 'Error';
       
       setTimeout(function() {
         button.disabled = false;
@@ -352,83 +352,83 @@
   "settings": [
     {
       "type": "header",
-      "content": "Visuel"
+      "content": "Visual"
     },
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Image de fond"
+      "label": "Background image"
     },
     {
       "type": "header",
-      "content": "Contenu Textuel"
+      "content": "Text Content"
     },
     {
       "type": "text",
       "id": "badge_text",
-      "label": "Texte du Badge",
-      "default": "Best-seller 2024"
+      "label": "Badge text",
+      "default": "Bestseller 2024"
     },
     {
       "type": "textarea",
       "id": "title",
-      "label": "Titre Principal",
-      "default": "L'Élégance <br/>au Premier Regard.",
-      "info": "Utilisez <br/> pour aller à la ligne"
+      "label": "Main title",
+      "default": "Elegance <br/>at First Sight.",
+      "info": "Use <br/> to break lines"
     },
     {
       "type": "textarea",
       "id": "description",
       "label": "Description",
-      "default": "Découvrez The Icon. Une monture dessinée à Paris, conçue pour durer et sublimer votre visage."
+      "default": "Discover The Icon. A frame designed in Paris, built to last and enhance your face."
     },
     {
       "type": "header",
-      "content": "Produit & Boutons"
+      "content": "Product & Buttons"
     },
     {
       "type": "product",
       "id": "product",
-      "label": "Produit mis en avant",
-      "info": "Sélectionnez un produit pour activer l'ajout au panier direct."
+      "label": "Featured product",
+      "info": "Select a product to enable direct add to cart."
     },
     {
       "type": "text",
       "id": "button_text_1",
-      "label": "Texte Bouton 1",
-      "default": "AJOUTER AU PANIER"
+      "label": "Button 1 text",
+      "default": "ADD TO CART"
     },
     {
       "type": "url",
       "id": "button_link_1",
-      "label": "Lien Bouton 1 (si pas de produit)"
+      "label": "Button 1 link (if no product)"
     },
     {
       "type": "text",
       "id": "button_text_2",
-      "label": "Texte Bouton 2",
-      "default": "DÉCOUVRIR LE DESIGN"
+      "label": "Button 2 text",
+      "default": "DISCOVER THE DESIGN"
     },
     {
       "type": "url",
       "id": "button_link_2",
-      "label": "Lien Bouton 2"
+      "label": "Button 2 link"
     },
     {
       "type": "header",
-      "content": "Réassurance (Bas de section)"
+      "content": "Trust indicators (Bottom section)"
     },
     {
       "type": "text",
       "id": "trust_text_1",
-      "label": "Texte Garantie 1",
-      "default": "Livraison 48h"
+      "label": "Trust text 1",
+      "default": "48h Delivery"
     },
     {
       "type": "text",
       "id": "trust_text_2",
-      "label": "Texte Garantie 2",
-      "default": "Garantie 2 ans"
+      "label": "Trust text 2",
+      "default": "2 Year Warranty"
     }
   ],
   "presets": [

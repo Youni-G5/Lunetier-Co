@@ -1,6 +1,6 @@
 {% comment %}
-  Section Panier "Lunetier" - Design Clean
-  Optimisé : CSS externe dans assets/cart.css
+  Cart Section "Lunetier" - Clean Design
+  Optimized: External CSS in assets/cart.css
 {% endcomment %}
 
 {{ 'cart.css' | asset_url | stylesheet_tag }}
@@ -8,7 +8,7 @@
 <div class="lunetier-cart-section">
   <div class="lunetier-cart-container">
     
-    <h1 class="lunetier-cart-title">Panier</h1>
+    <h1 class="lunetier-cart-title">Cart</h1>
 
     {%- if cart.item_count > 0 -%}
       
@@ -16,7 +16,7 @@
         
         <div class="lunetier-cart-grid">
           
-          <!-- COLONNE GAUCHE : ITEMS -->
+          <!-- LEFT COLUMN: ITEMS -->
           <div class="lunetier-cart-items">
             {%- for item in cart.items -%}
               <div class="lunetier-cart-item" data-line="{{ forloop.index }}">
@@ -46,7 +46,7 @@
 
                   <div class="lunetier-cart-item-actions">
                     <div class="lunetier-cart-qty">
-                      <button type="button" class="lunetier-cart-qty-btn" onclick="updateQuantity({{ forloop.index }}, -1)" aria-label="Diminuer la quantité">
+                      <button type="button" class="lunetier-cart-qty-btn" onclick="updateQuantity({{ forloop.index }}, -1)" aria-label="Decrease quantity">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                       </button>
                       <input type="number" 
@@ -55,14 +55,14 @@
                              min="0" 
                              class="lunetier-cart-qty-input"
                              data-line="{{ forloop.index }}"
-                             aria-label="Quantité">
-                      <button type="button" class="lunetier-cart-qty-btn" onclick="updateQuantity({{ forloop.index }}, 1)" aria-label="Augmenter la quantité">
+                             aria-label="Quantity">
+                      <button type="button" class="lunetier-cart-qty-btn" onclick="updateQuantity({{ forloop.index }}, 1)" aria-label="Increase quantity">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                       </button>
                     </div>
 
-                    <button type="button" class="lunetier-cart-remove" onclick="removeItem({{ forloop.index }})" aria-label="Retirer cet article">
-                      Retirer
+                    <button type="button" class="lunetier-cart-remove" onclick="removeItem({{ forloop.index }})" aria-label="Remove this item">
+                      Remove
                     </button>
                   </div>
                 </div>
@@ -75,18 +75,18 @@
             {%- endfor -%}
           </div>
 
-          <!-- COLONNE DROITE : RÉSUMÉ -->
+          <!-- RIGHT COLUMN: SUMMARY -->
           <div class="lunetier-cart-summary">
-            <h2 class="lunetier-cart-summary-title">Résumé</h2>
+            <h2 class="lunetier-cart-summary-title">Summary</h2>
             
             <div class="lunetier-cart-summary-row">
-              <span>Sous-total</span>
+              <span>Subtotal</span>
               <span>{{ cart.total_price | money }}</span>
             </div>
 
             <div class="lunetier-cart-summary-row">
-              <span>Livraison</span>
-              <span>Offerte</span>
+              <span>Shipping</span>
+              <span>Free</span>
             </div>
 
             <div class="lunetier-cart-shipping-bar">
@@ -94,10 +94,10 @@
             </div>
             <p class="lunetier-cart-shipping-text">
               {%- if cart.total_price >= 5000 -%}
-                Livraison express gratuite débloquée !
+                Free express shipping unlocked!
               {%- else -%}
                 {%- assign remaining = 5000 | minus: cart.total_price -%}
-                Plus que {{ remaining | money }} pour la livraison express gratuite
+                Only {{ remaining | money }} away from free express shipping
               {%- endif -%}
             </p>
 
@@ -107,11 +107,11 @@
             </div>
 
             <button type="submit" name="checkout" class="lunetier-cart-checkout-btn">
-              Passer commande
+              Checkout
             </button>
 
             <a href="{{ routes.all_products_collection_url }}" class="lunetier-cart-continue">
-              Continuer mes achats
+              Continue shopping
             </a>
           </div>
 
@@ -121,9 +121,9 @@
     {%- else -%}
       
       <div class="lunetier-cart-empty">
-        <p>Votre panier est vide</p>
+        <p>Your cart is empty</p>
         <a href="{{ routes.all_products_collection_url }}" class="lunetier-cart-shop-btn">
-          Découvrir la collection
+          Shop collection
         </a>
       </div>
 
@@ -179,7 +179,7 @@ function updateCart(line, quantity) {
 </script>
 
 <style>
-/* Grid layout pour panier */
+/* Grid layout for cart */
 .lunetier-cart-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -454,7 +454,7 @@ function updateCart(line, quantity) {
 
 {% schema %}
 {
-  "name": "Page Panier",
+  "name": "Cart Page",
   "settings": []
 }
 {% endschema %}
