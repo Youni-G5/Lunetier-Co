@@ -1,386 +1,358 @@
-{% comment %}
-  Language & Market Selector - Lunetier
-  Uses Shopify native locales and markets
-  Usage: {% render 'language-selector' %}
-{% endcomment %}
+{%- comment -%}
+  Language & Market Selector - Lunetier Premium Style
+  Usage: {% render 'language-selector', button_style: 'footer' %}
+  Styles: 'footer' (default) or 'header'
+{%- endcomment -%}
 
-<style>
-  /* Trigger Button - Minimal Premium Style */
-  .lunetier-locale-trigger {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0;
-    background: transparent;
-    border: none;
-    font-family: var(--font-sans);
-    font-size: 0.8125rem;
-    color: var(--color-gray-600);
-    cursor: pointer;
-    transition: color var(--transition-fast);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 500;
-  }
+{%- assign style = button_style | default: 'footer' -%}
 
-  .lunetier-locale-trigger:hover {
-    color: var(--color-black);
-  }
+{%- comment -%} TRANSLATIONS {%- endcomment -%}
+{%- assign current_lang = localization.language.iso_code -%}
+{%- case current_lang -%}
+  {%- when 'en' -%}
+    {%- assign t_country_label = "Country / Region" -%}
+    {%- assign t_language_label = "Language" -%}
+    {%- assign t_update_btn = "Save" -%}
+    {%- assign t_cancel_btn = "Cancel" -%}
+    {%- assign t_modal_title = "Region & Language" -%}
+    {%- assign t_close_modal = "Close" -%}
+  {%- when 'de' -%}
+    {%- assign t_country_label = "Land / Region" -%}
+    {%- assign t_language_label = "Sprache" -%}
+    {%- assign t_update_btn = "Speichern" -%}
+    {%- assign t_cancel_btn = "Abbrechen" -%}
+    {%- assign t_modal_title = "Region & Sprache" -%}
+    {%- assign t_close_modal = "Schließen" -%}
+  {%- else -%}
+    {%- assign t_country_label = "Pays / Région" -%}
+    {%- assign t_language_label = "Langue" -%}
+    {%- assign t_update_btn = "Sauvegarder" -%}
+    {%- assign t_cancel_btn = "Annuler" -%}
+    {%- assign t_modal_title = "Région & Langue" -%}
+    {%- assign t_close_modal = "Fermer" -%}
+{%- endcase -%}
 
-  .lunetier-locale-trigger svg {
-    width: 14px;
-    height: 14px;
-    transition: transform var(--transition-fast);
-  }
-
-  .lunetier-locale-trigger:hover svg {
-    transform: translateY(1px);
-  }
-
-  /* Modal Overlay */
-  .lunetier-locale-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 10000;
-    padding: 1rem;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .lunetier-locale-modal.active {
-    display: flex;
-  }
-
-  .lunetier-locale-backdrop {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(8px);
-    animation: fadeIn 0.2s ease;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  /* Modal Content */
-  .lunetier-locale-content {
-    position: relative;
-    background: white;
-    max-width: 480px;
-    width: 100%;
-    max-height: 80vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    animation: slideUp 0.3s ease;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  }
-
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .lunetier-locale-header {
-    padding: 2rem 2rem 1.5rem;
-    border-bottom: 1px solid var(--color-gray-200);
-  }
-
-  .lunetier-locale-header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 0.5rem;
-  }
-
-  .lunetier-locale-title {
-    font-family: var(--font-serif);
-    font-size: 1.75rem;
-    font-weight: 400;
-    margin: 0;
-    letter-spacing: -0.01em;
-  }
-
-  .lunetier-locale-close {
-    background: none;
-    border: none;
-    padding: 0.25rem;
-    cursor: pointer;
-    color: var(--color-gray-400);
-    transition: color var(--transition-fast);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .lunetier-locale-close:hover {
-    color: var(--color-black);
-  }
-
-  .lunetier-locale-subtitle {
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
-    color: var(--color-gray-500);
-    margin: 0;
-  }
-
-  .lunetier-locale-body {
-    padding: 2rem;
-    overflow-y: auto;
-  }
-
-  /* Section */
-  .lunetier-locale-section {
-    margin-bottom: 2.5rem;
-  }
-
-  .lunetier-locale-section:last-child {
-    margin-bottom: 0;
-  }
-
-  .lunetier-locale-section-title {
-    font-family: var(--font-sans);
-    font-size: 0.6875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-gray-400);
-    margin-bottom: 1rem;
-    font-weight: 600;
-  }
-
-  /* Options List */
-  .lunetier-locale-options {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .lunetier-locale-option {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1.25rem;
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    background: var(--color-gray-50);
-    font-family: var(--font-sans);
-    font-size: 0.9375rem;
-    position: relative;
-  }
-
-  .lunetier-locale-option:hover {
-    background: var(--color-gray-100);
-  }
-
-  .lunetier-locale-option.active {
-    background: var(--color-black);
-    color: var(--color-white);
-  }
-
-  .lunetier-locale-option-name {
-    font-weight: 500;
-  }
-
-  .lunetier-locale-option-code {
-    font-size: 0.75rem;
-    opacity: 0.6;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .lunetier-locale-option.active .lunetier-locale-option-code {
-    opacity: 0.8;
-  }
-
-  .lunetier-locale-check {
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--color-gray-300);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all var(--transition-fast);
-  }
-
-  .lunetier-locale-option.active .lunetier-locale-check {
-    border-color: var(--color-white);
-    background-color: var(--color-white);
-  }
-
-  .lunetier-locale-check svg {
-    display: none;
-    width: 10px;
-    height: 10px;
-    color: var(--color-black);
-  }
-
-  .lunetier-locale-option.active .lunetier-locale-check svg {
-    display: block;
-  }
-
-  /* Empty State */
-  .lunetier-locale-empty {
-    text-align: center;
-    padding: 2rem 1rem;
-    color: var(--color-gray-400);
-    font-size: 0.875rem;
-  }
-</style>
-
-<!-- Trigger Button -->
-<button type="button" class="lunetier-locale-trigger" onclick="openLocaleModal()" aria-label="Change language and region">
-  <span>{{ localization.language.endonym_name }} ({{ localization.country.currency.iso_code }})</span>
-  <svg viewBox="0 0 20 20" fill="currentColor">
-    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clip-rule="evenodd"/>
-  </svg>
-</button>
-
-<!-- Modal -->
-<div class="lunetier-locale-modal" id="localeModal">
-  <div class="lunetier-locale-backdrop" onclick="closeLocaleModal()"></div>
-  
-  <div class="lunetier-locale-content">
-    <div class="lunetier-locale-header">
-      <div class="lunetier-locale-header-top">
-        <h2 class="lunetier-locale-title">Region & Language</h2>
-        <button type="button" class="lunetier-locale-close" onclick="closeLocaleModal()" aria-label="Close">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <line x1="15" y1="5" x2="5" y2="15"></line>
-            <line x1="5" y1="5" x2="15" y2="15"></line>
-          </svg>
-        </button>
-      </div>
-      <p class="lunetier-locale-subtitle">Choose your preferred shopping experience</p>
-    </div>
-
-    <div class="lunetier-locale-body">
-      
-      {%- if localization.available_countries.size > 1 -%}
-        <!-- Countries/Markets -->
-        <div class="lunetier-locale-section">
-          <h3 class="lunetier-locale-section-title">Country / Region</h3>
-          <div class="lunetier-locale-options">
-            {%- for country in localization.available_countries -%}
-              <button 
-                type="button"
-                class="lunetier-locale-option {% if country.iso_code == localization.country.iso_code %}active{% endif %}"
-                data-country="{{ country.iso_code }}"
-                onclick="updateCountry('{{ country.iso_code }}')"
-              >
-                <div>
-                  <div class="lunetier-locale-option-name">{{ country.name }}</div>
-                  <div class="lunetier-locale-option-code">{{ country.currency.iso_code }} {{ country.currency.symbol }}</div>
-                </div>
-                <div class="lunetier-locale-check">
-                  <svg viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                  </svg>
-                </div>
-              </button>
-            {%- endfor -%}
-          </div>
-        </div>
+{%- if localization.available_countries.size > 1 or localization.available_languages.size > 1 -%}
+  <div class="lunetier-locale-wrapper">
+    <button type="button" class="lunetier-locale-trigger lunetier-locale-trigger--{{ style }}" aria-expanded="false" aria-controls="locale-modal-{{ style }}">
+      {%- if style == 'header' -%}
+        <span class="lunetier-locale-text-header">{{ localization.country.name }}</span>
+      {%- else -%}
+        <span class="lunetier-locale-text-footer">{{ localization.language.endonym_name }} ({{ localization.country.currency.iso_code }})</span>
       {%- endif -%}
-
-      {%- if localization.available_languages.size > 1 -%}
-        <!-- Languages -->
-        <div class="lunetier-locale-section">
-          <h3 class="lunetier-locale-section-title">Language</h3>
-          <div class="lunetier-locale-options">
-            {%- for language in localization.available_languages -%}
-              <button 
-                type="button"
-                class="lunetier-locale-option {% if language.iso_code == localization.language.iso_code %}active{% endif %}"
-                data-language="{{ language.iso_code }}"
-                onclick="updateLanguage('{{ language.iso_code }}')"
-              >
-                <div>
-                  <div class="lunetier-locale-option-name">{{ language.endonym_name }}</div>
-                  <div class="lunetier-locale-option-code">{{ language.iso_code }}</div>
-                </div>
-                <div class="lunetier-locale-check">
-                  <svg viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                  </svg>
-                </div>
-              </button>
-            {%- endfor -%}
-          </div>
-        </div>
-      {%- endif -%}
-
-      {%- if localization.available_countries.size <= 1 and localization.available_languages.size <= 1 -%}
-        <div class="lunetier-locale-empty">
-          No other regions or languages available.
-        </div>
-      {%- endif -%}
-
-    </div>
+      <svg class="lunetier-locale-icon" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clip-rule="evenodd"/>
+      </svg>
+    </button>
   </div>
-</div>
 
-<script>
-  function openLocaleModal() {
-    document.getElementById('localeModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
+  <div class="lunetier-locale-backdrop js-locale-backdrop" hidden></div>
 
-  function closeLocaleModal() {
-    document.getElementById('localeModal').classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  function updateCountry(countryCode) {
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '/localization';
+  <div class="lunetier-locale-modal lunetier-locale-modal--{{ style }} js-locale-modal" hidden role="dialog" aria-modal="true" aria-label="{{ t_close_modal }}">
+    <div class="lunetier-modal-header">
+      <h2 class="lunetier-modal-title">{{ t_modal_title }}</h2>
+      <button type="button" class="lunetier-modal-close js-modal-close" aria-label="{{ t_close_modal }}">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="15" y1="5" x2="5" y2="15"></line>
+          <line x1="5" y1="5" x2="15" y2="15"></line>
+        </svg>
+      </button>
+    </div>
     
-    const countryInput = document.createElement('input');
-    countryInput.type = 'hidden';
-    countryInput.name = 'country_code';
-    countryInput.value = countryCode;
-    
-    form.appendChild(countryInput);
-    document.body.appendChild(form);
-    form.submit();
-  }
+    {% form 'localization', class: 'lunetier-modal-form' %}
+      <div class="lunetier-modal-body">
+        {% if localization.available_languages.size > 1 %}
+          <div class="lunetier-modal-group">
+            <label class="lunetier-input-label">{{ t_language_label }}</label>
+            <div class="lunetier-select-wrapper">
+              <select name="locale_code" class="lunetier-modal-select">
+                {% for language in localization.available_languages %}
+                  <option value="{{ language.iso_code }}" {% if language.iso_code == localization.language.iso_code %}selected{% endif %}>
+                    {{ language.endonym_name | capitalize }}
+                  </option>
+                {% endfor %}
+              </select>
+              <svg class="lunetier-select-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 4 6 8 10 4"></polyline></svg>
+            </div>
+          </div>
+        {% endif %}
 
-  function updateLanguage(languageCode) {
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '/localization';
-    
-    const languageInput = document.createElement('input');
-    languageInput.type = 'hidden';
-    languageInput.name = 'locale_code';
-    languageInput.value = languageCode;
-    
-    form.appendChild(languageInput);
-    document.body.appendChild(form);
-    form.submit();
-  }
+        {% if localization.available_countries.size > 1 %}
+          <div class="lunetier-modal-group">
+            <label class="lunetier-input-label">{{ t_country_label }}</label>
+            <div class="lunetier-select-wrapper">
+              <select name="country_code" class="lunetier-modal-select">
+                {% for country in localization.available_countries %}
+                  <option value="{{ country.iso_code }}" {% if country.iso_code == localization.country.iso_code %}selected{% endif %}>
+                    {{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+                  </option>
+                {% endfor %}
+              </select>
+              <svg class="lunetier-select-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 4 6 8 10 4"></polyline></svg>
+            </div>
+          </div>
+        {% endif %}
+      </div>
 
-  // Close on Escape
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      closeLocaleModal();
+      <div class="lunetier-modal-footer">
+        <button type="button" class="lunetier-btn lunetier-btn-secondary js-modal-close">{{ t_cancel_btn }}</button>
+        <button type="submit" class="lunetier-btn lunetier-btn-primary">{{ t_update_btn }}</button>
+      </div>
+    {% endform %}
+  </div>
+
+  <style>
+    /* === VARIABLES === */
+    .lunetier-locale-modal { 
+      --locale-bg: #ffffff; 
+      --locale-text: #1a1a1a; 
+      --locale-border: #e5e7eb; 
+      --locale-input-bg: #fafafa;
+      --locale-hover: #f3f4f6;
     }
-  });
-</script>
+    .lunetier-locale-modal--header { 
+      --locale-bg: #1a1a1a; 
+      --locale-text: #ffffff; 
+      --locale-border: #333333; 
+      --locale-input-bg: #111111;
+      --locale-hover: #262626;
+    }
+
+    /* === WRAPPER & TRIGGER === */
+    .lunetier-locale-wrapper { position: relative; display: inline-block; }
+    [hidden] { display: none !important; }
+    
+    .lunetier-locale-trigger { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 0.375rem;
+      background: transparent; 
+      border: none; 
+      cursor: pointer; 
+      padding: 0;
+      font-family: var(--font-sans);
+      transition: all var(--transition-fast);
+    }
+    
+    .lunetier-locale-trigger--footer { 
+      color: var(--color-gray-600);
+      font-size: 0.8125rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 500;
+    }
+    .lunetier-locale-trigger--footer:hover { color: var(--color-black); }
+    
+    .lunetier-locale-trigger--header { 
+      color: var(--color-white);
+      font-size: 0.875rem;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 0.5rem 0.75rem;
+    }
+    .lunetier-locale-trigger--header:hover { border-color: var(--color-white); }
+    
+    .lunetier-locale-icon { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* === BACKDROP === */
+    .lunetier-locale-backdrop { 
+      position: fixed; 
+      inset: 0; 
+      background: rgba(0, 0, 0, 0.5); 
+      z-index: 9998;
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* === MODAL === */
+    .lunetier-locale-modal { 
+      position: fixed; 
+      top: 50%; 
+      left: 50%; 
+      transform: translate(-50%, -50%);
+      width: 90%; 
+      max-width: 440px;
+      background: var(--locale-bg); 
+      color: var(--locale-text);
+      z-index: 9999;
+      display: flex; 
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideUp { 
+      from { opacity: 0; transform: translate(-50%, -45%); } 
+      to { opacity: 1; transform: translate(-50%, -50%); } 
+    }
+
+    /* === HEADER === */
+    .lunetier-modal-header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
+      padding: 1.75rem 2rem;
+      border-bottom: 1px solid var(--locale-border);
+    }
+    .lunetier-modal-title { 
+      font-family: var(--font-serif); 
+      font-size: 1.5rem; 
+      font-weight: 400;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+    .lunetier-modal-close { 
+      background: none; 
+      border: none; 
+      padding: 0.25rem;
+      cursor: pointer;
+      color: var(--locale-text);
+      opacity: 0.6;
+      transition: opacity var(--transition-fast);
+      display: flex;
+      align-items: center;
+    }
+    .lunetier-modal-close:hover { opacity: 1; }
+
+    /* === BODY === */
+    .lunetier-modal-body { 
+      padding: 2rem; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 1.5rem;
+    }
+    .lunetier-modal-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .lunetier-input-label { 
+      font-family: var(--font-sans);
+      font-size: 0.75rem; 
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.8;
+    }
+    .lunetier-select-wrapper { position: relative; }
+    .lunetier-modal-select { 
+      width: 100%; 
+      padding: 0.875rem 2.5rem 0.875rem 1rem;
+      background: var(--locale-input-bg); 
+      color: var(--locale-text);
+      border: 1px solid var(--locale-border);
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      appearance: none;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .lunetier-modal-select:hover { background: var(--locale-hover); }
+    .lunetier-modal-select:focus { 
+      outline: none; 
+      border-color: var(--locale-text);
+    }
+    .lunetier-select-chevron { 
+      position: absolute; 
+      right: 1rem; 
+      top: 50%; 
+      transform: translateY(-50%);
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    /* === FOOTER === */
+    .lunetier-modal-footer { 
+      padding: 1.5rem 2rem;
+      border-top: 1px solid var(--locale-border);
+      display: flex; 
+      justify-content: flex-end; 
+      gap: 0.75rem;
+    }
+    .lunetier-btn { 
+      padding: 0.75rem 1.5rem;
+      font-family: var(--font-sans);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      border: 1px solid transparent;
+    }
+    .lunetier-btn-primary { 
+      background: var(--color-black); 
+      color: var(--color-white);
+      border-color: var(--color-black);
+    }
+    .lunetier-btn-primary:hover { opacity: 0.85; }
+    .lunetier-btn-secondary { 
+      background: transparent; 
+      color: var(--locale-text);
+      border-color: var(--locale-border);
+    }
+    .lunetier-btn-secondary:hover { background: var(--locale-hover); }
+
+    /* === MOBILE === */
+    @media (max-width: 640px) {
+      .lunetier-locale-modal { 
+        width: 100%; 
+        max-width: 100%;
+        bottom: 0;
+        top: auto;
+        left: 0;
+        transform: none;
+        animation: slideUpMobile 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes slideUpMobile { 
+        from { transform: translateY(100%); } 
+        to { transform: translateY(0); } 
+      }
+      .lunetier-modal-header { padding: 1.5rem 1.25rem; }
+      .lunetier-modal-body { padding: 1.5rem 1.25rem; }
+      .lunetier-modal-footer { 
+        padding: 1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom));
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const wrappers = document.querySelectorAll('.lunetier-locale-wrapper');
+      wrappers.forEach(wrapper => {
+        const trigger = wrapper.querySelector('.lunetier-locale-trigger');
+        let backdrop = wrapper.nextElementSibling;
+        while(backdrop && !backdrop.classList.contains('js-locale-backdrop')) {
+          backdrop = backdrop.nextElementSibling;
+        }
+        const modal = backdrop ? backdrop.nextElementSibling : null;
+        
+        if (!trigger || !modal || !backdrop) return;
+
+        const closeBtns = modal.querySelectorAll('.js-modal-close');
+
+        function openModal() {
+          modal.hidden = false;
+          backdrop.hidden = false;
+          trigger.setAttribute('aria-expanded', 'true');
+          document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+          modal.hidden = true;
+          backdrop.hidden = true;
+          trigger.setAttribute('aria-expanded', 'false');
+          document.body.style.overflow = '';
+        }
+
+        trigger.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openModal();
+        });
+        
+        closeBtns.forEach(btn => btn.addEventListener('click', closeModal));
+        backdrop.addEventListener('click', closeModal);
+        
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && !modal.hidden) closeModal();
+        });
+      });
+    });
+  </script>
+{%- endif -%}
