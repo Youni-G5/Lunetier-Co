@@ -1,6 +1,6 @@
 {% comment %}
-  Section Collection "Lunetier" - Grille produits avec filtres
-  Design : Sidebar filtre propre, grille responsive, utilise le snippet product-card
+  "Lunetier" Collection Section - Product grid with filters
+  Design: Clean filter sidebar, responsive grid, uses product-card snippet
 {% endcomment %}
 
 <style>
@@ -17,7 +17,7 @@
     padding: 0 1.5rem;
   }
 
-  /* --- HEADER COLLECTION --- */
+  /* --- COLLECTION HEADER --- */
   .lunetier-col-header {
     margin-bottom: 3rem;
     text-align: center;
@@ -44,7 +44,7 @@
     line-height: 1.6;
   }
 
-  /* --- TOOLBAR (Tri + Filtres Mobile) --- */
+  /* --- TOOLBAR (Sort + Mobile Filters) --- */
   .lunetier-col-toolbar {
     display: flex;
     justify-content: space-between;
@@ -71,7 +71,7 @@
     font-family: var(--font-sans);
   }
 
-  /* --- LAYOUT GRID (Sidebar + Products) --- */
+  /* --- GRID LAYOUT (Sidebar + Products) --- */
   .lunetier-col-layout {
     display: grid;
     grid-template-columns: 1fr;
@@ -205,10 +205,10 @@
     <!-- TOOLBAR -->
     <div class="lunetier-col-toolbar">
       <div class="lunetier-filter-count">
-        {{ collection.products_count }} produit{% if collection.products_count > 1 %}s{% endif %}
+        {{ collection.products_count }} product{% if collection.products_count > 1 %}s{% endif %}
       </div>
       <div class="lunetier-sort">
-        <label for="sort-by" class="visually-hidden">Trier par</label>
+        <label for="sort-by" class="visually-hidden">Sort by</label>
         <select id="sort-by" class="lunetier-sort-select" onchange="location.search = '?sort_by=' + this.value">
           {% for option in collection.sort_options %}
             <option value="{{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>
@@ -256,9 +256,9 @@
             </div>
           {%- endfor -%}
           
-          <!-- Lien "Effacer tout" si filtres actifs -->
+          <!-- "Clear all" link if filters are active -->
           {%- if current_tags or collection.filters.size > 0 -%}
-             <a href="{{ collection.url }}" class="lunetier-clear-filters">Effacer les filtres</a>
+             <a href="{{ collection.url }}" class="lunetier-clear-filters">Clear filters</a>
           {%- endif -%}
         </form>
       </aside>
@@ -274,7 +274,7 @@
             image_loading: 'lazy'
           %}
         {%- else -%}
-          <p class="lunetier-empty-state">Aucun produit ne correspond à votre recherche.</p>
+          <p class="lunetier-empty-state">No products match your search.</p>
         {%- endfor -%}
       </div>
 
@@ -284,7 +284,7 @@
     {%- if paginate.pages > 1 -%}
       <div class="lunetier-pagination">
         {%- if paginate.previous -%}
-          <a href="{{ paginate.previous.url }}" class="lunetier-page-link" aria-label="Page précédente">&larr;</a>
+          <a href="{{ paginate.previous.url }}" class="lunetier-page-link" aria-label="Previous page">&larr;</a>
         {%- endif -%}
 
         {%- for part in paginate.parts -%}
@@ -296,7 +296,7 @@
         {%- endfor -%}
 
         {%- if paginate.next -%}
-          <a href="{{ paginate.next.url }}" class="lunetier-page-link" aria-label="Page suivante">&rarr;</a>
+          <a href="{{ paginate.next.url }}" class="lunetier-page-link" aria-label="Next page">&rarr;</a>
         {%- endif -%}
       </div>
     {%- endif -%}
@@ -306,7 +306,7 @@
 
 {% schema %}
 {
-  "name": "Collection Principale",
+  "name": "Main Collection",
   "settings": [
     {
       "type": "range",
@@ -315,7 +315,7 @@
       "max": 24,
       "step": 3,
       "default": 12,
-      "label": "Produits par page"
+      "label": "Products per page"
     }
   ]
 }
