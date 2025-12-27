@@ -1,1 +1,38 @@
-{"sections":{"main":{"type":"page","disabled":true,"settings":{}},"histoir_b7a94x":{"type":"histoir","name":"Story","settings":{"pretitle":"Since 2018","title":"The Art of Seeing","intro":"","image_1":"shopify://shop_images/louvre-park-and-grounds-in-france.jpg","heading_1":"Born in Paris","text_1":"","image_2":"shopify://shop_images/notebook-and-glasses.jpg","heading_2":"The Cult of Detail","text_2":"","founder_name":"Alexandre V."}}},"order":["main","histoir_b7a94x"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "page",
+      "disabled": true,
+      "settings": {}
+    },
+    "histoir_b7a94x": {
+      "type": "histoir",
+      "name": "Story",
+      "settings": {
+        "pretitle": "Since 2018",
+        "title": "The Art of Seeing",
+        "intro": "",
+        "image_1": "shopify://shop_images/louvre-park-and-grounds-in-france.jpg",
+        "heading_1": "Born in Paris",
+        "text_1": "",
+        "image_2": "shopify://shop_images/notebook-and-glasses.jpg",
+        "heading_2": "The Cult of Detail",
+        "text_2": "",
+        "founder_name": "Alexandre V."
+      }
+    }
+  },
+  "order": [
+    "main",
+    "histoir_b7a94x"
+  ]
+}
