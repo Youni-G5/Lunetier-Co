@@ -1,6 +1,6 @@
 {% comment %}
   Footer Section "Lunetier" - Modern Premium Design
-  Improved layout with single bottom bar and better mobile experience
+  Clean layout with proper mobile 2-column menu grid
 {% endcomment %}
 
 <style>
@@ -21,16 +21,16 @@
 
   /* === MAIN GRID === */
   .lunetier-footer-main {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 2.5rem;
     padding-bottom: 2.5rem;
     border-bottom: 1px solid var(--color-gray-200);
   }
 
-  /* Desktop: 4 columns */
   @media (min-width: 1024px) {
     .lunetier-footer-main {
+      display: grid;
       grid-template-columns: 2fr 1fr 1fr 1fr;
       gap: 4rem;
       padding-bottom: 3rem;
@@ -82,15 +82,8 @@
 
   .lunetier-newsletter-form {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
     max-width: 24rem;
-  }
-
-  @media (min-width: 640px) {
-    .lunetier-newsletter-form {
-      flex-direction: row;
-    }
+    gap: 0;
   }
 
   .lunetier-newsletter-input {
@@ -98,15 +91,19 @@
     padding: 0.875rem 1rem;
     background: var(--color-white);
     border: 1px solid var(--color-gray-300);
+    border-right: none;
     color: var(--color-black);
     font-size: 0.875rem;
     font-family: var(--font-sans);
     transition: all 0.2s;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 
   .lunetier-newsletter-input:focus {
     outline: none;
     border-color: var(--color-black);
+    border-right: none;
   }
 
   .lunetier-newsletter-input::placeholder {
@@ -125,7 +122,6 @@
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
-    text-align: center;
   }
 
   .lunetier-newsletter-btn:hover {
@@ -133,30 +129,38 @@
     border-color: var(--color-gray-800);
   }
 
-  /* === MENU COLUMNS WRAPPER === */
+  /* === MENU COLUMNS GRID === */
   .lunetier-footer-menus {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
   }
 
-  /* Mobile: 2 columns side by side starting at 480px */
+  /* Mobile: 2 colonnes à partir de 480px */
   @media (min-width: 480px) {
     .lunetier-footer-menus {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 2rem;
     }
-  }
-
-  /* Tablet: 3 columns */
-  @media (min-width: 768px) {
-    .lunetier-footer-menus {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 3rem;
+    
+    .lunetier-footer-col:last-child {
+      grid-column: 1 / -1;
     }
   }
 
-  /* Desktop: Remove grid, use main grid instead */
+  /* Tablet: 3 colonnes */
+  @media (min-width: 768px) {
+    .lunetier-footer-menus {
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 3rem;
+    }
+    
+    .lunetier-footer-col:last-child {
+      grid-column: auto;
+    }
+  }
+
+  /* Desktop: pas de grid wrapper */
   @media (min-width: 1024px) {
     .lunetier-footer-menus {
       display: contents;
@@ -227,15 +231,15 @@
     align-items: center;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     .lunetier-footer-bottom {
       flex-direction: row;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 2rem;
+      align-items: center;
     }
   }
 
+  /* Left side */
   .lunetier-footer-bottom-left {
     display: flex;
     flex-direction: column;
@@ -246,16 +250,11 @@
   @media (min-width: 640px) {
     .lunetier-footer-bottom-left {
       flex-direction: row;
-      gap: 1.5rem;
-    }
-  }
-
-  @media (min-width: 768px) {
-    .lunetier-footer-bottom-left {
       gap: 2rem;
     }
   }
 
+  /* Right side */
   .lunetier-footer-bottom-right {
     display: flex;
     flex-direction: column;
@@ -266,12 +265,6 @@
   @media (min-width: 640px) {
     .lunetier-footer-bottom-right {
       flex-direction: row;
-      gap: 1.5rem;
-    }
-  }
-
-  @media (min-width: 768px) {
-    .lunetier-footer-bottom-right {
       gap: 2rem;
     }
   }
@@ -281,12 +274,6 @@
     display: flex;
     gap: 1.25rem;
     align-items: center;
-  }
-
-  @media (min-width: 768px) {
-    .lunetier-social-links {
-      gap: 1.5rem;
-    }
   }
 
   .lunetier-social-link {
@@ -323,10 +310,9 @@
     justify-content: center;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 640px) {
     .lunetier-payment-icons {
       gap: 0.5rem;
-      justify-content: flex-start;
     }
   }
 
@@ -344,7 +330,6 @@
   /* Copyright */
   .lunetier-copyright {
     text-align: center;
-    width: 100%;
   }
 
   .lunetier-copyright p {
@@ -374,10 +359,10 @@
 <footer class="lunetier-footer" role="contentinfo">
   <div class="lunetier-footer-container">
     
-    <!-- MAIN GRID -->
+    <!-- MAIN CONTENT -->
     <div class="lunetier-footer-main">
       
-      <!-- COLUMN 1: BRAND + NEWSLETTER -->
+      <!-- BRAND + NEWSLETTER -->
       <div class="lunetier-footer-brand">
         <h2 class="lunetier-footer-logo">
           {% if section.settings.footer_logo != blank %}
@@ -391,7 +376,6 @@
           {{ section.settings.tagline | default: "French design, premium quality. Eyewear that enhances your style and protects your vision." }}
         </p>
 
-        <!-- NEWSLETTER -->
         {%- if section.settings.show_newsletter -%}
           <div class="lunetier-newsletter">
             <h3 class="lunetier-newsletter-title">Newsletter</h3>
@@ -404,17 +388,16 @@
                 class="lunetier-newsletter-input"
                 required
               >
-              <button type="submit" class="lunetier-newsletter-btn">
-                OK
-              </button>
+              <button type="submit" class="lunetier-newsletter-btn">OK</button>
             </form>
           </div>
         {%- endif -%}
       </div>
 
-      <!-- MENU COLUMNS WRAPPER (for mobile 2-col grid) -->
+      <!-- MENUS (2 cols mobile @ 480px) -->
       <div class="lunetier-footer-menus">
-        <!-- COLUMN 2: HELP -->
+        
+        <!-- HELP -->
         <div class="lunetier-footer-col">
           <h3 class="lunetier-footer-col-title">{{ section.settings.menu_1_title | default: "Help" }}</h3>
           <ul class="lunetier-footer-list">
@@ -429,7 +412,7 @@
           </ul>
         </div>
 
-        <!-- COLUMN 3: SHOP -->
+        <!-- SHOP -->
         <div class="lunetier-footer-col">
           <h3 class="lunetier-footer-col-title">{{ section.settings.menu_2_title | default: "Shop" }}</h3>
           <ul class="lunetier-footer-list">
@@ -444,7 +427,7 @@
           </ul>
         </div>
 
-        <!-- COLUMN 4: LEGAL -->
+        <!-- LEGAL -->
         <div class="lunetier-footer-col">
           <h3 class="lunetier-footer-col-title">{{ section.settings.menu_3_title | default: "Legal" }}</h3>
           <ul class="lunetier-footer-list">
@@ -457,43 +440,38 @@
             {%- endfor -%}
           </ul>
         </div>
+        
       </div>
 
     </div>
 
-    <!-- BOTTOM BAR - SINGLE ROW -->
+    <!-- BOTTOM BAR -->
     <div class="lunetier-footer-bottom">
       
-      <!-- LEFT SIDE: Social + Language Selector -->
+      <!-- LEFT: Social + Language -->
       <div class="lunetier-footer-bottom-left">
-        <!-- SOCIAL LINKS -->
         <div class="lunetier-social-links">
           {%- if section.settings.instagram_url != blank -%}
-            <a href="{{ section.settings.instagram_url }}" class="lunetier-social-link" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <a href="{{ section.settings.instagram_url }}" class="lunetier-social-link" target="_blank" rel="noopener" aria-label="Instagram">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
             </a>
           {%- endif -%}
-          
           {%- if section.settings.facebook_url != blank -%}
-            <a href="{{ section.settings.facebook_url }}" class="lunetier-social-link" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <a href="{{ section.settings.facebook_url }}" class="lunetier-social-link" target="_blank" rel="noopener" aria-label="Facebook">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
             </a>
           {%- endif -%}
-          
           {%- if section.settings.tiktok_url != blank -%}
-            <a href="{{ section.settings.tiktok_url }}" class="lunetier-social-link" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+            <a href="{{ section.settings.tiktok_url }}" class="lunetier-social-link" target="_blank" rel="noopener" aria-label="TikTok">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/></svg>
             </a>
           {%- endif -%}
         </div>
-
-        <!-- LANGUAGE SELECTOR -->
         {% render 'language-selector' %}
       </div>
 
-      <!-- RIGHT SIDE: Payment Icons + Copyright -->
+      <!-- RIGHT: Payment + Copyright -->
       <div class="lunetier-footer-bottom-right">
-        <!-- PAYMENT METHODS -->
         {%- if section.settings.show_payment_icons -%}
           <div class="lunetier-payment-icons">
             {%- for type in shop.enabled_payment_types -%}
@@ -501,13 +479,12 @@
             {%- endfor -%}
           </div>
         {%- endif -%}
-
-        <!-- COPYRIGHT -->
+        
         <div class="lunetier-copyright">
           <p>
             &copy; {{ 'now' | date: "%Y" }} {{ shop.name }}. All rights reserved.
             {%- if section.settings.show_powered_by -%}
-              <span> | <a href="https://www.shopify.com" target="_blank">Shopify</a></span>
+              | <a href="https://www.shopify.com" target="_blank">Shopify</a>
             {%- endif -%}
           </p>
         </div>
