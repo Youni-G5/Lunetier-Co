@@ -948,7 +948,27 @@
           "other": "تم إرسال بطاقات الهدايا عبر رسالة نصية"
         },
         "resend_gift_cards_by_email": "أعد إرسال البريد الإلكتروني",
-        "resend_gift_cards_by_text": "أعد إرسال الرسالة النصية"
+        "resend_gift_cards_by_text": "أعد إرسال الرسالة النصية",
+        "gift_card_resent_confirmation": {
+          "one": "تم إعادة إرسال بطاقة الهدية.",
+          "other": "تم إعادة إرسال بطاقات الهدايا."
+        },
+        "gift_card_resend_failure": {
+          "one": "حدثت مشكلة أثناء إعادة إرسال بطاقة الهدية. حاول مرة أخرى أو تواصل معنا.",
+          "other": "حدثت مشكلة في إعادة إرسال بطاقات الهدايا الخاصة بك. حاول مرة أخرى أو اتصل بنا."
+        },
+        "vat_invoices": {
+          "title": "فواتير ضريبة القيمة المضافة"
+        },
+        "verify_shop_account_title": "تحقق من حسابك في المتجر",
+        "verify_shop_account_message": "تم حفظ معلوماتك لدى المتجر، تحقق من حسابك لاستخدامها تلقائيًا في ملايين المتاجر.",
+        "verify_shop_account_cta": "تحقق من حسابك",
+        "verify_shop_account_confirmation": "تم حفظ تفاصيل الدفع",
+        "announcement": {
+          "close": "يغلق",
+          "expand": "يوسع",
+          "collapse": "ينهار"
+        }
       },
       "shipping": {
         "title": "شحن",
@@ -1034,8 +1054,142 @@
           "max_cycles_base_shipping_delivery_not_included": {
             "one": "عدد الشحنات = {count} مقابل سعر الشحن %{shipping_price}",
             "other": "%{count} عملية توصيل إضافية بسعر %{shipping_price} لكل منها"
+          },
+          "prepaid_free_shipping_with_cycles": {
+            "one": "شحن مجاني لأول دورة بنسبة %{cycle}، يليها سعر شحن الطلب المتكرر بنسبة %{recurring_order_shipping_price}",
+            "other": "شحن مجاني لأول دورة بنسبة %{cycle}، يليها سعر شحن الطلب المتكرر بنسبة %{recurring_order_shipping_price}"
+          },
+          "prepaid_order_one_cycle": {
+            "one": "سعر الشحن %{shipping_price} لـ %{count} توصيل إضافي",
+            "other": "سعر الشحن %{shipping_price} لـ %{count} شحنة إضافية (تكلفة التوصيل %{per_delivery_cost})"
+          },
+          "prepaid_order_one_cycle_delivery_not_included": {
+            "one": "سعر الشحن %{shipping_price} لتوصيل %{count}",
+            "other": "سعر الشحن %{shipping_price} لـ %{count} عملية توصيل (تكلفة التوصيل %{per_delivery_cost})"
+          },
+          "prepaid_order_no_cycle": {
+            "one": "سعر الشحن %{shipping_price} لـ %{count} توصيل إضافي، متبوعًا بسعر شحن الطلب المتكرر %{recurring_order_shipping_price}",
+            "other": "سعر الشحن %{shipping_price} لـ %{count} من عمليات التسليم الإضافية (تكلفة التوصيل %{per_delivery_cost})، متبوعًا بسعر شحن الطلب المتكرر %{recurring_order_shipping_price}"
+          },
+          "prepaid_order_no_cycle_delivery_not_included": {
+            "one": "سعر الشحن %{shipping_price} لتوصيل %{count}، متبوعًا بسعر شحن الطلب المتكرر %{recurring_order_shipping_price}",
+            "other": "%{shipping_price} لـ %{count} عملية توصيل (%{per_delivery_cost})، متبوعًا بـ %{recurring_order_shipping_price}"
+          },
+          "subscription_free_with_frequency_label": "شحن مجاني %{delivery_frequency}",
+          "prepaid_delivery_frequency": {
+            "one": "لتوصيل %{count}",
+            "other": "لـ %{count} عملية تسليم"
+          },
+          "subscription_delivery_frequency": {
+            "day": {
+              "one": "كل يوم",
+              "other": "كل %{count} يومًا"
+            },
+            "week": {
+              "one": "كل أسبوع",
+              "other": "كل %{count} أسابيع"
+            },
+            "month": {
+              "one": "كل شهر",
+              "other": "كل %{count} شهرًا"
+            },
+            "year": {
+              "one": "كل عام",
+              "other": "كل %{count} سنوات"
+            }
+          },
+          "multiple_subscriptions_shipping_price_label": "%{shipping_price} لكل عملية توصيل",
+          "prepaid_shipping_price_label": "%{shipping_price} لكل عملية توصيل × %{delivery_interval_count}",
+          "initial_order_discounted": "تكلفة الشحن الأولى %{discounted_shipping_cost}، ثم %{frequency_description}",
+          "prepaid_initial_order_discounted": "تكلفة الشحن الأولى %{discounted_shipping_price} %{prepaid_delivery_frequency}",
+          "prepaid_initial_order_discounted_with_per_delivery_price": "تكلفة الشحن الأولى %{discounted_shipping_price} %{prepaid_delivery_frequency} (%{discounted_cost_per_delivery})",
+          "prepaid_initial_order_discounted_with_renewal": "تكلفة الشحن الأولى %{discounted_shipping_price} %{prepaid_delivery_frequency}، ثم %{shipping_price} %{billing_cycle}",
+          "prepaid_initial_order_discounted_with_per_delivery_price_and_renewal": "تكلفة الشحن الأولى %{discounted_shipping_price} %{prepaid_delivery_frequency} (%{discounted_cost_per_delivery})، ثم %{shipping_price} %{billing_cycle}",
+          "shipping_price_included": "مشمول",
+          "recurring_order_shipping_price": "متبوعًا بـ %{recurring_order_shipping_price}",
+          "first_order_shipping_price_included": "يشمل السعر الطلب الأول، يليه %{recurring_order_shipping_price}",
+          "first_order_different_shipping_price": "%{first_order_shipping_price} (%{per_delivery_price} لكل عملية توصيل)، متبوعًا بـ %{recurring_order_shipping_price}",
+          "first_n_order_free": {
+            "one": "الطلب الأول مجاني",
+            "other": "أول %{count} طلب مجاني"
+          },
+          "free_for_first_n_order": {
+            "one": "للطلب الأول",
+            "other": "لأول %{count} طلب"
           }
-        }
+        },
+        "one_time_purchase_shipping": "شحن لمرة واحدة",
+        "duties_and_taxes_title": "الرسوم والضرائب",
+        "shipping_information_required_notice": "معلومات الشحن مطلوبة. {{link}} .",
+        "shipping_information_redirect_link": "أدخل معلوماتك هنا",
+        "loading_progressive_rates": "البحث عن المزيد من الأسعار...",
+        "no_other_methods_available": "لا توجد طرق أخرى متاحة",
+        "duties_and_taxes_options": {
+          "ddu_title": "الدفع عند الاستلام",
+          "ddu_caption": "قد يتم تطبيق رسوم إضافية",
+          "ddp_title": "ادفع الآن",
+          "ddp_caption": "لا توجد رسوم إضافية على التوصيل"
+        },
+        "shipping_method_combinations": {
+          "combination": "%{rest} و %{current}"
+        },
+        "shipping_used_as_billing_notice": "سيتم استخدام هذا العنوان أيضًا كعنوان إرسال الفواتير لهذا الطلب.",
+        "address_update": "تحديث العنوان",
+        "shipping_address_title": "سافر على متن سفينة لِـ",
+        "shipping_address_rollup_accessibility_label": "خيارات عنوان الشحن",
+        "third_party_address_timeout": "تعذر تحميل العناوين. حاول مرة أخرى أو استخدم عنوانًا مختلفًا.",
+        "third_party_address_error": "حدث خطأ أثناء تحميل قائمة اختيار العنوان. يرجى إدخال عنوانك يدويًا أدناه.",
+        "third_party_payment_timeout": "تعذر تحميل طرق الدفع. حاول مرة أخرى أو استخدم طريقة دفع مختلفة.",
+        "third_party_payment_error": "حدث خطأ أثناء تحميل خيارات الدفع. يرجى استخدام طريقة دفع أخرى.",
+        "add_address": "استخدم عنوانًا مختلفًا",
+        "add_delivery_instructions": "أضف تعليمات التوصيل",
+        "edit": "يحرر",
+        "delete": "يمسح",
+        "back": "خلف",
+        "address_more": "إجراءات إضافية لهذا العنوان",
+        "address_edit": "تعديل العنوان",
+        "address_delete": "حذف العنوان",
+        "address_confirm": "هل أنت متأكد من رغبتك في حذف هذا العنوان من حسابك؟",
+        "address_default": "تعيين كافتراضي",
+        "address_form": {
+          "add_address": "إضافة عنوان",
+          "save": "يحفظ",
+          "cancel": "يلغي",
+          "edit": "تعديل العنوان",
+          "update": "حفظ التغييرات",
+          "generic_error": "حدثت مشكلة أثناء حفظ عنوانك. يرجى المحاولة مرة أخرى.",
+          "one_time_address_subtitle": "استخدم عنوانًا لمرة واحدة لهذا الطلب"
+        },
+        "different_shipping_method_summary": "أدخل عنوان شحن مختلفًا لعرض طرق الشحن المتاحة",
+        "invalid_shipping_method_summary": "أدخل عنوان شحن صحيحًا لعرض طرق الشحن المتاحة",
+        "invalid_shipping_method_summary_selected": "اختر عنوان شحن مختلفًا لعرض طرق الشحن المتاحة",
+        "method_summary": {
+          "incomplete_address_entered": "أدخل عنوان الشحن بالكامل لعرض طرق الشحن المتاحة",
+          "incomplete_address_selected": "حدد عنوان شحن كامل لعرض طرق الشحن المتاحة"
+        },
+        "local_pickup": {
+          "search_address": "ابحث عن العنوان",
+          "rollup_title": "موقع الاستلام",
+          "rollup_accessibility_label": "خيارات موقع الاستلام"
+        },
+        "missing_shipping_address": "عنوان الشحن مفقود",
+        "split_shipping_merchandise_quantity_label_standard": "%{الكمية} عنصرًا",
+        "split_shipping_merchandise_quantity_label_additional": "+%{الكمية} أكثر",
+        "split_shipping_merchandise_shipment_number": "الشحنة رقم %{number} من إجمالي %{total}",
+        "pre_order_ships_now": "الشحن متاح الآن",
+        "pre_order_ships_later": "يتم الشحن لاحقاً",
+        "pre_order_ships_date": "السفن %{date}",
+        "split_shipping_shipped_by_shop": "تم الشحن بواسطة %{shop_name}",
+        "split_shipping_multiple_shipment_label": "شحنات متعددة",
+        "split_shipping_shipping_label": "طريقة",
+        "split_shipping_shipment_notice": "سيصل طلبك خلال %{quantity_shipments}",
+        "split_shipping_first_shipment_notice": "سيصل طلبك الأول خلال %{quantity_shipments}",
+        "split_shipping_multiple_shipment_quantity_label": "شحنات بقيمة %{quantity}",
+        "split_shipping_multiple_shipment_notice": "سيصل طلبك على دفعات متعددة",
+        "split_shipping_multiple_shipment_notice_one_time_purchase": "سيصل طلبك على دفعات بقيمة %{quantity}",
+        "split_shipping_more_shipping_options": "خيارات شحن إضافية",
+        "split_shipping_shipment_number": "الشحنة رقم %{number}",
+        "split_shipping_merchandise_quantity_label_inline_primary": "الكمية: %{quantity}"
       },
       "billing": {
         "billing_address_title": "مشروع قانون ل",
@@ -1513,6 +1667,134 @@
         "duplicate_variant_id": "تحتوي تعليمات البضائع %{position} %{name} على معرف متغير مكرر %{variant_id}.",
         "invalid_variant_id_target": "تشير تعليمات البضائع %{name} إلى معرف المتغير %{variant_id}، ولكن هذا المتغير غير موجود في خطوط البضائع.",
         "invalid_price_override_target": "تعليمات تجاوز سعر البضائع لعنصر السطر %{stable_id} غير صالحة لأنها مكون حزمة."
+      },
+      "vaulted": {
+        "change_button": "يتغير"
+      },
+      "review": {
+        "title": "مراجعة",
+        "review_title": "أكمل طلبك",
+        "review_and_confirm_title": "راجع وتأكد",
+        "checkout_as_guest": "تسجيل الخروج كضيف",
+        "account_more_actions": "إجراءات إضافية لهذا الحساب",
+        "checkout_a_different_way": "جرب طريقة أخرى",
+        "blocks": {
+          "billing_address_title": "الفواتير",
+          "shipping_address_title": "سافر على متن سفينة لِـ",
+          "shipping_method_title": "طريقة الشحن",
+          "payment_method_title": "طريقة الدفع",
+          "change_link_label": "يتغير",
+          "change_contact_method_link_label": "تغيير معلومات الاتصال",
+          "change_billing_address_link_label": "تغيير عنوان الفواتير",
+          "change_company_location_link_label": "تغيير موقع الشركة",
+          "change_shipping_address_link_label": "تغيير عنوان الشحن",
+          "change_shipping_method_link_label": "تغيير طريقة الشحن",
+          "change_payment_method_link_label": "تغيير طريقة الدفع",
+          "pick_up_in_store_shipping_method_html": "الاستلام من المتجر · %{location_name}",
+          "purchase_order_number_title": "رقم أمر الشراء",
+          "change_purchase_order_number_label": "تغيير رقم أمر الشراء",
+          "change_delivery_method_link_label": "تغيير طريقة التسليم",
+          "no_address": "(بدون عنوان)",
+          "no_purchase_order_number": "(بدون رقم أمر شراء)",
+          "due_after_order_reviewed_html": "يُستحق الدفع بعد مراجعة الطلب",
+          "review_title_free_order": "راجع طلبك وأكمله",
+          "payment_method_saved_company_location": "احفظ البطاقة لهذا الموقع",
+          "company_location": "موقع الشركة"
+        },
+        "block_title": "راجع معلوماتك",
+        "item_header": {
+          "change_value": "تغيير القيمة",
+          "section": "قسم",
+          "value": "قيمة"
+        }
+      },
+      "marketing": {
+        "accept_marketing_checkbox_label": "راسلني عبر البريد الإلكتروني لإطلاعي على الأخبار والعروض.",
+        "post_accept_marketing_checkbox_label": "أنت مشترك في خدمة تلقي الأخبار والعروض عبر البريد الإلكتروني",
+        "pending_accept_marketing_checkbox_label": "تحقق من بريدك الإلكتروني لتأكيد اشتراكك في الأخبار والعروض",
+        "accept_sms_checkbox_label": "أرسل لي رسالة نصية بالأخبار والعروض",
+        "disclaimer": {
+          "terms_of_service": "شروط الخدمة"
+        },
+        "sms": {
+          "disclaimer": {
+            "terms_of_service": "شروط الخدمة",
+            "description_html": "بالتسجيل عبر الرسائل النصية، فإنك توافق على تلقي رسائل تسويقية آلية دورية، بما في ذلك تذكيرات سلة التسوق، على رقم الهاتف المُقدّم. الموافقة ليست شرطًا للشراء. أرسل \"إيقاف\" لإلغاء الاشتراك. أرسل \"مساعدة\" للمساعدة. يختلف عدد الرسائل. قد تُطبق رسوم الرسائل والبيانات. اطلع على سياسة الخصوصية وشروط الخدمة.",
+            "description_transactional_html": "قد تتلقى رسائل نصية لتأكيد طلبك وتحديثات الشحن. أرسل \"إيقاف\" لإلغاء الاشتراك. أرسل \"مساعدة\" للمساعدة. يختلف عدد الرسائل. قد تُطبق رسوم الرسائل والبيانات. اطلع على سياسة الخصوصية وشروط الخدمة."
+          },
+          "mobile_phone_number": "رقم الهاتف المحمول",
+          "get_offers_by_text": "احصل على العروض عبر الرسائل النصية"
+        },
+        "unsubscribe": {
+          "title": "لقد ألغيت اشتراكك",
+          "description": "لن تتلقى منا أي تذكيرات أخرى بخصوص سلة التسوق."
+        },
+        "accept_shop_pay_marketing_checkbox_label": "سجلني لتلقي الأخبار والعروض من هذا المتجر"
+      },
+      "shop_policies": {
+        "policy_label": "سياسة",
+        "policies_label": "السياسات",
+        "select_policy_label": "اختر سياسة",
+        "refund_policy": "سياسة الاسترداد",
+        "privacy_policy": "سياسة الخصوصية",
+        "terms_of_service": "شروط الخدمة",
+        "legal_notice": "إشعار قانوني",
+        "shipping_policy": "شحن",
+        "terms_of_sale": "شروط البيع",
+        "subscription_policy": "الإلغاءات",
+        "purchase_options_policy": "سياسة خيارات الشراء",
+        "purchase_options_cancellation_policy": "الإلغاءات",
+        "cookie_preferences": "ملفات تعريف الارتباط"
+      },
+      "remote_policies": {
+        "unavailable_policy": "لم يتم تقديم أي سياسة (%{policy_name}) لهذا المتجر. لمزيد من المعلومات، يرجى الاتصال بـ (%{shop_name}) مباشرةً."
+      },
+      "mor_policies": {
+        "terms_and_conditions": "شروط وأحكام التاجر المسجل",
+        "privacy_policy": "سياسة خصوصية التاجر المسجل"
+      },
+      "markets": {
+        "invalid_market_manager_error": "يرجى مراجعة معلومات الاتصال الخاصة بك قبل إتمام عملية الدفع"
+      },
+      "notifications": {
+        "title": "إشعارات"
+      },
+      "order_payment_collection": {
+        "custom_line_item_description": "المبلغ المطلوب دفعه مقابل الطلب %{order_name}",
+        "changes_summary": {
+          "added": {
+            "one": "تمت الإضافة",
+            "other": "تمت إضافة %{count}"
+          },
+          "removed": "تمت إزالته",
+          "subtracted": "تمت إزالة %{count}",
+          "returned": "تم إرجاع %{count}",
+          "return_line_item_removed": "تمت إزالة %{count} من الإرجاع"
+        },
+        "additional_payment_requested": "يلزم سداد مبلغ %{total_outstanding}",
+        "checkout_review_and_pay": "تم تحديث طلبك %{order_name}. راجع هذه التغييرات، ثم ادفع لتأكيد طلبك.",
+        "order_updated_on": "تم تحديث طلبك في %{last_edited_at}.",
+        "order_review_and_pay": "تم تحديث طلبك. راجع طلبك وادفع لتأكيده.",
+        "pay_now": "ادفع الآن"
+      },
+      "change_currency": {
+        "credit_card_will_be_charged_html": "سيتم خصم مبلغ %{amount} من بطاقتك الائتمانية",
+        "payment_total_label": "إجمالي الدفع",
+        "change_currency_link": "غيّر إلى %{currency_name}",
+        "card_provider_fx_charges_warning": "قد يفرض مزود بطاقتك رسومًا على معاملات %{currency_code}.",
+        "currency_not_supported_by_shop": "العملة التي اخترتها غير متوفرة. جميع الأسعار الآن بـ %{currency_code}."
+      },
+      "change_country": {
+        "cart_updated_based_on_country": "تم تحديث سلة التسوق الخاصة بك بناءً على بلد الشحن الخاص بك.",
+        "cart_and_currency_updated_based_on_country": "تم تحديث سلة التسوق والعملة بناءً على بلد الشحن الخاص بك."
+      },
+      "change_cart_localization": {
+        "verify_shipping_address": "تم تحديث بلدك/منطقتك. أدخل عنوان الشحن الخاص بك لمتابعة عملية الدفع."
+      },
+      "tips": {
+        "title": "أضف بقشيشًا",
+        "description": "أظهر دعمك للفريق على %{shop_name}",
+        "presets_description": "اختر نسبة الإكرامية"
       }
     },
     "notices": {
