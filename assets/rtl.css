@@ -1,145 +1,67 @@
 /*
  * RTL (Right-to-Left) Support for Lunetier Theme
- * Supports Arabic and other RTL languages
- * CRITICAL: Only text direction changes - section layouts and designs stay intact
+ * MINIMAL APPROACH: Only change UI components that need RTL
+ * Everything else (sections, centered content, layouts) stays exactly the same
  */
 
-/* === GLOBAL RTL === */
+/* === GLOBAL RTL DIRECTION === */
 [dir="rtl"] {
   direction: rtl;
 }
 
-/* === PRESERVE ALL CENTERED & SECTION LAYOUTS === */
-/* Sections maintain their original design */
-[dir="rtl"] section,
-[dir="rtl"] .section,
-[dir="rtl"] [class*="section"],
-[dir="rtl"] .text-center,
-[dir="rtl"] .centered,
-[dir="rtl"] .center {
-  text-align: center !important;
-}
+/* === PRESERVE ALL DEFAULT LAYOUTS === */
+/* DO NOT change text-align for sections, divs, or general elements */
+/* Let them inherit their original design */
 
-/* Section headers and titles always centered */
-[dir="rtl"] .section-title,
-[dir="rtl"] .section-header,
-[dir="rtl"] .section-heading,
-[dir="rtl"] .section-subtitle,
-[dir="rtl"] [class*="section-title"],
-[dir="rtl"] [class*="section-header"] {
-  text-align: center !important;
-}
+/* === ONLY CHANGE SPECIFIC UI COMPONENTS === */
 
-/* Hero sections */
-[dir="rtl"] [class*="hero"] h1,
-[dir="rtl"] [class*="hero"] h2,
-[dir="rtl"] [class*="hero"] .title,
-[dir="rtl"] .hero-title,
-[dir="rtl"] .hero-subtitle {
-  text-align: center !important;
-}
-
-/* Collection/Category sections */
-[dir="rtl"] [class*="collection-header"],
-[dir="rtl"] .collection-title,
-[dir="rtl"] .category-title {
-  text-align: center !important;
-}
-
-/* Page headers */
-[dir="rtl"] .page-header,
-[dir="rtl"] .page-title,
-[dir="rtl"] .page-header h1 {
-  text-align: center !important;
-}
-
-/* Any title/heading inside sections */
-[dir="rtl"] section h1,
-[dir="rtl"] section h2,
-[dir="rtl"] section h3,
-[dir="rtl"] section .title,
-[dir="rtl"] .section h1,
-[dir="rtl"] .section h2,
-[dir="rtl"] .section h3,
-[dir="rtl"] .section .title {
-  text-align: center !important;
-}
-
-/* Preserve inline centered styles */
-[dir="rtl"] [style*="text-align: center"],
-[dir="rtl"] [style*="text-align:center"] {
-  text-align: center !important;
-}
-
-/* === ONLY CHANGE TEXT CONTENT === */
-/* Body text, descriptions, and list items can be RTL */
-[dir="rtl"] p:not(.centered):not(.center):not(.text-center),
-[dir="rtl"] li,
-[dir="rtl"] td,
-[dir="rtl"] th,
-[dir="rtl"] .description,
-[dir="rtl"] .content {
-  text-align: right;
-}
-
-/* === HEADER === */
-[dir="rtl"] .lunetier-header-nav {
+/* --- HEADER NAVIGATION --- */
+[dir="rtl"] .lunetier-header-nav,
+[dir="rtl"] .header-nav {
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .lunetier-header-actions {
+[dir="rtl"] .lunetier-header-actions,
+[dir="rtl"] .header-actions {
   flex-direction: row-reverse;
 }
 
-/* === PRODUCT CARDS === */
-/* Keep card layout, only text direction */
-[dir="rtl"] .lunetier-product-card-title,
-[dir="rtl"] .product-title {
-  text-align: right;
-}
-
-[dir="rtl"] .lunetier-product-card-price,
-[dir="rtl"] .product-price {
-  text-align: right;
-}
-
-[dir="rtl"] .lunetier-product-card-badges {
+/* --- PRODUCT CARDS (only badges position) --- */
+[dir="rtl"] .lunetier-product-card-badges,
+[dir="rtl"] .product-badge {
   left: auto;
   right: 0.75rem;
 }
 
-[dir="rtl"] .lunetier-wishlist-btn {
+[dir="rtl"] .lunetier-wishlist-btn,
+[dir="rtl"] .wishlist-btn {
   right: auto;
   left: 0.75rem;
 }
 
-/* === PRODUCT PAGE === */
-[dir="rtl"] .lunetier-product-main {
+/* --- PRODUCT PAGE (image/info layout) --- */
+[dir="rtl"] .lunetier-product-main,
+[dir="rtl"] .product-main {
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .lunetier-product-title,
-[dir="rtl"] .lunetier-product-description {
-  text-align: right;
-}
-
-[dir="rtl"] .lunetier-breadcrumbs {
+[dir="rtl"] .lunetier-breadcrumbs,
+[dir="rtl"] .breadcrumbs {
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .lunetier-breadcrumb-separator {
+[dir="rtl"] .lunetier-breadcrumb-separator,
+[dir="rtl"] .breadcrumb-separator {
   transform: scaleX(-1);
 }
 
-[dir="rtl"] .lunetier-variant-label {
-  text-align: right;
-}
-
-[dir="rtl"] .lunetier-quantity-selector {
+[dir="rtl"] .lunetier-quantity-selector,
+[dir="rtl"] .quantity-selector {
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .lunetier-product-meta-item {
+[dir="rtl"] .lunetier-product-meta-item,
+[dir="rtl"] .product-meta-item {
   flex-direction: row-reverse;
 }
 
@@ -148,48 +70,38 @@
   margin-right: 0;
 }
 
-/* === CART === */
-[dir="rtl"] .lunetier-cart-item {
+/* --- CART --- */
+[dir="rtl"] .lunetier-cart-item,
+[dir="rtl"] .cart-item {
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .lunetier-cart-item-image {
+[dir="rtl"] .lunetier-cart-item-image,
+[dir="rtl"] .cart-item-image {
   margin-left: 1.5rem;
   margin-right: 0;
 }
 
-[dir="rtl"] .lunetier-cart-item-title,
-[dir="rtl"] .lunetier-cart-item-price {
-  text-align: right;
-}
-
-[dir="rtl"] .lunetier-cart-remove {
+[dir="rtl"] .lunetier-cart-remove,
+[dir="rtl"] .cart-remove {
   right: auto;
   left: 0;
 }
 
-[dir="rtl"] .lunetier-cart-total {
-  flex-direction: row-reverse;
-}
-
-/* === FORMS === */
-[dir="rtl"] label,
-[dir="rtl"] .label {
-  text-align: right;
-}
-
+/* --- FORMS --- */
 [dir="rtl"] input[type="text"],
 [dir="rtl"] input[type="email"],
 [dir="rtl"] input[type="tel"],
 [dir="rtl"] input[type="password"],
 [dir="rtl"] input[type="search"],
+[dir="rtl"] input[type="number"],
 [dir="rtl"] select,
 [dir="rtl"] textarea {
-  text-align: right;
   direction: rtl;
 }
 
-[dir="rtl"] .lunetier-newsletter-form {
+[dir="rtl"] .lunetier-newsletter-form,
+[dir="rtl"] .newsletter-form {
   flex-direction: row-reverse;
 }
 
@@ -198,15 +110,16 @@
   border-left: none;
 }
 
-/* === SEARCH === */
-[dir="rtl"] .lunetier-search-input {
-  text-align: right;
+/* --- SEARCH --- */
+[dir="rtl"] .lunetier-search-input,
+[dir="rtl"] .search-input {
   padding-right: 1rem;
   padding-left: 3rem;
 }
 
-[dir="rtl"] .lunetier-search-icon-submit {
-  left: 0;
+[dir="rtl"] .lunetier-search-icon-submit,
+[dir="rtl"] .search-icon {
+  left: 1rem;
   right: auto;
 }
 
@@ -215,102 +128,90 @@
   right: auto;
 }
 
-/* === FOOTER === */
-[dir="rtl"] .lunetier-footer-container {
+/* --- FOOTER --- */
+[dir="rtl"] .lunetier-footer-main,
+[dir="rtl"] .footer-main {
   direction: rtl;
 }
 
-[dir="rtl"] .lunetier-footer-logo,
-[dir="rtl"] .lunetier-footer-tagline,
-[dir="rtl"] .lunetier-footer-col-title,
-[dir="rtl"] .lunetier-footer-link {
-  text-align: right;
-}
-
-[dir="rtl"] .lunetier-footer-list {
-  align-items: flex-end;
+[dir="rtl"] .lunetier-footer-bottom,
+[dir="rtl"] .footer-bottom {
+  direction: rtl;
 }
 
 [dir="rtl"] .lunetier-social-links,
-[dir="rtl"] .lunetier-payment-icons {
+[dir="rtl"] .social-links {
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .lunetier-copyright {
-  text-align: center !important;
-}
-
-/* === BUTTONS === */
-[dir="rtl"] .lunetier-hero-buttons,
-[dir="rtl"] .button-group {
+[dir="rtl"] .lunetier-payment-icons,
+[dir="rtl"] .payment-icons {
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .lunetier-btn svg:not(:only-child) {
-  margin-left: 0.5rem;
-  margin-right: 0;
-}
-
-[dir="rtl"] .lunetier-btn svg:first-child:not(:only-child) {
-  margin-left: 0;
-  margin-right: 0.5rem;
-}
-
-/* === TESTIMONIALS === */
-[dir="rtl"] .lunetier-testimonial-content {
-  text-align: right;
-}
-
-[dir="rtl"] .lunetier-testimonial-author {
+/* --- TESTIMONIALS --- */
+[dir="rtl"] .lunetier-testimonial-author,
+[dir="rtl"] .testimonial-author {
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .lunetier-testimonial-author-image {
+[dir="rtl"] .lunetier-testimonial-author-image,
+[dir="rtl"] .testimonial-avatar {
   margin-left: 1rem;
   margin-right: 0;
 }
 
-/* === FAQ === */
-[dir="rtl"] .lunetier-faq-question {
+/* --- FAQ --- */
+[dir="rtl"] .lunetier-faq-question,
+[dir="rtl"] .faq-question {
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .lunetier-faq-icon {
+[dir="rtl"] .lunetier-faq-icon,
+[dir="rtl"] .faq-icon {
   margin-left: 1rem;
   margin-right: 0;
 }
 
-[dir="rtl"] .lunetier-faq-answer {
-  text-align: right;
-}
-
-/* === MODALS === */
+/* --- MODALS --- */
 [dir="rtl"] .lunetier-modal-header,
-[dir="rtl"] .lunetier-locale-modal-header {
+[dir="rtl"] .modal-header {
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .lunetier-modal-title {
-  text-align: right;
-}
-
-[dir="rtl"] .lunetier-modal-footer {
+[dir="rtl"] .lunetier-modal-footer,
+[dir="rtl"] .modal-footer {
   flex-direction: row-reverse;
   justify-content: flex-start;
 }
 
 [dir="rtl"] .lunetier-select-wrapper select,
-[dir="rtl"] .lunetier-modal-select {
+[dir="rtl"] .lunetier-modal-select,
+[dir="rtl"] .modal-select {
   padding-left: 2.5rem;
   padding-right: 1rem;
 }
 
-[dir="rtl"] .lunetier-select-chevron {
+[dir="rtl"] .lunetier-select-chevron,
+[dir="rtl"] .select-chevron {
   left: 1rem;
   right: auto;
 }
 
-/* === ARROWS & ICONS === */
+/* --- BUTTONS WITH ICONS --- */
+[dir="rtl"] .lunetier-btn svg:not(:only-child):last-child,
+[dir="rtl"] .btn svg:not(:only-child):last-child {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+[dir="rtl"] .lunetier-btn svg:not(:only-child):first-child,
+[dir="rtl"] .btn svg:not(:only-child):first-child {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+/* --- ARROWS & CHEVRONS --- */
 [dir="rtl"] .arrow-right:not(.no-rtl) {
   transform: rotate(180deg);
 }
@@ -319,12 +220,15 @@
   transform: rotate(180deg);
 }
 
-[dir="rtl"] .chevron-right:not(.no-rtl),
-[dir="rtl"] .lunetier-breadcrumb-separator {
+[dir="rtl"] .chevron-right:not(.no-rtl) {
   transform: scaleX(-1);
 }
 
-/* === SPACING UTILITIES === */
+[dir="rtl"] .chevron-left:not(.no-rtl) {
+  transform: scaleX(-1);
+}
+
+/* --- SPACING UTILITIES (only margin/padding swap) --- */
 [dir="rtl"] .ml-auto { margin-left: 0; margin-right: auto; }
 [dir="rtl"] .mr-auto { margin-right: 0; margin-left: auto; }
 [dir="rtl"] .ml-1 { margin-left: 0; margin-right: 0.25rem; }
@@ -345,15 +249,17 @@
 [dir="rtl"] .pl-4 { padding-left: 0; padding-right: 1rem; }
 [dir="rtl"] .pr-4 { padding-right: 0; padding-left: 1rem; }
 
-/* === TEXT ALIGNMENT === */
-[dir="rtl"] .text-left:not(.keep-ltr) { text-align: right; }
-[dir="rtl"] .text-right:not(.keep-ltr) { text-align: left; }
+/* --- TEXT ALIGNMENT UTILITIES (only if explicitly set) --- */
+/* Only swap if class explicitly says left or right */
+[dir="rtl"] .text-left { text-align: right; }
+[dir="rtl"] .text-right { text-align: left; }
+/* .text-center stays center - don't touch it */
 
-/* === FLOAT === */
+/* --- FLOAT --- */
 [dir="rtl"] .float-left { float: right; }
 [dir="rtl"] .float-right { float: left; }
 
-/* === ARABIC FONT OPTIMIZATION === */
+/* --- ARABIC FONT OPTIMIZATION --- */
 [dir="rtl"][lang="ar"] {
   line-height: 1.8;
 }
@@ -365,17 +271,30 @@
   line-height: 1.5;
 }
 
-/* === MOBILE === */
+/* --- MOBILE MENU --- */
 @media (max-width: 768px) {
   [dir="rtl"] .mobile-menu {
     right: auto;
     left: 0;
   }
+  
+  [dir="rtl"] .mobile-menu-slide {
+    transform: translateX(100%);
+  }
+  
+  [dir="rtl"] .mobile-menu-slide.active {
+    transform: translateX(0);
+  }
 }
 
-/* === ANIMATIONS === */
-[dir="rtl"] .slide-in-right { animation: slideInLeft 0.3s ease; }
-[dir="rtl"] .slide-in-left { animation: slideInRight 0.3s ease; }
+/* --- ANIMATIONS --- */
+[dir="rtl"] .slide-in-right {
+  animation: slideInLeft 0.3s ease;
+}
+
+[dir="rtl"] .slide-in-left {
+  animation: slideInRight 0.3s ease;
+}
 
 @keyframes slideInLeft {
   from { transform: translateX(-100%); }
