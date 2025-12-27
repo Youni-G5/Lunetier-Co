@@ -1,0 +1,415 @@
+/*
+ * RTL (Right-to-Left) Support for Lunetier Theme
+ * Supports Arabic and other RTL languages
+ */
+
+/* === GLOBAL RTL ADJUSTMENTS === */
+[dir="rtl"] {
+  text-align: right;
+  direction: rtl;
+}
+
+[dir="rtl"] * {
+  text-align: inherit;
+}
+
+/* === TYPOGRAPHY === */
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6 {
+  text-align: right;
+}
+
+/* === FLEXBOX & GRID REVERSALS === */
+[dir="rtl"] .lunetier-header-container,
+[dir="rtl"] .lunetier-footer-main,
+[dir="rtl"] .lunetier-footer-bottom,
+[dir="rtl"] .lunetier-products-grid {
+  direction: rtl;
+}
+
+/* === HEADER === */
+[dir="rtl"] .lunetier-header-nav {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .lunetier-header-actions {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .lunetier-menu-item {
+  text-align: right;
+}
+
+/* === PRODUCT CARDS === */
+[dir="rtl"] .lunetier-product-card-info {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-product-card-badges {
+  left: auto;
+  right: 0.75rem;
+}
+
+[dir="rtl"] .lunetier-wishlist-btn {
+  right: auto;
+  left: 0.75rem;
+}
+
+/* === PRODUCT PAGE === */
+[dir="rtl"] .lunetier-product-main {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .lunetier-product-info {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-breadcrumbs {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .lunetier-breadcrumb-separator {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .lunetier-variant-selector {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-quantity-selector {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .lunetier-product-meta-item svg {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+/* === CART === */
+[dir="rtl"] .lunetier-cart-item {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .lunetier-cart-item-image {
+  margin-left: 1.5rem;
+  margin-right: 0;
+}
+
+[dir="rtl"] .lunetier-cart-item-details {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-cart-remove {
+  right: auto;
+  left: 0;
+}
+
+[dir="rtl"] .lunetier-cart-summary {
+  text-align: right;
+}
+
+/* === FORMS === */
+[dir="rtl"] .lunetier-form-group label {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-form-input,
+[dir="rtl"] .lunetier-form-select,
+[dir="rtl"] .lunetier-form-textarea {
+  text-align: right;
+  direction: rtl;
+}
+
+[dir="rtl"] .lunetier-newsletter-form {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .lunetier-newsletter-input {
+  border-right: 1px solid var(--color-gray-300);
+  border-left: none;
+}
+
+/* === SEARCH === */
+[dir="rtl"] .lunetier-search-input {
+  text-align: right;
+  padding: 1rem 1rem 1rem 3rem;
+}
+
+[dir="rtl"] .lunetier-search-icon-submit {
+  left: 0;
+  right: auto;
+}
+
+[dir="rtl"] .lunetier-search-clear {
+  left: 3rem;
+  right: auto;
+}
+
+[dir="rtl"] .lunetier-search-quick-links {
+  flex-direction: row-reverse;
+}
+
+/* === FOOTER === */
+[dir="rtl"] .lunetier-footer-brand {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-footer-col {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-social-links {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .lunetier-payment-icons {
+  flex-direction: row-reverse;
+}
+
+/* === HERO SECTION === */
+[dir="rtl"] .lunetier-hero-content {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-hero-buttons {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+[dir="rtl"] .lunetier-trust-badges {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+/* === TESTIMONIALS === */
+[dir="rtl"] .lunetier-testimonial-content {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-testimonial-author {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .lunetier-testimonial-author-image {
+  margin-left: 1rem;
+  margin-right: 0;
+}
+
+/* === FAQ === */
+[dir="rtl"] .lunetier-faq-question {
+  text-align: right;
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .lunetier-faq-icon {
+  margin-left: 0;
+  margin-right: 1rem;
+}
+
+[dir="rtl"] .lunetier-faq-answer {
+  text-align: right;
+}
+
+/* === MODALS === */
+[dir="rtl"] .lunetier-locale-modal-header {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .lunetier-modal-header {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .lunetier-modal-body {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-modal-footer {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+}
+
+[dir="rtl"] .lunetier-input-label {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-select-wrapper select {
+  padding-left: 2.5rem;
+  padding-right: 1rem;
+}
+
+[dir="rtl"] .lunetier-select-chevron {
+  left: 1rem;
+  right: auto;
+}
+
+/* === COLLECTIONS === */
+[dir="rtl"] .lunetier-collection-header {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-collection-filters {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-filter-group {
+  text-align: right;
+}
+
+/* === HISTOIRE/STORY === */
+[dir="rtl"] .lunetier-histoir-text {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-histoir-grid {
+  direction: rtl;
+}
+
+/* === VIRTUAL TRY-ON === */
+[dir="rtl"] .lunetier-vto-header {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-vto-controls {
+  flex-direction: row-reverse;
+}
+
+/* === BUTTONS WITH ICONS === */
+[dir="rtl"] .lunetier-btn svg,
+[dir="rtl"] .lunetier-button svg {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+[dir="rtl"] .lunetier-btn svg:first-child {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+/* === PREDICTIVE SEARCH === */
+[dir="rtl"] .predictive-search {
+  text-align: right;
+}
+
+[dir="rtl"] .predictive-search-result {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .predictive-search-image {
+  margin-left: 1rem;
+  margin-right: 0;
+}
+
+/* === CONTACT FORM === */
+[dir="rtl"] .lunetier-contact-form {
+  text-align: right;
+}
+
+[dir="rtl"] .lunetier-contact-info {
+  text-align: right;
+}
+
+/* === ARROWS & CHEVRONS === */
+[dir="rtl"] .arrow-right {
+  transform: rotate(180deg);
+}
+
+[dir="rtl"] .arrow-left {
+  transform: rotate(180deg);
+}
+
+[dir="rtl"] .chevron-right {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .chevron-left {
+  transform: scaleX(-1);
+}
+
+/* === SPACING UTILITIES === */
+[dir="rtl"] .ml-auto { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .mr-auto { margin-right: 0; margin-left: auto; }
+[dir="rtl"] .ml-1 { margin-left: 0; margin-right: 0.25rem; }
+[dir="rtl"] .mr-1 { margin-right: 0; margin-left: 0.25rem; }
+[dir="rtl"] .ml-2 { margin-left: 0; margin-right: 0.5rem; }
+[dir="rtl"] .mr-2 { margin-right: 0; margin-left: 0.5rem; }
+[dir="rtl"] .ml-3 { margin-left: 0; margin-right: 0.75rem; }
+[dir="rtl"] .mr-3 { margin-right: 0; margin-left: 0.75rem; }
+[dir="rtl"] .ml-4 { margin-left: 0; margin-right: 1rem; }
+[dir="rtl"] .mr-4 { margin-right: 0; margin-left: 1rem; }
+
+[dir="rtl"] .pl-1 { padding-left: 0; padding-right: 0.25rem; }
+[dir="rtl"] .pr-1 { padding-right: 0; padding-left: 0.25rem; }
+[dir="rtl"] .pl-2 { padding-left: 0; padding-right: 0.5rem; }
+[dir="rtl"] .pr-2 { padding-right: 0; padding-left: 0.5rem; }
+[dir="rtl"] .pl-3 { padding-left: 0; padding-right: 0.75rem; }
+[dir="rtl"] .pr-3 { padding-right: 0; padding-left: 0.75rem; }
+[dir="rtl"] .pl-4 { padding-left: 0; padding-right: 1rem; }
+[dir="rtl"] .pr-4 { padding-right: 0; padding-left: 1rem; }
+
+/* === TEXT ALIGNMENT === */
+[dir="rtl"] .text-left { text-align: right; }
+[dir="rtl"] .text-right { text-align: left; }
+
+/* === FLOAT === */
+[dir="rtl"] .float-left { float: right; }
+[dir="rtl"] .float-right { float: left; }
+
+/* === ARABIC FONT OPTIMIZATION === */
+[dir="rtl"] body,
+[dir="rtl"] input,
+[dir="rtl"] select,
+[dir="rtl"] textarea,
+[dir="rtl"] button {
+  font-feature-settings: 'liga', 'calt';
+}
+
+/* Better line height for Arabic */
+[dir="rtl"][lang="ar"] {
+  line-height: 1.8;
+}
+
+[dir="rtl"][lang="ar"] h1,
+[dir="rtl"][lang="ar"] h2,
+[dir="rtl"][lang="ar"] h3,
+[dir="rtl"][lang="ar"] h4 {
+  line-height: 1.5;
+}
+
+/* === MOBILE SPECIFIC === */
+@media (max-width: 768px) {
+  [dir="rtl"] .mobile-menu {
+    right: auto;
+    left: 0;
+  }
+  
+  [dir="rtl"] .mobile-menu-slide {
+    transform: translateX(100%);
+  }
+  
+  [dir="rtl"] .mobile-menu-slide.active {
+    transform: translateX(0);
+  }
+}
+
+/* === ANIMATION ADJUSTMENTS === */
+[dir="rtl"] .slide-in-right {
+  animation: slideInLeft 0.3s ease;
+}
+
+[dir="rtl"] .slide-in-left {
+  animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}

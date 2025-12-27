@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ request.locale.iso_code }}">
+<html lang="{{ request.locale.iso_code }}" dir="{% if request.locale.iso_code == 'ar' %}rtl{% else %}ltr{% endif %}">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,6 +17,11 @@
     {% render 'css-variables' %}
     
     {{ 'base.css' | asset_url | stylesheet_tag }}
+    
+    {% comment %} RTL Support for Arabic and other RTL languages {% endcomment %}
+    {% if request.locale.iso_code == 'ar' or request.locale.iso_code == 'he' or request.locale.iso_code == 'fa' %}
+      {{ 'rtl.css' | asset_url | stylesheet_tag }}
+    {% endif %}
     
     {% if template contains 'product' or template contains 'collection' or template contains 'search' or template == 'index' %}
       {{ 'product-card.css' | asset_url | stylesheet_tag }}
@@ -43,8 +48,14 @@
 
   <body class="template-{{ template.name | handle }}{% if customer %} customer-logged-in{% endif %}{% if cart.item_count > 0 %} cart-has-items{% endif %}">
     
-    {% comment %} Skip to content (invisible jusqu'à focus) {% endcomment %}
-    <a href="#main-content" class="skip-to-content">Passer au contenu</a>
+    {% comment %} Skip to content {% endcomment %}
+    <a href="#main-content" class="skip-to-content">
+      {%- if request.locale.iso_code == 'ar' -%}
+        انتقل إلى المحتوى
+      {%- else -%}
+        Skip to content
+      {%- endif -%}
+    </a>
     
     {% section 'header' %}
 
