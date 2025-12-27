@@ -1,70 +1,85 @@
 /*
  * RTL (Right-to-Left) Support for Lunetier Theme
  * Supports Arabic and other RTL languages
- * IMPORTANT: Text direction changes, but centered layouts stay centered
+ * CRITICAL: Only text direction changes - section layouts and designs stay intact
  */
 
-/* === GLOBAL RTL ADJUSTMENTS === */
+/* === GLOBAL RTL === */
 [dir="rtl"] {
   direction: rtl;
 }
 
-/* PRESERVE CENTERED TEXT - DO NOT OVERRIDE */
+/* === PRESERVE ALL CENTERED & SECTION LAYOUTS === */
+/* Sections maintain their original design */
+[dir="rtl"] section,
+[dir="rtl"] .section,
+[dir="rtl"] [class*="section"],
 [dir="rtl"] .text-center,
-[dir="rtl"] [style*="text-align: center"],
-[dir="rtl"] [style*="text-align:center"] {
+[dir="rtl"] .centered,
+[dir="rtl"] .center {
   text-align: center !important;
 }
 
-/* Section titles and centered content should stay centered */
+/* Section headers and titles always centered */
 [dir="rtl"] .section-title,
 [dir="rtl"] .section-header,
 [dir="rtl"] .section-heading,
-[dir="rtl"] .centered,
-[dir="rtl"] .center,
-[dir="rtl"] .text-center {
+[dir="rtl"] .section-subtitle,
+[dir="rtl"] [class*="section-title"],
+[dir="rtl"] [class*="section-header"] {
   text-align: center !important;
 }
 
-/* Hero sections typically centered */
-[dir="rtl"] .lunetier-hero-title,
-[dir="rtl"] .lunetier-hero-subtitle,
+/* Hero sections */
+[dir="rtl"] [class*="hero"] h1,
+[dir="rtl"] [class*="hero"] h2,
+[dir="rtl"] [class*="hero"] .title,
 [dir="rtl"] .hero-title,
 [dir="rtl"] .hero-subtitle {
   text-align: center !important;
 }
 
-/* Collection headers centered */
-[dir="rtl"] .lunetier-collection-title,
-[dir="rtl"] .collection-title {
+/* Collection/Category sections */
+[dir="rtl"] [class*="collection-header"],
+[dir="rtl"] .collection-title,
+[dir="rtl"] .category-title {
   text-align: center !important;
 }
 
-/* Page titles centered */
+/* Page headers */
+[dir="rtl"] .page-header,
 [dir="rtl"] .page-title,
 [dir="rtl"] .page-header h1 {
   text-align: center !important;
 }
 
-/* === TYPOGRAPHY === */
-/* Only change alignment for text that should be RTL */
-[dir="rtl"] p,
+/* Any title/heading inside sections */
+[dir="rtl"] section h1,
+[dir="rtl"] section h2,
+[dir="rtl"] section h3,
+[dir="rtl"] section .title,
+[dir="rtl"] .section h1,
+[dir="rtl"] .section h2,
+[dir="rtl"] .section h3,
+[dir="rtl"] .section .title {
+  text-align: center !important;
+}
+
+/* Preserve inline centered styles */
+[dir="rtl"] [style*="text-align: center"],
+[dir="rtl"] [style*="text-align:center"] {
+  text-align: center !important;
+}
+
+/* === ONLY CHANGE TEXT CONTENT === */
+/* Body text, descriptions, and list items can be RTL */
+[dir="rtl"] p:not(.centered):not(.center):not(.text-center),
 [dir="rtl"] li,
 [dir="rtl"] td,
-[dir="rtl"] th {
+[dir="rtl"] th,
+[dir="rtl"] .description,
+[dir="rtl"] .content {
   text-align: right;
-}
-
-/* === FLEXBOX & GRID REVERSALS === */
-/* Only reverse horizontal flex/grid layouts */
-[dir="rtl"] .lunetier-header-container,
-[dir="rtl"] .lunetier-footer-bottom {
-  direction: rtl;
-}
-
-/* Footer columns keep their structure */
-[dir="rtl"] .lunetier-footer-main {
-  direction: rtl;
 }
 
 /* === HEADER === */
@@ -76,16 +91,15 @@
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .lunetier-menu-item {
-  text-align: right;
-}
-
 /* === PRODUCT CARDS === */
-[dir="rtl"] .lunetier-product-card-title {
+/* Keep card layout, only text direction */
+[dir="rtl"] .lunetier-product-card-title,
+[dir="rtl"] .product-title {
   text-align: right;
 }
 
-[dir="rtl"] .lunetier-product-card-price {
+[dir="rtl"] .lunetier-product-card-price,
+[dir="rtl"] .product-price {
   text-align: right;
 }
 
@@ -105,8 +119,7 @@
 }
 
 [dir="rtl"] .lunetier-product-title,
-[dir="rtl"] .lunetier-product-description,
-[dir="rtl"] .lunetier-product-price {
+[dir="rtl"] .lunetier-product-description {
   text-align: right;
 }
 
@@ -146,8 +159,7 @@
 }
 
 [dir="rtl"] .lunetier-cart-item-title,
-[dir="rtl"] .lunetier-cart-item-price,
-[dir="rtl"] .lunetier-cart-item-variant {
+[dir="rtl"] .lunetier-cart-item-price {
   text-align: right;
 }
 
@@ -156,22 +168,23 @@
   left: 0;
 }
 
-[dir="rtl"] .lunetier-cart-summary {
-  text-align: right;
-}
-
 [dir="rtl"] .lunetier-cart-total {
   flex-direction: row-reverse;
 }
 
 /* === FORMS === */
-[dir="rtl"] .lunetier-form-group label {
+[dir="rtl"] label,
+[dir="rtl"] .label {
   text-align: right;
 }
 
-[dir="rtl"] .lunetier-form-input,
-[dir="rtl"] .lunetier-form-select,
-[dir="rtl"] .lunetier-form-textarea {
+[dir="rtl"] input[type="text"],
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="tel"],
+[dir="rtl"] input[type="password"],
+[dir="rtl"] input[type="search"],
+[dir="rtl"] select,
+[dir="rtl"] textarea {
   text-align: right;
   direction: rtl;
 }
@@ -183,13 +196,13 @@
 [dir="rtl"] .lunetier-newsletter-input {
   border-right: 1px solid var(--color-gray-300);
   border-left: none;
-  text-align: right;
 }
 
 /* === SEARCH === */
 [dir="rtl"] .lunetier-search-input {
   text-align: right;
-  padding: 1rem 1rem 1rem 3rem;
+  padding-right: 1rem;
+  padding-left: 3rem;
 }
 
 [dir="rtl"] .lunetier-search-icon-submit {
@@ -202,16 +215,13 @@
   right: auto;
 }
 
-[dir="rtl"] .lunetier-search-quick-links {
-  flex-direction: row-reverse;
-}
-
 /* === FOOTER === */
-[dir="rtl"] .lunetier-footer-logo,
-[dir="rtl"] .lunetier-footer-tagline {
-  text-align: right;
+[dir="rtl"] .lunetier-footer-container {
+  direction: rtl;
 }
 
+[dir="rtl"] .lunetier-footer-logo,
+[dir="rtl"] .lunetier-footer-tagline,
 [dir="rtl"] .lunetier-footer-col-title,
 [dir="rtl"] .lunetier-footer-link {
   text-align: right;
@@ -221,10 +231,7 @@
   align-items: flex-end;
 }
 
-[dir="rtl"] .lunetier-social-links {
-  flex-direction: row-reverse;
-}
-
+[dir="rtl"] .lunetier-social-links,
 [dir="rtl"] .lunetier-payment-icons {
   flex-direction: row-reverse;
 }
@@ -233,18 +240,20 @@
   text-align: center !important;
 }
 
-/* === HERO SECTION === */
-/* Hero content can be left/right aligned in design, respect that */
-[dir="rtl"] .lunetier-hero-content:not(.text-center):not([style*="text-align: center"]) {
-  text-align: right;
-}
-
-[dir="rtl"] .lunetier-hero-buttons {
+/* === BUTTONS === */
+[dir="rtl"] .lunetier-hero-buttons,
+[dir="rtl"] .button-group {
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .lunetier-trust-badges {
-  flex-direction: row-reverse;
+[dir="rtl"] .lunetier-btn svg:not(:only-child) {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+[dir="rtl"] .lunetier-btn svg:first-child:not(:only-child) {
+  margin-left: 0;
+  margin-right: 0.5rem;
 }
 
 /* === TESTIMONIALS === */
@@ -266,10 +275,6 @@
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .lunetier-faq-question-text {
-  text-align: right;
-}
-
 [dir="rtl"] .lunetier-faq-icon {
   margin-left: 1rem;
   margin-right: 0;
@@ -280,16 +285,12 @@
 }
 
 /* === MODALS === */
-[dir="rtl"] .lunetier-locale-modal-header,
-[dir="rtl"] .lunetier-modal-header {
+[dir="rtl"] .lunetier-modal-header,
+[dir="rtl"] .lunetier-locale-modal-header {
   flex-direction: row-reverse;
 }
 
 [dir="rtl"] .lunetier-modal-title {
-  text-align: right;
-}
-
-[dir="rtl"] .lunetier-modal-body {
   text-align: right;
 }
 
@@ -298,84 +299,18 @@
   justify-content: flex-start;
 }
 
-[dir="rtl"] .lunetier-input-label {
-  text-align: right;
-}
-
 [dir="rtl"] .lunetier-select-wrapper select,
 [dir="rtl"] .lunetier-modal-select {
   padding-left: 2.5rem;
   padding-right: 1rem;
-  text-align: right;
 }
 
-[dir="rtl"] .lunetier-select-chevron,
-[dir="rtl"] .select-chevron {
+[dir="rtl"] .lunetier-select-chevron {
   left: 1rem;
   right: auto;
 }
 
-/* === COLLECTIONS === */
-[dir="rtl"] .lunetier-collection-description {
-  text-align: right;
-}
-
-[dir="rtl"] .lunetier-filter-label {
-  text-align: right;
-}
-
-/* === HISTOIRE/STORY === */
-[dir="rtl"] .lunetier-histoir-text p {
-  text-align: right;
-}
-
-[dir="rtl"] .lunetier-histoir-grid {
-  direction: rtl;
-}
-
-/* === VIRTUAL TRY-ON === */
-[dir="rtl"] .lunetier-vto-instructions {
-  text-align: right;
-}
-
-[dir="rtl"] .lunetier-vto-controls {
-  flex-direction: row-reverse;
-}
-
-/* === BUTTONS WITH ICONS === */
-[dir="rtl"] .lunetier-btn svg,
-[dir="rtl"] .lunetier-button svg {
-  margin-left: 0.5rem;
-  margin-right: 0;
-}
-
-[dir="rtl"] .lunetier-btn svg:first-child {
-  margin-left: 0;
-  margin-right: 0.5rem;
-}
-
-/* === PREDICTIVE SEARCH === */
-[dir="rtl"] .predictive-search {
-  text-align: right;
-}
-
-[dir="rtl"] .predictive-search-result {
-  flex-direction: row-reverse;
-}
-
-[dir="rtl"] .predictive-search-image {
-  margin-left: 1rem;
-  margin-right: 0;
-}
-
-/* === CONTACT FORM === */
-[dir="rtl"] .lunetier-contact-form label,
-[dir="rtl"] .lunetier-contact-form input,
-[dir="rtl"] .lunetier-contact-form textarea {
-  text-align: right;
-}
-
-/* === ARROWS & CHEVRONS === */
+/* === ARROWS & ICONS === */
 [dir="rtl"] .arrow-right:not(.no-rtl) {
   transform: rotate(180deg);
 }
@@ -384,11 +319,8 @@
   transform: rotate(180deg);
 }
 
-[dir="rtl"] .chevron-right:not(.no-rtl) {
-  transform: scaleX(-1);
-}
-
-[dir="rtl"] .chevron-left:not(.no-rtl) {
+[dir="rtl"] .chevron-right:not(.no-rtl),
+[dir="rtl"] .lunetier-breadcrumb-separator {
   transform: scaleX(-1);
 }
 
@@ -413,26 +345,15 @@
 [dir="rtl"] .pl-4 { padding-left: 0; padding-right: 1rem; }
 [dir="rtl"] .pr-4 { padding-right: 0; padding-left: 1rem; }
 
-/* === TEXT ALIGNMENT UTILITIES === */
-/* Respect explicit alignment classes */
+/* === TEXT ALIGNMENT === */
 [dir="rtl"] .text-left:not(.keep-ltr) { text-align: right; }
 [dir="rtl"] .text-right:not(.keep-ltr) { text-align: left; }
-[dir="rtl"] .text-center { text-align: center !important; }
 
 /* === FLOAT === */
 [dir="rtl"] .float-left { float: right; }
 [dir="rtl"] .float-right { float: left; }
 
 /* === ARABIC FONT OPTIMIZATION === */
-[dir="rtl"] body,
-[dir="rtl"] input,
-[dir="rtl"] select,
-[dir="rtl"] textarea,
-[dir="rtl"] button {
-  font-feature-settings: 'liga', 'calt';
-}
-
-/* Better line height for Arabic */
 [dir="rtl"][lang="ar"] {
   line-height: 1.8;
 }
@@ -444,30 +365,17 @@
   line-height: 1.5;
 }
 
-/* === MOBILE SPECIFIC === */
+/* === MOBILE === */
 @media (max-width: 768px) {
   [dir="rtl"] .mobile-menu {
     right: auto;
     left: 0;
   }
-  
-  [dir="rtl"] .mobile-menu-slide {
-    transform: translateX(100%);
-  }
-  
-  [dir="rtl"] .mobile-menu-slide.active {
-    transform: translateX(0);
-  }
 }
 
-/* === ANIMATION ADJUSTMENTS === */
-[dir="rtl"] .slide-in-right {
-  animation: slideInLeft 0.3s ease;
-}
-
-[dir="rtl"] .slide-in-left {
-  animation: slideInRight 0.3s ease;
-}
+/* === ANIMATIONS === */
+[dir="rtl"] .slide-in-right { animation: slideInLeft 0.3s ease; }
+[dir="rtl"] .slide-in-left { animation: slideInRight 0.3s ease; }
 
 @keyframes slideInLeft {
   from { transform: translateX(-100%); }
