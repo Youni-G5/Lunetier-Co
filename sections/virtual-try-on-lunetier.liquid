@@ -1,8 +1,8 @@
 {% comment %}
-  Section "Essai Virtuel" (VTO) - Lunetier
-  Technologie : MediaPipe Face Mesh (468 landmarks) + Overlay Intelligent
-  Features : Détection faciale temps réel, positionnement automatique, suivi visage
-  Optimisé : Framerate 60 FPS desktop, 30 FPS mobile, résolution adaptative
+  "Virtual Try-On" Section (VTO) - Lunetier
+  Technology: MediaPipe Face Mesh (468 landmarks) + Intelligent Overlay
+  Features: Real-time face detection, automatic positioning, face tracking
+  Optimized: 60 FPS desktop framerate, 30 FPS mobile, adaptive resolution
 {% endcomment %}
 
 <style>
@@ -393,9 +393,9 @@
         <circle cx="12" cy="13" r="3"></circle>
         <path d="M16 6l2-3h-12l2 3"></path>
       </svg>
-      Essai Virtuel
+      Virtual Try-On
     </div>
-    <button class="vto-close-btn" id="vto-close" aria-label="Fermer">
+    <button class="vto-close-btn" id="vto-close" aria-label="Close">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -406,7 +406,7 @@
   <!-- Status Badge -->
   <div class="vto-status" id="vto-status">
     <div class="vto-status-dot" id="vto-status-dot"></div>
-    <span id="vto-status-text">Recherche de visage...</span>
+    <span id="vto-status-text">Searching for face...</span>
   </div>
 
   <!-- Viewport -->
@@ -417,33 +417,33 @@
     <!-- Loading -->
     <div id="vto-loading" class="vto-loading">
       <div class="vto-spinner"></div>
-      <p>Initialisation de la caméra...</p>
+      <p>Initializing camera...</p>
     </div>
 
     <!-- Error -->
     <div id="vto-error-msg" class="vto-error">
-      <h3>Caméra inaccessible</h3>
-      <p>Veuillez autoriser l'accès à la caméra pour utiliser l'essai virtuel.</p>
-      <button class="vto-btn" onclick="window.vtoStartCamera()">Réessayer</button>
+      <h3>Camera Unavailable</h3>
+      <p>Please allow camera access to use virtual try-on.</p>
+      <button class="vto-btn" onclick="window.vtoStartCamera()">Retry</button>
     </div>
   </div>
 
   <!-- Controls -->
   <div class="vto-controls">
-    <p class="vto-instruction">Ajustez la position et la taille des lunettes</p>
+    <p class="vto-instruction">Adjust the position and size of the glasses</p>
     
     <div class="vto-sliders-group">
       <!-- Scale Control -->
       <div class="vto-slider-wrapper">
-        <span class="vto-slider-label">Taille</span>
-        <input type="range" id="vto-scale" min="50" max="150" value="100" step="5" aria-label="Ajuster la taille">
+        <span class="vto-slider-label">Size</span>
+        <input type="range" id="vto-scale" min="50" max="150" value="100" step="5" aria-label="Adjust size">
         <span class="vto-slider-value" id="vto-scale-value">100%</span>
       </div>
       
       <!-- Y Position Control -->
       <div class="vto-slider-wrapper">
         <span class="vto-slider-label">Position</span>
-        <input type="range" id="vto-yoffset" min="-20" max="20" value="0" step="1" aria-label="Ajuster la position verticale">
+        <input type="range" id="vto-yoffset" min="-20" max="20" value="0" step="1" aria-label="Adjust vertical position">
         <span class="vto-slider-value" id="vto-yoffset-value">0</span>
       </div>
     </div>
@@ -480,10 +480,10 @@
     
     if (!modal || !video || !canvas) return;
 
-    // Détection mobile
+    // Mobile detection
     const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent) || window.innerWidth < 768;
     
-    // Config adaptative selon device
+    // Adaptive config based on device
     const config = {
       width: isMobile ? 640 : 1280,
       height: isMobile ? 480 : 720,
@@ -504,7 +504,7 @@
     let isRunning = false;
     let smoothedLandmarks = null;
 
-    // Précharger l'image des lunettes
+    // Preload glasses image
     {% if product.featured_media %}
     glassesImg = new Image();
     glassesImg.crossOrigin = 'anonymous';
@@ -515,7 +515,7 @@
     };
     {% endif %}
 
-    // --- OUVERTURE / FERMETURE ---
+    // --- OPEN / CLOSE ---
     
     window.openVirtualTryOn = async function() {
       console.log(`✅ Opening VTO (${isMobile ? 'Mobile' : 'Desktop'} mode)...`);
@@ -721,10 +721,10 @@
     function updateStatus(detected) {
       if (detected) {
         statusDot.classList.remove('inactive');
-        statusText.textContent = 'Visage détecté';
+        statusText.textContent = 'Face detected';
       } else {
         statusDot.classList.add('inactive');
-        statusText.textContent = 'Recherche de visage...';
+        statusText.textContent = 'Searching for face...';
       }
     }
 
@@ -735,11 +735,11 @@
 
 {% schema %}
 {
-  "name": "Essai Virtuel MediaPipe",
+  "name": "Virtual Try-On MediaPipe",
   "settings": [],
   "presets": [
     {
-      "name": "Essai Virtuel"
+      "name": "Virtual Try-On"
     }
   ]
 }

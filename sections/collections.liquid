@@ -1,7 +1,7 @@
 {% comment %}
-  Section Liste des Collections "Lunetier"
-  Design : Type Lookbook / Magazine.
-  Fonctionnalité : Grille responsive, Image fallback automatique, Pagination.
+  "Collections List" Lunetier Section
+  Design: Lookbook / Magazine type.
+  Functionality: Responsive grid, Automatic image fallback, Pagination.
 {% endcomment %}
 
 <style>
@@ -9,7 +9,7 @@
   #shopify-section-{{ section.id }} {
     background-color: #ffffff;
     color: #111827;
-    /* Espace pour le header sticky */
+    /* Space for sticky header */
     padding-top: 8rem; 
     padding-bottom: 6rem;
   }
@@ -53,14 +53,14 @@
 
   @media (min-width: 768px) {
     .lunetier-collections-grid {
-      grid-template-columns: repeat(2, 1fr); /* 2 par ligne tablette */
+      grid-template-columns: repeat(2, 1fr); /* 2 per line tablet */
     }
   }
 
   @media (min-width: 1024px) {
     .lunetier-collections-grid {
-      grid-template-columns: repeat(3, 1fr); /* 3 par ligne desktop */
-      gap: 4rem; /* Plus d'espace pour le luxe */
+      grid-template-columns: repeat(3, 1fr); /* 3 per line desktop */
+      gap: 4rem; /* More space for luxury */
     }
   }
 
@@ -76,7 +76,7 @@
   /* Image Wrapper */
   .lunetier-col-img-wrapper {
     position: relative;
-    aspect-ratio: 3 / 4; /* Format Portrait élégant */
+    aspect-ratio: 3 / 4; /* Elegant portrait format */
     overflow: hidden;
     background-color: #f3f4f6;
     margin-bottom: 1.5rem;
@@ -177,9 +177,9 @@
   
   <!-- HEADER -->
   <div class="lunetier-list-col-header">
-    <h1 class="lunetier-list-col-title">{{ section.settings.title | default: "Nos Univers" }}</h1>
+    <h1 class="lunetier-list-col-title">{{ section.settings.title | default: "Our Universes" }}</h1>
     <div class="lunetier-list-col-desc">
-      {{ section.settings.description | default: "Explorez nos différentes collections. Chaque monture raconte une histoire, dessinée à Paris et façonnée pour durer." }}
+      {{ section.settings.description | default: "Explore our different collections. Each frame tells a story, designed in Paris and crafted to last." }}
     </div>
   </div>
 
@@ -189,38 +189,38 @@
       
       {%- for collection in collections -%}
         
-        {% comment %} Exclure la collection Frontpage si nécessaire {% endcomment %}
+        {% comment %} Exclude Frontpage collection if needed {% endcomment %}
         {% unless collection.handle == 'frontpage' %}
           
           <a href="{{ collection.url }}" class="lunetier-col-card">
             
             <div class="lunetier-col-img-wrapper">
               {%- if collection.image != blank -%}
-                {%- comment -%} Image de la collection {%- endcomment -%}
+                {%- comment -%} Collection image {%- endcomment -%}
                 {{ collection.image | image_url: width: 800 | image_tag: 
                   class: 'lunetier-col-img', 
                   loading: 'lazy',
                   alt: collection.title
                 }}
               {%- elsif collection.products.first != blank -%}
-                {%- comment -%} Fallback : Image du premier produit {%- endcomment -%}
+                {%- comment -%} Fallback: First product image {%- endcomment -%}
                 {{ collection.products.first.featured_image | image_url: width: 800 | image_tag: 
                   class: 'lunetier-col-img', 
                   loading: 'lazy',
                   alt: collection.title
                 }}
               {%- else -%}
-                {%- comment -%} Fallback : SVG {%- endcomment -%}
+                {%- comment -%} Fallback: SVG {%- endcomment -%}
                 {{ 'collection-1' | placeholder_svg_tag: 'lunetier-col-img' }}
               {%- endif -%}
             </div>
 
             <div class="lunetier-col-info">
               <h2 class="lunetier-col-name">{{ collection.title }}</h2>
-              <span class="lunetier-col-count">{{ collection.all_products_count }} Modèles</span>
+              <span class="lunetier-col-count">{{ collection.all_products_count }} Models</span>
               
               <div class="lunetier-col-link">
-                Explorer
+                Explore
                 <svg class="lunetier-arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
               </div>
             </div>
@@ -259,19 +259,19 @@
 
 {% schema %}
 {
-  "name": "Liste des Collections",
+  "name": "Collections List",
   "settings": [
     {
       "type": "text",
       "id": "title",
-      "label": "Titre Principal",
-      "default": "Nos Univers"
+      "label": "Main title",
+      "default": "Our Universes"
     },
     {
       "type": "textarea",
       "id": "description",
       "label": "Description",
-      "default": "Explorez nos différentes collections. Chaque monture raconte une histoire, dessinée à Paris et façonnée pour durer."
+      "default": "Explore our different collections. Each frame tells a story, designed in Paris and crafted to last."
     },
     {
       "type": "range",
@@ -280,7 +280,7 @@
       "max": 18,
       "step": 3,
       "default": 9,
-      "label": "Collections par page"
+      "label": "Collections per page"
     }
   ]
 }
