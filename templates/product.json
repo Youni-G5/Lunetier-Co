@@ -17,10 +17,10 @@
     },
     "featured_collection_rJdTHB": {
       "type": "featured-collection",
-      "name": "Collection Capsule Lunetier",
+      "name": "Capsule Collection Lunetier",
       "settings": {
-        "title": "Vous aimerez aussi",
-        "description": "Quelques pièces exclusives pour compléter votre style.",
+        "title": "You might also like",
+        "description": "A few exclusive pieces to complete your style.",
         "collection": "all",
         "limit": 3,
         "padding_top": 24,
@@ -33,24 +33,24 @@
         "faq_item_9fBjEh": {
           "type": "faq_item",
           "settings": {
-            "question": "Puis-je adapter des verres correcteurs ?",
-            "answer": "<p>Absolument. Une fois votre monture reçue, rendez-vous chez votre opticien habituel. Nos montures en acétate sont conçues pour être équipées de tous types de verres correcteurs.</p>",
+            "question": "Can I add prescription lenses?",
+            "answer": "<p>Absolutely. Once you receive your frame, visit your usual optician. Our acetate frames are designed to accommodate all types of prescription lenses.</p>",
             "open_default": false
           }
         },
         "faq_item_YTLqBm": {
           "type": "faq_item",
           "settings": {
-            "question": "Comment fonctionne l'essai à domicile ?",
-            "answer": "<p>Vous disposez de 30 jours après réception pour essayer vos lunettes. Si elles ne vous conviennent pas, utilisez l'étiquette de retour prépayée incluse dans le colis pour un remboursement intégral.</p>",
+            "question": "How does the home trial work?",
+            "answer": "<p>You have 30 days after receipt to try your glasses. If they don't suit you, use the prepaid return label included in the package for a full refund.</p>",
             "open_default": false
           }
         },
         "faq_item_RHdyhK": {
           "type": "faq_item",
           "settings": {
-            "question": "Quelle est la garantie ?",
-            "answer": "<p>Toutes nos montures sont garanties 2 ans contre tout défaut de fabrication (charnières, matériaux, assemblage).</p>",
+            "question": "What is the warranty?",
+            "answer": "<p>All our frames come with a 2-year warranty against any manufacturing defects (hinges, materials, assembly).</p>",
             "open_default": false
           }
         }
@@ -62,8 +62,8 @@
       ],
       "name": "FAQ Lunetier",
       "settings": {
-        "title": "Questions Fréquentes",
-        "description": "Tout ce que vous devez savoir sur nos lunettes et services.",
+        "title": "Frequently Asked Questions",
+        "description": "Everything you need to know about our glasses and services.",
         "bg_color": "#ffffff"
       }
     },
@@ -108,16 +108,16 @@
         "logo_hDbHrA",
         "logo_xg7Bbe"
       ],
-      "name": "Logos Presse",
+      "name": "Press Logos",
       "settings": {
-        "title": "Ils parlent de nous",
+        "title": "They're talking about us",
         "bg_color": "#fafaf9",
         "text_color": "#111827"
       }
     },
     "virtual_try_on_lunetier_whmEQk": {
       "type": "virtual-try-on-lunetier",
-      "name": "Essai Virtuel",
+      "name": "Virtual Try-On",
       "settings": {}
     }
   },

@@ -15,15 +15,15 @@
       "settings": {
         "image": "shopify://shop_images/photo-1511499767150-a48a237f0083.avif",
         "badge_text": "Best-seller 2025",
-        "title": "L'Élégance <br>au Premier Regard.",
-        "description": "Découvrez The Icon. Une monture dessinée à Paris, conçue pour durer et sublimer votre visage.",
+        "title": "Elegance <br>at First Sight.",
+        "description": "Discover The Icon. A frame designed in Paris, built to last and enhance your face.",
         "product": "the-classic",
-        "button_text_1": "AJOUTER AU PANIER",
+        "button_text_1": "ADD TO CART",
         "button_link_1": "shopify://products/the-classic",
-        "button_text_2": "DÉCOUVRIR LE DESIGN",
+        "button_text_2": "DISCOVER THE DESIGN",
         "button_link_2": "shopify://products/the-classic",
-        "trust_text_1": "Livraison 48h",
-        "trust_text_2": "Garantie 2 ans"
+        "trust_text_1": "48h Delivery",
+        "trust_text_2": "2-Year Warranty"
       }
     },
     "product_highlight_PUK3x6": {
@@ -32,19 +32,19 @@
         "feature_VgYixY": {
           "type": "feature",
           "settings": {
-            "text": "Acétate Premium"
+            "text": "Premium Acetate"
           }
         },
         "feature_qz9mkR": {
           "type": "feature",
           "settings": {
-            "text": "Verres Anti-Rayures"
+            "text": "Anti-Scratch Lenses"
           }
         },
         "feature_CR9b6V": {
           "type": "feature",
           "settings": {
-            "text": "Charnières Flex"
+            "text": "Flex Hinges"
           }
         }
       },
@@ -53,25 +53,24 @@
         "feature_qz9mkR",
         "feature_CR9b6V"
       ],
-      "name": "Détails Produit Lunetier",
+      "name": "Product Details Lunetier",
       "settings": {
         "bg_color": "#fafaf9",
         "image": "shopify://shop_images/photo-1577803645773-f96470509666.avif",
-        "image_label": "VUE DE FACE",
-        "image_position": "left",
-        "heading": "Pourquoi tout le monde parle de ce modèle.",
-        "description": "Nous avons passé 12 mois à perfectionner la courbe de la monture pour qu'elle s'adapte à 95% des formes de visage.",
-        "button_text": "Commander votre paire maintenant",
+        "image_label": "FRONT VIEW",
+        "heading": "Why everyone's talking about this model.",
+        "description": "We spent 12 months perfecting the frame curve to fit 95% of face shapes.",
+        "button_text": "Order your pair now",
         "product": "the-warm",
         "button_link": ""
       }
     },
     "featured_collection_WnFwBj": {
       "type": "featured-collection",
-      "name": "Collection Capsule Lunetier",
+      "name": "Capsule Collection Lunetier",
       "settings": {
-        "title": "La Collection Capsule",
-        "description": "Quelques pièces exclusives pour compléter votre style.",
+        "title": "The Capsule Collection",
+        "description": "A few exclusive pieces to complete your style.",
         "collection": "frontpage",
         "limit": 3,
         "padding_top": 32,
@@ -80,15 +79,15 @@
     },
     "testimonials_XdmgYh": {
       "type": "testimonials",
-      "name": "Témoignage Lunetier",
+      "name": "Testimonial Lunetier",
       "settings": {
         "bg_color": "#000000",
         "text_color": "#ffffff",
         "star_count": 5,
-        "quote_text": "Enfin des lunettes que je ne sens pas sur mon nez. La qualité est comparable aux grandes marques de luxe, mais à un prix juste.",
+        "quote_text": "Finally glasses I don't feel on my nose. The quality is comparable to luxury brands, but at a fair price.",
         "author_image": "shopify://shop_images/12c4560e2a2ae1ef7424e937b4ff1429_tplv-tiktokx-cropcenter_1080_1080.jpg",
         "author_name": "Laura R.",
-        "author_details": "Cliente vérifiée • Paris"
+        "author_details": "Verified Customer • Paris"
       }
     }
   },
